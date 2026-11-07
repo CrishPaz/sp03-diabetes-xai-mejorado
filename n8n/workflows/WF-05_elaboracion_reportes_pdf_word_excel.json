@@ -1,0 +1,73 @@
+{
+  "name": "WF-05: Elaboración y Distribución Automática de Reportes (PDF, Word, Excel)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "triggerAtHour": 23,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "id": "node-trigger-daily",
+      "name": "Cierre Diario (23:30)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [180, 240]
+    },
+    {
+      "parameters": {
+        "url": "http://backend:8000/reports/generate-daily-summary",
+        "method": "POST",
+        "options": {}
+      },
+      "id": "node-request-reports",
+      "name": "Generar Reportes PDF, Word y Excel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [420, 240]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://backend:8000/api/v1/n8n/webhook/alert",
+        "jsonParameters": true,
+        "bodyParametersJson": "={\n  \"workflow_id\": \"WF-05\",\n  \"event\": \"reportes_diarios_generados\",\n  \"formats\": [\"PDF\", \"Word .docx\", \"Excel .xlsx\"],\n  \"timestamp\": new Date().toISOString()\n}"
+      },
+      "id": "node-audit-report",
+      "name": "Registrar Cierre en Auditoría",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 240]
+    }
+  ],
+  "connections": {
+    "Cierre Diario (23:30)": {
+      "main": [
+        [
+          {
+            "node": "Generar Reportes PDF, Word y Excel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar Reportes PDF, Word y Excel": {
+      "main": [
+        [
+          {
+            "node": "Registrar Cierre en Auditoría",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true
+}

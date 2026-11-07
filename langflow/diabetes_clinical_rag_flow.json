@@ -1,0 +1,64 @@
+{
+  "name": "Diabetes Clinical RAG & XAI Flow (LangFlow)",
+  "description": "Flujo visual interactivo para consulta de guías clínicas ADA 2024 / OMS y generación de explicaciones médicas a partir de probabilidades y valores SHAP.",
+  "data": {
+    "nodes": [
+      {
+        "id": "node-prompt-template",
+        "type": "PromptTemplate",
+        "position": { "x": 100, "y": 200 },
+        "data": {
+          "template": "Actúa como un asistente médico de salud pública. Dado el paciente con probabilidad {probability}% y factores SHAP {top_factors}, analiza la siguiente evidencia de guías clínicas:\n{context}\n\nGenera una explicación médica comprensible con advertencias de uso investigativo.",
+          "input_variables": ["probability", "top_factors", "context"]
+        }
+      },
+      {
+        "id": "node-clinical-retriever",
+        "type": "CustomComponent",
+        "position": { "x": 100, "y": 420 },
+        "data": {
+          "name": "ClinicalGuidelinesRetriever",
+          "corpus_source": "ADA Standards of Care in Diabetes 2024 / OMS Guidelines",
+          "k": 3
+        }
+      },
+      {
+        "id": "node-llm-chain",
+        "type": "LLMChain",
+        "position": { "x": 480, "y": 300 },
+        "data": {
+          "model_name": "clinical-rag-explainer-v1",
+          "temperature": 0.2
+        }
+      },
+      {
+        "id": "node-output-formatter",
+        "type": "ChatOutput",
+        "position": { "x": 820, "y": 300 },
+        "data": {
+          "disclaimer_required": true
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "node-prompt-template",
+        "target": "node-llm-chain",
+        "sourceHandle": "prompt",
+        "targetHandle": "prompt"
+      },
+      {
+        "source": "node-clinical-retriever",
+        "target": "node-prompt-template",
+        "sourceHandle": "docs",
+        "targetHandle": "context"
+      },
+      {
+        "source": "node-llm-chain",
+        "target": "node-output-formatter",
+        "sourceHandle": "text",
+        "targetHandle": "message"
+      }
+    ]
+  }
+}

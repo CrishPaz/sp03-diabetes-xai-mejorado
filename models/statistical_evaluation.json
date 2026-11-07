@@ -1,0 +1,590 @@
+{
+  "nhanes_2017_2018": {
+    "friedman_test": {
+      "statistic": 4.9697,
+      "p_value": 0.2904209322287365,
+      "significant_at_05": false,
+      "interpretation": "No se detectaron diferencias significativas globales entre los modelos (p >= 0.05)"
+    },
+    "wilcoxon_holm_pairwise": [
+      {
+        "model_a": "random_forest",
+        "model_b": "xgboost",
+        "statistic": 4.0,
+        "p_raw": 0.4375,
+        "p_holm": 1.0,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "random_forest",
+        "model_b": "tabnet",
+        "statistic": 4.0,
+        "p_raw": 0.4375,
+        "p_holm": 1.0,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "random_forest",
+        "model_b": "stacking_hybrid",
+        "statistic": 1.0,
+        "p_raw": 0.125,
+        "p_holm": 1.0,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "random_forest",
+        "model_b": "survival_risk_hybrid",
+        "statistic": 4.0,
+        "p_raw": 0.4375,
+        "p_holm": 1.0,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "xgboost",
+        "model_b": "tabnet",
+        "statistic": 3.0,
+        "p_raw": 0.3125,
+        "p_holm": 1.0,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "xgboost",
+        "model_b": "stacking_hybrid",
+        "statistic": 2.0,
+        "p_raw": 0.375,
+        "p_holm": 1.0,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "xgboost",
+        "model_b": "survival_risk_hybrid",
+        "statistic": 5.0,
+        "p_raw": 0.625,
+        "p_holm": 1.0,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "tabnet",
+        "model_b": "stacking_hybrid",
+        "statistic": 1.0,
+        "p_raw": 0.125,
+        "p_holm": 1.0,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "tabnet",
+        "model_b": "survival_risk_hybrid",
+        "statistic": 3.0,
+        "p_raw": 0.3125,
+        "p_holm": 1.0,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "stacking_hybrid",
+        "model_b": "survival_risk_hybrid",
+        "statistic": 4.0,
+        "p_raw": 0.4375,
+        "p_holm": 1.0,
+        "significant_at_05": false
+      }
+    ],
+    "mcnemar_pairwise": [
+      {
+        "model_a": "random_forest",
+        "model_b": "xgboost",
+        "contingency_b_c": {
+          "a_correct_b_error": 32,
+          "a_error_b_correct": 16
+        },
+        "chi2_statistic": 4.6875,
+        "p_value": 0.0304,
+        "significant_at_05": true
+      },
+      {
+        "model_a": "random_forest",
+        "model_b": "tabnet",
+        "contingency_b_c": {
+          "a_correct_b_error": 35,
+          "a_error_b_correct": 37
+        },
+        "chi2_statistic": 0.0139,
+        "p_value": 0.9062,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "random_forest",
+        "model_b": "stacking_hybrid",
+        "contingency_b_c": {
+          "a_correct_b_error": 13,
+          "a_error_b_correct": 29
+        },
+        "chi2_statistic": 5.3571,
+        "p_value": 0.0206,
+        "significant_at_05": true
+      },
+      {
+        "model_a": "random_forest",
+        "model_b": "survival_risk_hybrid",
+        "contingency_b_c": {
+          "a_correct_b_error": 16,
+          "a_error_b_correct": 12
+        },
+        "chi2_statistic": 0.3214,
+        "p_value": 0.5708,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "xgboost",
+        "model_b": "tabnet",
+        "contingency_b_c": {
+          "a_correct_b_error": 47,
+          "a_error_b_correct": 65
+        },
+        "chi2_statistic": 2.5804,
+        "p_value": 0.1082,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "xgboost",
+        "model_b": "stacking_hybrid",
+        "contingency_b_c": {
+          "a_correct_b_error": 27,
+          "a_error_b_correct": 59
+        },
+        "chi2_statistic": 11.1744,
+        "p_value": 0.0008,
+        "significant_at_05": true
+      },
+      {
+        "model_a": "xgboost",
+        "model_b": "survival_risk_hybrid",
+        "contingency_b_c": {
+          "a_correct_b_error": 5,
+          "a_error_b_correct": 17
+        },
+        "chi2_statistic": 5.5,
+        "p_value": 0.019,
+        "significant_at_05": true
+      },
+      {
+        "model_a": "tabnet",
+        "model_b": "stacking_hybrid",
+        "contingency_b_c": {
+          "a_correct_b_error": 9,
+          "a_error_b_correct": 23
+        },
+        "chi2_statistic": 5.2812,
+        "p_value": 0.0216,
+        "significant_at_05": true
+      },
+      {
+        "model_a": "tabnet",
+        "model_b": "survival_risk_hybrid",
+        "contingency_b_c": {
+          "a_correct_b_error": 49,
+          "a_error_b_correct": 43
+        },
+        "chi2_statistic": 0.2717,
+        "p_value": 0.6022,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "stacking_hybrid",
+        "model_b": "survival_risk_hybrid",
+        "contingency_b_c": {
+          "a_correct_b_error": 42,
+          "a_error_b_correct": 22
+        },
+        "chi2_statistic": 5.6406,
+        "p_value": 0.0175,
+        "significant_at_05": true
+      }
+    ],
+    "bootstrap_95_ci": {
+      "random_forest": {
+        "roc_auc_95_ci": [
+          0.9079,
+          0.9523
+        ],
+        "brier_score_95_ci": [
+          0.0643,
+          0.0853
+        ],
+        "f1_score_95_ci": [
+          0.6508,
+          0.7671
+        ],
+        "mcc_95_ci": [
+          0.5891,
+          0.7168
+        ]
+      },
+      "xgboost": {
+        "roc_auc_95_ci": [
+          0.9134,
+          0.9538
+        ],
+        "brier_score_95_ci": [
+          0.0739,
+          0.0958
+        ],
+        "f1_score_95_ci": [
+          0.6465,
+          0.7507
+        ],
+        "mcc_95_ci": [
+          0.5846,
+          0.7006
+        ]
+      },
+      "tabnet": {
+        "roc_auc_95_ci": [
+          0.9098,
+          0.9546
+        ],
+        "brier_score_95_ci": [
+          0.0582,
+          0.0813
+        ],
+        "f1_score_95_ci": [
+          0.5657,
+          0.7084
+        ],
+        "mcc_95_ci": [
+          0.5312,
+          0.6823
+        ]
+      },
+      "stacking_hybrid": {
+        "roc_auc_95_ci": [
+          0.9117,
+          0.9553
+        ],
+        "brier_score_95_ci": [
+          0.0538,
+          0.078
+        ],
+        "f1_score_95_ci": [
+          0.658,
+          0.7774
+        ],
+        "mcc_95_ci": [
+          0.6119,
+          0.7413
+        ]
+      },
+      "survival_risk_hybrid": {
+        "roc_auc_95_ci": [
+          0.9124,
+          0.9553
+        ],
+        "brier_score_95_ci": [
+          0.0676,
+          0.0896
+        ],
+        "f1_score_95_ci": [
+          0.6588,
+          0.7663
+        ],
+        "mcc_95_ci": [
+          0.5981,
+          0.7171
+        ]
+      }
+    }
+  },
+  "pima_indians": {
+    "friedman_test": {
+      "statistic": 10.08,
+      "p_value": 0.03910143984246804,
+      "significant_at_05": true,
+      "interpretation": "Existen diferencias estadísticamente significativas entre los modelos (p < 0.05)"
+    },
+    "wilcoxon_holm_pairwise": [
+      {
+        "model_a": "random_forest",
+        "model_b": "xgboost",
+        "statistic": 7.0,
+        "p_raw": 1.0,
+        "p_holm": 1.0,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "random_forest",
+        "model_b": "tabnet",
+        "statistic": 1.0,
+        "p_raw": 0.125,
+        "p_holm": 0.875,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "random_forest",
+        "model_b": "stacking_hybrid",
+        "statistic": 1.0,
+        "p_raw": 0.125,
+        "p_holm": 0.875,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "random_forest",
+        "model_b": "survival_risk_hybrid",
+        "statistic": 6.0,
+        "p_raw": 0.8125,
+        "p_holm": 1.0,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "xgboost",
+        "model_b": "tabnet",
+        "statistic": 0.0,
+        "p_raw": 0.0625,
+        "p_holm": 0.625,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "xgboost",
+        "model_b": "stacking_hybrid",
+        "statistic": 4.0,
+        "p_raw": 0.4375,
+        "p_holm": 1.0,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "xgboost",
+        "model_b": "survival_risk_hybrid",
+        "statistic": 6.0,
+        "p_raw": 0.75,
+        "p_holm": 1.0,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "tabnet",
+        "model_b": "stacking_hybrid",
+        "statistic": 0.0,
+        "p_raw": 0.0625,
+        "p_holm": 0.625,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "tabnet",
+        "model_b": "survival_risk_hybrid",
+        "statistic": 0.0,
+        "p_raw": 0.0625,
+        "p_holm": 0.625,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "stacking_hybrid",
+        "model_b": "survival_risk_hybrid",
+        "statistic": 5.0,
+        "p_raw": 0.625,
+        "p_holm": 1.0,
+        "significant_at_05": false
+      }
+    ],
+    "mcnemar_pairwise": [
+      {
+        "model_a": "random_forest",
+        "model_b": "xgboost",
+        "contingency_b_c": {
+          "a_correct_b_error": 3,
+          "a_error_b_correct": 2
+        },
+        "chi2_statistic": 0.0,
+        "p_value": 1.0,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "random_forest",
+        "model_b": "tabnet",
+        "contingency_b_c": {
+          "a_correct_b_error": 13,
+          "a_error_b_correct": 15
+        },
+        "chi2_statistic": 0.0357,
+        "p_value": 0.8501,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "random_forest",
+        "model_b": "stacking_hybrid",
+        "contingency_b_c": {
+          "a_correct_b_error": 5,
+          "a_error_b_correct": 6
+        },
+        "chi2_statistic": 0.0,
+        "p_value": 1.0,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "random_forest",
+        "model_b": "survival_risk_hybrid",
+        "contingency_b_c": {
+          "a_correct_b_error": 3,
+          "a_error_b_correct": 2
+        },
+        "chi2_statistic": 0.0,
+        "p_value": 1.0,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "xgboost",
+        "model_b": "tabnet",
+        "contingency_b_c": {
+          "a_correct_b_error": 14,
+          "a_error_b_correct": 17
+        },
+        "chi2_statistic": 0.129,
+        "p_value": 0.7194,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "xgboost",
+        "model_b": "stacking_hybrid",
+        "contingency_b_c": {
+          "a_correct_b_error": 7,
+          "a_error_b_correct": 9
+        },
+        "chi2_statistic": 0.0625,
+        "p_value": 0.8026,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "xgboost",
+        "model_b": "survival_risk_hybrid",
+        "contingency_b_c": {
+          "a_correct_b_error": 0,
+          "a_error_b_correct": 0
+        },
+        "chi2_statistic": 0.0,
+        "p_value": 1.0,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "tabnet",
+        "model_b": "stacking_hybrid",
+        "contingency_b_c": {
+          "a_correct_b_error": 9,
+          "a_error_b_correct": 8
+        },
+        "chi2_statistic": 0.0,
+        "p_value": 1.0,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "tabnet",
+        "model_b": "survival_risk_hybrid",
+        "contingency_b_c": {
+          "a_correct_b_error": 17,
+          "a_error_b_correct": 14
+        },
+        "chi2_statistic": 0.129,
+        "p_value": 0.7194,
+        "significant_at_05": false
+      },
+      {
+        "model_a": "stacking_hybrid",
+        "model_b": "survival_risk_hybrid",
+        "contingency_b_c": {
+          "a_correct_b_error": 9,
+          "a_error_b_correct": 7
+        },
+        "chi2_statistic": 0.0625,
+        "p_value": 0.8026,
+        "significant_at_05": false
+      }
+    ],
+    "bootstrap_95_ci": {
+      "random_forest": {
+        "roc_auc_95_ci": [
+          0.7713,
+          0.8993
+        ],
+        "brier_score_95_ci": [
+          0.1335,
+          0.1901
+        ],
+        "f1_score_95_ci": [
+          0.5865,
+          0.7761
+        ],
+        "mcc_95_ci": [
+          0.368,
+          0.6383
+        ]
+      },
+      "xgboost": {
+        "roc_auc_95_ci": [
+          0.774,
+          0.8993
+        ],
+        "brier_score_95_ci": [
+          0.1322,
+          0.1965
+        ],
+        "f1_score_95_ci": [
+          0.5999,
+          0.784
+        ],
+        "mcc_95_ci": [
+          0.3757,
+          0.6478
+        ]
+      },
+      "tabnet": {
+        "roc_auc_95_ci": [
+          0.7517,
+          0.8879
+        ],
+        "brier_score_95_ci": [
+          0.1304,
+          0.1918
+        ],
+        "f1_score_95_ci": [
+          0.5417,
+          0.7692
+        ],
+        "mcc_95_ci": [
+          0.3512,
+          0.6521
+        ]
+      },
+      "stacking_hybrid": {
+        "roc_auc_95_ci": [
+          0.7828,
+          0.9078
+        ],
+        "brier_score_95_ci": [
+          0.1169,
+          0.1816
+        ],
+        "f1_score_95_ci": [
+          0.5581,
+          0.7619
+        ],
+        "mcc_95_ci": [
+          0.3579,
+          0.6301
+        ]
+      },
+      "survival_risk_hybrid": {
+        "roc_auc_95_ci": [
+          0.7718,
+          0.9008
+        ],
+        "brier_score_95_ci": [
+          0.1317,
+          0.1921
+        ],
+        "f1_score_95_ci": [
+          0.5905,
+          0.7813
+        ],
+        "mcc_95_ci": [
+          0.367,
+          0.6356
+        ]
+      }
+    }
+  }
+}

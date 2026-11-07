@@ -1,0 +1,132 @@
+{
+  "nhanes_descriptive": {
+    "edad": {
+      "dm2_mean": 63.34,
+      "dm2_sd": 12.12,
+      "non_dm2_mean": 49.1,
+      "non_dm2_sd": 17.54,
+      "p_value": 9.4897344095522e-96
+    },
+    "imc": {
+      "dm2_mean": 32.42,
+      "dm2_sd": 7.9,
+      "non_dm2_mean": 29.43,
+      "non_dm2_sd": 7.19,
+      "p_value": 7.260416950441389e-26
+    },
+    "glucosa": {
+      "dm2_mean": 144.54,
+      "dm2_sd": 63.88,
+      "non_dm2_mean": 95.17,
+      "non_dm2_sd": 21.91,
+      "p_value": 6.290636977703688e-189
+    },
+    "hba1c": {
+      "dm2_mean": 7.41,
+      "dm2_sd": 1.63,
+      "non_dm2_mean": 5.57,
+      "non_dm2_sd": 0.64,
+      "p_value": 1.1120093434741231e-301
+    },
+    "presion_sistolica": {
+      "dm2_mean": 132.82,
+      "dm2_sd": 19.72,
+      "non_dm2_mean": 125.25,
+      "non_dm2_sd": 19.0,
+      "p_value": 7.142746176326759e-24
+    },
+    "presion_diastolica": {
+      "dm2_mean": 71.1,
+      "dm2_sd": 11.3,
+      "non_dm2_mean": 72.97,
+      "non_dm2_sd": 11.87,
+      "p_value": 0.0006462209230983632
+    },
+    "colesterol_total": {
+      "dm2_mean": 174.91,
+      "dm2_sd": 44.99,
+      "non_dm2_mean": 190.83,
+      "non_dm2_sd": 40.15,
+      "p_value": 3.2241246991680763e-26
+    },
+    "colesterol_hdl": {
+      "dm2_mean": 48.03,
+      "dm2_sd": 13.63,
+      "non_dm2_mean": 54.22,
+      "non_dm2_sd": 15.84,
+      "p_value": 8.358356642140778e-29
+    },
+    "trigliceridos": {
+      "dm2_mean": 178.07,
+      "dm2_sd": 138.62,
+      "non_dm2_mean": 139.9,
+      "non_dm2_sd": 109.26,
+      "p_value": 4.151234348080797e-32
+    },
+    "antecedente_familiar_diabetes": {
+      "dm2_mean": 0.72,
+      "dm2_sd": 0.45,
+      "non_dm2_mean": 0.43,
+      "non_dm2_sd": 0.5,
+      "p_value": 1.9065008731984154e-49
+    },
+    "antecedente_hipertension": {
+      "dm2_mean": 0.69,
+      "dm2_sd": 0.46,
+      "non_dm2_mean": 0.32,
+      "non_dm2_sd": 0.47,
+      "p_value": 1.1966934423115093e-82
+    },
+    "tratamiento_antihipertensivo": {
+      "dm2_mean": 0.67,
+      "dm2_sd": 0.47,
+      "non_dm2_mean": 0.29,
+      "non_dm2_sd": 0.45,
+      "p_value": 6.548697716137578e-94
+    }
+  },
+  "bootstrap_ci": {
+    "nhanes_2017_2018": {
+      "xgboost": {
+        "auc_ci_lower": 0.9114,
+        "auc_ci_upper": 0.9534
+      },
+      "random_forest": {
+        "auc_ci_lower": 0.9081,
+        "auc_ci_upper": 0.9521
+      },
+      "tabnet": {
+        "auc_ci_lower": 0.9102,
+        "auc_ci_upper": 0.9522
+      },
+      "logistic_regression": {
+        "auc_ci_lower": 0.8996,
+        "auc_ci_upper": 0.9485
+      },
+      "pval_xgb_vs_random_forest": 0.5933,
+      "pval_xgb_vs_tabnet": 0.64,
+      "pval_xgb_vs_logistic_regression": 0.0733
+    },
+    "pima_indians": {
+      "xgboost": {
+        "auc_ci_lower": 0.7592,
+        "auc_ci_upper": 0.8909
+      },
+      "random_forest": {
+        "auc_ci_lower": 0.758,
+        "auc_ci_upper": 0.894
+      },
+      "tabnet": {
+        "auc_ci_lower": 0.7545,
+        "auc_ci_upper": 0.8897
+      },
+      "logistic_regression": {
+        "auc_ci_lower": 0.7766,
+        "auc_ci_upper": 0.9067
+      },
+      "pval_xgb_vs_random_forest": 0.87,
+      "pval_xgb_vs_tabnet": 0.7433,
+      "pval_xgb_vs_logistic_regression": 0.5667
+    }
+  }
+}

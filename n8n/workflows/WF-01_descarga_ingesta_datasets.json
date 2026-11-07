@@ -1,0 +1,100 @@
+{
+  "name": "WF-01: Descarga e Ingesta Periódica de Datasets Clínicos y Epidemiológicos",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtHour": 6,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      },
+      "id": "node-trigger-schedule",
+      "name": "Schedule Trigger (Semanal)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [180, 240]
+    },
+    {
+      "parameters": {
+        "url": "http://backend:8000/sample-csv/nhanes_test",
+        "options": {}
+      },
+      "id": "node-http-download",
+      "name": "HTTP Request: Descargar Lote Clínico",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [400, 240]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://backend:8000/predict-batch",
+        "sendBinaryData": true,
+        "binaryPropertyName": "data",
+        "options": {}
+      },
+      "id": "node-http-ingest-api",
+      "name": "FastAPI: Ingestar y Predecir Lote",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [640, 240]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://backend:8000/api/v1/n8n/webhook/alert",
+        "jsonParameters": true,
+        "bodyParametersJson": "={\n  \"workflow_id\": \"WF-01\",\n  \"event\": \"ingesta_completada\",\n  \"total_rows\": $json.total_rows_processed,\n  \"high_risk_count\": $json.high_risk_count,\n  \"timestamp\": new Date().toISOString()\n}"
+      },
+      "id": "node-notify-status",
+      "name": "Notificar Ingesta a Auditoría",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [880, 240]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger (Semanal)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request: Descargar Lote Clínico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request: Descargar Lote Clínico": {
+      "main": [
+        [
+          {
+            "node": "FastAPI: Ingestar y Predecir Lote",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FastAPI: Ingestar y Predecir Lote": {
+      "main": [
+        [
+          {
+            "node": "Notificar Ingesta a Auditoría",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

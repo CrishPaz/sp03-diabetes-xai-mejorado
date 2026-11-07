@@ -1,0 +1,65 @@
+{
+  "name": "WF-02: Limpieza, Control de Calidad y Detección de Faltantes sin Fuga",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wf02-data-quality",
+        "options": {}
+      },
+      "id": "node-webhook-wf02",
+      "name": "Webhook Ingesta Bruta",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [180, 240]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Control de rangos fisiológicos y verificación de consistencia clínica\nconst rows = $input.all();\nconst validated = [];\nconst anomalies = [];\n\nfor (const item of rows) {\n  const d = item.json;\n  let isValid = true;\n  let reason = '';\n  \n  if (d.presion_diastolica && d.presion_sistolica && d.presion_diastolica >= d.presion_sistolica) {\n    isValid = false;\n    reason = 'Inconsistencia: PA diastolica >= sistolica';\n  }\n  if (d.hba1c && (d.hba1c < 3.0 || d.hba1c > 20.0)) {\n    isValid = false;\n    reason = 'HbA1c fuera de rango biologico (3.0 - 20.0%)';\n  }\n  if (d.glucosa && (d.glucosa < 30 || d.glucosa > 600)) {\n    isValid = false;\n    reason = 'Glucosa fuera de rango fisiologico (30 - 600 mg/dL)';\n  }\n  \n  if (isValid) {\n    validated.push({ json: { ...d, quality_status: 'VALIDADO' } });\n  } else {\n    anomalies.push({ json: { ...d, quality_status: 'ANOMALIA', reason } });\n  }\n}\n\nreturn { validated, anomalies };"
+      },
+      "id": "node-code-validation",
+      "name": "Reglas de Calidad y Consistencia",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [420, 240]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://backend:8000/api/v1/n8n/webhook/alert",
+        "jsonParameters": true,
+        "bodyParametersJson": "={\n  \"workflow_id\": \"WF-02\",\n  \"event\": \"control_calidad_ejecutado\",\n  \"anomalies_detected\": $('Reglas de Calidad y Consistencia').item.json.anomalies?.length || 0,\n  \"timestamp\": new Date().toISOString()\n}"
+      },
+      "id": "node-post-audit",
+      "name": "Registrar en Auditoría",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 240]
+    }
+  ],
+  "connections": {
+    "Webhook Ingesta Bruta": {
+      "main": [
+        [
+          {
+            "node": "Reglas de Calidad y Consistencia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reglas de Calidad y Consistencia": {
+      "main": [
+        [
+          {
+            "node": "Registrar en Auditoría",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true
+}

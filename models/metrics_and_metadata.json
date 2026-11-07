@@ -1,0 +1,4354 @@
+{
+  "project_code": "SP-03",
+  "scientific_title": "Multimodal Explainable Artificial Intelligence for Early Prediction of Type 2 Diabetes and Its Long-Term Complications",
+  "updated_at_utc": "2026-11-04T17:22:26.950449+00:00",
+  "random_seed": 42,
+  "architecture_summary": {
+    "individual_models_count": 3,
+    "hybrid_models_count": 2,
+    "total_models": 5,
+    "models_list": [
+      "random_forest",
+      "xgboost",
+      "tabnet",
+      "stacking_hybrid",
+      "survival_risk_hybrid"
+    ]
+  },
+  "cohorts": {
+    "nhanes_2017_2018": {
+      "dataset_id": "nhanes_2017_2018",
+      "audit": {
+        "dataset_id": "nhanes_2017_2018",
+        "name": "CDC NHANES 2017–2018 (Cohorte Clínica Nacional de EE. UU.)",
+        "period": "Ciclo 2017–2018 (NCHS / CDC)",
+        "license": "Dominio Público de EE. UU. (CC0 1.0 / Public Domain US Government Work)",
+        "source_url": "https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2017",
+        "raw_participants_count": 9254,
+        "adults_evaluated_count": 5565,
+        "final_analytic_cohort_count": 4829,
+        "positive_cases": 772,
+        "negative_cases": 4057,
+        "prevalence_rate": 0.1599,
+        "duplicate_patient_ids": 0,
+        "duplicate_feature_rows": 0,
+        "missing_values_documented": {
+          "edad": 0,
+          "imc": 0,
+          "glucosa": 0,
+          "hba1c": 0,
+          "presion_sistolica": 523,
+          "presion_diastolica": 558,
+          "colesterol_total": 4,
+          "colesterol_hdl": 4,
+          "trigliceridos": 0,
+          "antecedente_familiar_diabetes": 0,
+          "antecedente_hipertension": 0,
+          "tratamiento_antihipertensivo": 0
+        },
+        "imputation_strategy": "Imputación por mediana ajustada exclusivamente sobre el conjunto de entrenamiento (SimpleImputer(strategy='median') dentro del pipeline de cada partición) para evitar fuga de información (data leakage) hacia validación o prueba.",
+        "leakage_prevention_notes": [
+          "Partición agrupada por identificador único de paciente (SEQN) mediante StratifiedGroupKFold.",
+          "Exclusión explícita de variables post-diagnóstico de tratamiento hipoglucemiante (DIQ050 insulina, DIQ070 antidiabéticos orales) que causarían fuga directa de la etiqueta objetivo.",
+          "Exclusión de variables demográficas sensibles (RIAGENDR sexo, RIDRETH1 raza/etnia, INDFMPIR nivel socioeconómico) de la matriz predictora X para evitar discriminación algorítmica; se conservan únicamente para auditar equidad por subgrupos."
+        ],
+        "target_definition": "Diagnóstico médico confirmado de Diabetes Mellitus Tipo 2 (DIQ010 == 1 en cuestionario clínico NHANES)."
+      },
+      "split_summary": {
+        "train_patients": 3863,
+        "test_patients_isolated": 966,
+        "patient_overlap_count": 0
+      },
+      "features": [
+        {
+          "name": "edad",
+          "source_col": "RIDAGEYR",
+          "label": "Edad",
+          "unit": "años",
+          "category": "Demografía clínica",
+          "min": 20.0,
+          "max": 85.0,
+          "step": 1.0,
+          "default": 52.0,
+          "normal_range": "20 – 80 años",
+          "description": "Edad cronológica del paciente adulto (≥ 20 años)."
+        },
+        {
+          "name": "imc",
+          "source_col": "BMXBMI",
+          "label": "Índice de Masa Corporal (IMC)",
+          "unit": "kg/m²",
+          "category": "Antropometría",
+          "min": 14.0,
+          "max": 65.0,
+          "step": 0.1,
+          "default": 29.4,
+          "normal_range": "18.5 – 24.9 kg/m²",
+          "description": "Relación peso/talla al cuadrado medida en examen físico MEC."
+        },
+        {
+          "name": "glucosa",
+          "source_col": "LBXSGL",
+          "label": "Glucosa sérica",
+          "unit": "mg/dL",
+          "category": "Biomarcadores glucémicos",
+          "min": 45.0,
+          "max": 450.0,
+          "step": 1.0,
+          "default": 104.0,
+          "normal_range": "70 – 99 mg/dL (ayunas)",
+          "description": "Concentración de glucosa en suero refrigerado (panel bioquímico)."
+        },
+        {
+          "name": "hba1c",
+          "source_col": "LBXGH",
+          "label": "Hemoglobina Glicosilada (HbA1c)",
+          "unit": "%",
+          "category": "Biomarcadores glucémicos",
+          "min": 3.5,
+          "max": 16.0,
+          "step": 0.1,
+          "default": 5.7,
+          "normal_range": "< 5.7 % (Normal) | 5.7–6.4 % (Prediabetes)",
+          "description": "Porcentaje de hemoglobina glicosilada que refleja glucemia media de 8-12 semanas."
+        },
+        {
+          "name": "presion_sistolica",
+          "source_col": "BPXSY1",
+          "label": "Presión Arterial Sistólica",
+          "unit": "mmHg",
+          "category": "Hemodinámica",
+          "min": 75.0,
+          "max": 240.0,
+          "step": 1.0,
+          "default": 126.0,
+          "normal_range": "< 120 mmHg",
+          "description": "Presión arterial sistólica braquial en reposo."
+        },
+        {
+          "name": "presion_diastolica",
+          "source_col": "BPXDI1",
+          "label": "Presión Arterial Diastólica",
+          "unit": "mmHg",
+          "category": "Hemodinámica",
+          "min": 40.0,
+          "max": 140.0,
+          "step": 1.0,
+          "default": 74.0,
+          "normal_range": "< 80 mmHg",
+          "description": "Presión arterial diastólica braquial en reposo."
+        },
+        {
+          "name": "colesterol_total",
+          "source_col": "LBXTC",
+          "label": "Colesterol Total",
+          "unit": "mg/dL",
+          "category": "Perfil lipídico",
+          "min": 80.0,
+          "max": 450.0,
+          "step": 1.0,
+          "default": 189.0,
+          "normal_range": "< 200 mg/dL",
+          "description": "Colesterol sérico total medido enzimáticamente."
+        },
+        {
+          "name": "colesterol_hdl",
+          "source_col": "LBDHDD",
+          "label": "Colesterol HDL",
+          "unit": "mg/dL",
+          "category": "Perfil lipídico",
+          "min": 15.0,
+          "max": 130.0,
+          "step": 1.0,
+          "default": 51.0,
+          "normal_range": "≥ 40 mg/dL (H) | ≥ 50 mg/dL (M)",
+          "description": "Colesterol de lipoproteínas de alta densidad (factor protector)."
+        },
+        {
+          "name": "trigliceridos",
+          "source_col": "LBXSTR",
+          "label": "Triglicéridos Séricos",
+          "unit": "mg/dL",
+          "category": "Perfil lipídico",
+          "min": 25.0,
+          "max": 900.0,
+          "step": 1.0,
+          "default": 138.0,
+          "normal_range": "< 150 mg/dL",
+          "description": "Triglicéridos séricos asociados a resistencia a la insulina."
+        },
+        {
+          "name": "antecedente_familiar_diabetes",
+          "source_col": "MCQ300C",
+          "label": "Antecedente Familiar de Diabetes",
+          "unit": "binario (0/1)",
+          "category": "Antecedentes y Tratamientos",
+          "type": "boolean",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 1.0,
+          "default": 0.0,
+          "normal_range": "0 = No, 1 = Sí",
+          "description": "Parientes biológicos cercanos diagnosticados con diabetes mellitus (MCQ300C)."
+        },
+        {
+          "name": "antecedente_hipertension",
+          "source_col": "BPQ020",
+          "label": "Antecedente de Hipertensión Arterial",
+          "unit": "binario (0/1)",
+          "category": "Antecedentes y Tratamientos",
+          "type": "boolean",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 1.0,
+          "default": 0.0,
+          "normal_range": "0 = No, 1 = Sí",
+          "description": "Diagnóstico médico previo de hipertensión arterial (BPQ020)."
+        },
+        {
+          "name": "tratamiento_antihipertensivo",
+          "source_col": "BPQ040A",
+          "label": "En Tratamiento Antihipertensivo",
+          "unit": "binario (0/1)",
+          "category": "Antecedentes y Tratamientos",
+          "type": "boolean",
+          "min": 0.0,
+          "max": 1.0,
+          "step": 1.0,
+          "default": 0.0,
+          "normal_range": "0 = No, 1 = Sí",
+          "description": "Uso actual de medicación prescrita para control de presión arterial (BPQ040A)."
+        }
+      ],
+      "optuna_hyperparameters": {
+        "n_estimators": 225,
+        "max_depth": 3,
+        "learning_rate": 0.02679909904436604,
+        "subsample": 0.7458511274633584,
+        "colsample_bytree": 0.7760605607398844,
+        "reg_lambda": 3.0990257265289514,
+        "scale_pos_weight": 5.251,
+        "eval_metric": "logloss",
+        "random_state": 42,
+        "n_jobs": -1
+      },
+      "global_shap_importance": [
+        {
+          "feature": "hba1c",
+          "label": "Hemoglobina Glicosilada (HbA1c)",
+          "mean_abs_shap": 1.5656
+        },
+        {
+          "feature": "edad",
+          "label": "Edad",
+          "mean_abs_shap": 0.4963
+        },
+        {
+          "feature": "glucosa",
+          "label": "Glucosa sérica",
+          "mean_abs_shap": 0.4214
+        },
+        {
+          "feature": "colesterol_total",
+          "label": "Colesterol Total",
+          "mean_abs_shap": 0.3396
+        },
+        {
+          "feature": "antecedente_familiar_diabetes",
+          "label": "Antecedente Familiar de Diabetes",
+          "mean_abs_shap": 0.2256
+        },
+        {
+          "feature": "tratamiento_antihipertensivo",
+          "label": "En Tratamiento Antihipertensivo",
+          "mean_abs_shap": 0.1641
+        },
+        {
+          "feature": "imc",
+          "label": "Índice de Masa Corporal (IMC)",
+          "mean_abs_shap": 0.1536
+        },
+        {
+          "feature": "antecedente_hipertension",
+          "label": "Antecedente de Hipertensión Arterial",
+          "mean_abs_shap": 0.1428
+        },
+        {
+          "feature": "presion_diastolica",
+          "label": "Presión Arterial Diastólica",
+          "mean_abs_shap": 0.0951
+        },
+        {
+          "feature": "colesterol_hdl",
+          "label": "Colesterol HDL",
+          "mean_abs_shap": 0.0845
+        },
+        {
+          "feature": "trigliceridos",
+          "label": "Triglicéridos Séricos",
+          "mean_abs_shap": 0.0639
+        },
+        {
+          "feature": "presion_sistolica",
+          "label": "Presión Arterial Sistólica",
+          "mean_abs_shap": 0.0497
+        }
+      ],
+      "models": {
+        "xgboost": {
+          "model_id": "xgboost",
+          "name": "XGBoost Classifier (Optuna Tuned)",
+          "family": "Individual 1: Boosting Regularizado con Búsqueda TPE",
+          "role": "Modelo Individual Principal (Caso03)",
+          "hyperparameters": {
+            "n_estimators": 225,
+            "max_depth": 3,
+            "learning_rate": 0.02679909904436604,
+            "subsample": 0.7458511274633584,
+            "colsample_bytree": 0.7760605607398844,
+            "reg_lambda": 3.0990257265289514,
+            "scale_pos_weight": 5.251,
+            "eval_metric": "logloss",
+            "random_state": 42,
+            "n_jobs": -1
+          },
+          "cv_5fold": {
+            "roc_auc_mean": 0.9479,
+            "roc_auc_std": 0.0063
+          },
+          "test_metrics": {
+            "threshold": 0.5,
+            "confusion_matrix": {
+              "tn": 728,
+              "fp": 84,
+              "fn": 26,
+              "tp": 128
+            },
+            "sensitivity": 0.8312,
+            "specificity": 0.8966,
+            "precision": 0.6038,
+            "npv": 0.9655,
+            "f1": 0.6995,
+            "accuracy": 0.8861,
+            "balanced_accuracy": 0.8639,
+            "roc_auc": 0.9346,
+            "pr_auc": 0.7657,
+            "brier_score": 0.0848,
+            "roc_curve": [
+              {
+                "fpr": 0.0,
+                "tpr": 0.0
+              },
+              {
+                "fpr": 0.0012,
+                "tpr": 0.1623
+              },
+              {
+                "fpr": 0.0037,
+                "tpr": 0.2078
+              },
+              {
+                "fpr": 0.0062,
+                "tpr": 0.3247
+              },
+              {
+                "fpr": 0.0086,
+                "tpr": 0.3636
+              },
+              {
+                "fpr": 0.0135,
+                "tpr": 0.3831
+              },
+              {
+                "fpr": 0.016,
+                "tpr": 0.4545
+              },
+              {
+                "fpr": 0.0185,
+                "tpr": 0.5065
+              },
+              {
+                "fpr": 0.0209,
+                "tpr": 0.5195
+              },
+              {
+                "fpr": 0.0246,
+                "tpr": 0.5519
+              },
+              {
+                "fpr": 0.0271,
+                "tpr": 0.5974
+              },
+              {
+                "fpr": 0.032,
+                "tpr": 0.6234
+              },
+              {
+                "fpr": 0.0406,
+                "tpr": 0.6364
+              },
+              {
+                "fpr": 0.0443,
+                "tpr": 0.6623
+              },
+              {
+                "fpr": 0.0468,
+                "tpr": 0.6818
+              },
+              {
+                "fpr": 0.0517,
+                "tpr": 0.7013
+              },
+              {
+                "fpr": 0.0567,
+                "tpr": 0.7143
+              },
+              {
+                "fpr": 0.0628,
+                "tpr": 0.7273
+              },
+              {
+                "fpr": 0.069,
+                "tpr": 0.7532
+              },
+              {
+                "fpr": 0.0751,
+                "tpr": 0.7662
+              },
+              {
+                "fpr": 0.08,
+                "tpr": 0.7857
+              },
+              {
+                "fpr": 0.0874,
+                "tpr": 0.8052
+              },
+              {
+                "fpr": 0.1034,
+                "tpr": 0.8247
+              },
+              {
+                "fpr": 0.1268,
+                "tpr": 0.8442
+              },
+              {
+                "fpr": 0.1355,
+                "tpr": 0.8571
+              },
+              {
+                "fpr": 0.1392,
+                "tpr": 0.8701
+              },
+              {
+                "fpr": 0.1502,
+                "tpr": 0.8896
+              },
+              {
+                "fpr": 0.1539,
+                "tpr": 0.9091
+              },
+              {
+                "fpr": 0.1847,
+                "tpr": 0.9221
+              },
+              {
+                "fpr": 0.2635,
+                "tpr": 0.9351
+              },
+              {
+                "fpr": 0.2771,
+                "tpr": 0.9481
+              },
+              {
+                "fpr": 0.2956,
+                "tpr": 0.961
+              },
+              {
+                "fpr": 0.42,
+                "tpr": 0.974
+              },
+              {
+                "fpr": 0.5012,
+                "tpr": 0.987
+              },
+              {
+                "fpr": 1.0,
+                "tpr": 1.0
+              }
+            ],
+            "calibration_curve": [
+              {
+                "prob_pred": 0.0451,
+                "prob_true": 0.0112
+              },
+              {
+                "prob_pred": 0.1788,
+                "prob_true": 0.0488
+              },
+              {
+                "prob_pred": 0.3007,
+                "prob_true": 0.0889
+              },
+              {
+                "prob_pred": 0.4317,
+                "prob_true": 0.2
+              },
+              {
+                "prob_pred": 0.5498,
+                "prob_true": 0.2821
+              },
+              {
+                "prob_pred": 0.6853,
+                "prob_true": 0.4062
+              },
+              {
+                "prob_pred": 0.8251,
+                "prob_true": 0.561
+              },
+              {
+                "prob_pred": 0.9503,
+                "prob_true": 0.81
+              }
+            ]
+          },
+          "subgroup_fairness": [
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "20-39 años",
+              "n": 271,
+              "prevalence": 0.0406,
+              "predicted_positive_rate": 0.0332,
+              "roc_auc": 0.878,
+              "sensitivity": 0.5455,
+              "specificity": 0.9885,
+              "brier_score": 0.0289
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "40-59 años",
+              "n": 315,
+              "prevalence": 0.127,
+              "predicted_positive_rate": 0.1587,
+              "roc_auc": 0.9474,
+              "sensitivity": 0.775,
+              "specificity": 0.9309,
+              "brier_score": 0.0664
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "≥60 años",
+              "n": 380,
+              "prevalence": 0.2711,
+              "predicted_positive_rate": 0.4026,
+              "roc_auc": 0.9102,
+              "sensitivity": 0.8835,
+              "specificity": 0.7762,
+              "brier_score": 0.1398
+            },
+            {
+              "dimension": "Sexo Biológico",
+              "subgroup": "Femenino",
+              "n": 524,
+              "prevalence": 0.1431,
+              "predicted_positive_rate": 0.1832,
+              "roc_auc": 0.9144,
+              "sensitivity": 0.76,
+              "specificity": 0.9131,
+              "brier_score": 0.0856
+            },
+            {
+              "dimension": "Sexo Biológico",
+              "subgroup": "Masculino",
+              "n": 442,
+              "prevalence": 0.1787,
+              "predicted_positive_rate": 0.2624,
+              "roc_auc": 0.9566,
+              "sensitivity": 0.8987,
+              "specificity": 0.876,
+              "brier_score": 0.0838
+            }
+          ]
+        },
+        "random_forest": {
+          "model_id": "random_forest",
+          "name": "Random Forest Classifier",
+          "family": "Individual 2: Ensamble Bagging Decorrelacionado",
+          "role": "Modelo Individual Comparativo (Caso03)",
+          "hyperparameters": {
+            "n_estimators": 220,
+            "max_depth": 8,
+            "min_samples_leaf": 5
+          },
+          "cv_5fold": {
+            "roc_auc_mean": 0.9467,
+            "roc_auc_std": 0.0043
+          },
+          "test_metrics": {
+            "threshold": 0.5,
+            "confusion_matrix": {
+              "tn": 758,
+              "fp": 54,
+              "fn": 40,
+              "tp": 114
+            },
+            "sensitivity": 0.7403,
+            "specificity": 0.9335,
+            "precision": 0.6786,
+            "npv": 0.9499,
+            "f1": 0.7081,
+            "accuracy": 0.9027,
+            "balanced_accuracy": 0.8369,
+            "roc_auc": 0.9323,
+            "pr_auc": 0.7599,
+            "brier_score": 0.0745,
+            "roc_curve": [
+              {
+                "fpr": 0.0,
+                "tpr": 0.0
+              },
+              {
+                "fpr": 0.0012,
+                "tpr": 0.0974
+              },
+              {
+                "fpr": 0.0037,
+                "tpr": 0.1494
+              },
+              {
+                "fpr": 0.0062,
+                "tpr": 0.2403
+              },
+              {
+                "fpr": 0.0086,
+                "tpr": 0.2727
+              },
+              {
+                "fpr": 0.0111,
+                "tpr": 0.3896
+              },
+              {
+                "fpr": 0.0135,
+                "tpr": 0.4351
+              },
+              {
+                "fpr": 0.016,
+                "tpr": 0.4675
+              },
+              {
+                "fpr": 0.0197,
+                "tpr": 0.4935
+              },
+              {
+                "fpr": 0.0222,
+                "tpr": 0.513
+              },
+              {
+                "fpr": 0.0246,
+                "tpr": 0.5584
+              },
+              {
+                "fpr": 0.0271,
+                "tpr": 0.6039
+              },
+              {
+                "fpr": 0.0308,
+                "tpr": 0.6364
+              },
+              {
+                "fpr": 0.0345,
+                "tpr": 0.6494
+              },
+              {
+                "fpr": 0.0419,
+                "tpr": 0.6623
+              },
+              {
+                "fpr": 0.0456,
+                "tpr": 0.6883
+              },
+              {
+                "fpr": 0.0542,
+                "tpr": 0.7078
+              },
+              {
+                "fpr": 0.0603,
+                "tpr": 0.7338
+              },
+              {
+                "fpr": 0.0677,
+                "tpr": 0.7532
+              },
+              {
+                "fpr": 0.0714,
+                "tpr": 0.7662
+              },
+              {
+                "fpr": 0.0764,
+                "tpr": 0.7922
+              },
+              {
+                "fpr": 0.0874,
+                "tpr": 0.8052
+              },
+              {
+                "fpr": 0.0973,
+                "tpr": 0.8182
+              },
+              {
+                "fpr": 0.1121,
+                "tpr": 0.8312
+              },
+              {
+                "fpr": 0.1195,
+                "tpr": 0.8442
+              },
+              {
+                "fpr": 0.1355,
+                "tpr": 0.8636
+              },
+              {
+                "fpr": 0.1478,
+                "tpr": 0.8831
+              },
+              {
+                "fpr": 0.1539,
+                "tpr": 0.9026
+              },
+              {
+                "fpr": 0.1761,
+                "tpr": 0.9156
+              },
+              {
+                "fpr": 0.2143,
+                "tpr": 0.9286
+              },
+              {
+                "fpr": 0.2746,
+                "tpr": 0.9416
+              },
+              {
+                "fpr": 0.3067,
+                "tpr": 0.9545
+              },
+              {
+                "fpr": 0.4791,
+                "tpr": 0.974
+              },
+              {
+                "fpr": 0.5148,
+                "tpr": 0.987
+              },
+              {
+                "fpr": 1.0,
+                "tpr": 1.0
+              }
+            ],
+            "calibration_curve": [
+              {
+                "prob_pred": 0.0441,
+                "prob_true": 0.0113
+              },
+              {
+                "prob_pred": 0.1804,
+                "prob_true": 0.053
+              },
+              {
+                "prob_pred": 0.3026,
+                "prob_true": 0.1887
+              },
+              {
+                "prob_pred": 0.4373,
+                "prob_true": 0.2623
+              },
+              {
+                "prob_pred": 0.5624,
+                "prob_true": 0.3714
+              },
+              {
+                "prob_pred": 0.6798,
+                "prob_true": 0.5714
+              },
+              {
+                "prob_pred": 0.8097,
+                "prob_true": 0.7097
+              },
+              {
+                "prob_pred": 0.9349,
+                "prob_true": 0.8514
+              }
+            ]
+          },
+          "subgroup_fairness": [
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "20-39 años",
+              "n": 271,
+              "prevalence": 0.0406,
+              "predicted_positive_rate": 0.0295,
+              "roc_auc": 0.8507,
+              "sensitivity": 0.4545,
+              "specificity": 0.9885,
+              "brier_score": 0.027
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "40-59 años",
+              "n": 315,
+              "prevalence": 0.127,
+              "predicted_positive_rate": 0.1238,
+              "roc_auc": 0.9435,
+              "sensitivity": 0.65,
+              "specificity": 0.9527,
+              "brier_score": 0.0612
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "≥60 años",
+              "n": 380,
+              "prevalence": 0.2711,
+              "predicted_positive_rate": 0.3184,
+              "roc_auc": 0.9102,
+              "sensitivity": 0.8058,
+              "specificity": 0.8628,
+              "brier_score": 0.1195
+            },
+            {
+              "dimension": "Sexo Biológico",
+              "subgroup": "Femenino",
+              "n": 524,
+              "prevalence": 0.1431,
+              "predicted_positive_rate": 0.1489,
+              "roc_auc": 0.9113,
+              "sensitivity": 0.6667,
+              "specificity": 0.9376,
+              "brier_score": 0.0776
+            },
+            {
+              "dimension": "Sexo Biológico",
+              "subgroup": "Masculino",
+              "n": 442,
+              "prevalence": 0.1787,
+              "predicted_positive_rate": 0.2036,
+              "roc_auc": 0.9552,
+              "sensitivity": 0.8101,
+              "specificity": 0.9284,
+              "brier_score": 0.0709
+            }
+          ]
+        },
+        "tabnet": {
+          "model_id": "tabnet",
+          "name": "TabNet (Attentive Deep Learning)",
+          "family": "Individual 3: Red Neuronal con Atención Secuencial",
+          "role": "Modelo Individual Deep Learning Tabular (Caso03)",
+          "hyperparameters": {
+            "n_d": 8,
+            "n_a": 8,
+            "n_steps": 3,
+            "gamma": 1.3,
+            "max_epochs": 45
+          },
+          "cv_5fold": {
+            "roc_auc_mean": 0.942,
+            "roc_auc_std": 0.0117
+          },
+          "test_metrics": {
+            "threshold": 0.5,
+            "confusion_matrix": {
+              "tn": 793,
+              "fp": 19,
+              "fn": 73,
+              "tp": 81
+            },
+            "sensitivity": 0.526,
+            "specificity": 0.9766,
+            "precision": 0.81,
+            "npv": 0.9157,
+            "f1": 0.6378,
+            "accuracy": 0.9048,
+            "balanced_accuracy": 0.7513,
+            "roc_auc": 0.9319,
+            "pr_auc": 0.7581,
+            "brier_score": 0.0702,
+            "roc_curve": [
+              {
+                "fpr": 0.0,
+                "tpr": 0.0
+              },
+              {
+                "fpr": 0.0012,
+                "tpr": 0.1364
+              },
+              {
+                "fpr": 0.0049,
+                "tpr": 0.1948
+              },
+              {
+                "fpr": 0.0074,
+                "tpr": 0.2338
+              },
+              {
+                "fpr": 0.0099,
+                "tpr": 0.2987
+              },
+              {
+                "fpr": 0.0123,
+                "tpr": 0.3766
+              },
+              {
+                "fpr": 0.0172,
+                "tpr": 0.4156
+              },
+              {
+                "fpr": 0.0197,
+                "tpr": 0.5
+              },
+              {
+                "fpr": 0.0234,
+                "tpr": 0.5325
+              },
+              {
+                "fpr": 0.0283,
+                "tpr": 0.5584
+              },
+              {
+                "fpr": 0.0333,
+                "tpr": 0.5714
+              },
+              {
+                "fpr": 0.0369,
+                "tpr": 0.6039
+              },
+              {
+                "fpr": 0.0431,
+                "tpr": 0.6429
+              },
+              {
+                "fpr": 0.0468,
+                "tpr": 0.6558
+              },
+              {
+                "fpr": 0.0517,
+                "tpr": 0.6948
+              },
+              {
+                "fpr": 0.0554,
+                "tpr": 0.7078
+              },
+              {
+                "fpr": 0.0603,
+                "tpr": 0.7273
+              },
+              {
+                "fpr": 0.0628,
+                "tpr": 0.7597
+              },
+              {
+                "fpr": 0.0739,
+                "tpr": 0.7727
+              },
+              {
+                "fpr": 0.085,
+                "tpr": 0.7857
+              },
+              {
+                "fpr": 0.0874,
+                "tpr": 0.7987
+              },
+              {
+                "fpr": 0.101,
+                "tpr": 0.8117
+              },
+              {
+                "fpr": 0.1059,
+                "tpr": 0.8377
+              },
+              {
+                "fpr": 0.1281,
+                "tpr": 0.8701
+              },
+              {
+                "fpr": 0.1429,
+                "tpr": 0.8831
+              },
+              {
+                "fpr": 0.1847,
+                "tpr": 0.8961
+              },
+              {
+                "fpr": 0.2155,
+                "tpr": 0.9156
+              },
+              {
+                "fpr": 0.2352,
+                "tpr": 0.9286
+              },
+              {
+                "fpr": 0.2919,
+                "tpr": 0.9416
+              },
+              {
+                "fpr": 0.3658,
+                "tpr": 0.961
+              },
+              {
+                "fpr": 0.4101,
+                "tpr": 0.974
+              },
+              {
+                "fpr": 0.7574,
+                "tpr": 0.987
+              },
+              {
+                "fpr": 0.8325,
+                "tpr": 0.9935
+              },
+              {
+                "fpr": 0.8522,
+                "tpr": 1.0
+              },
+              {
+                "fpr": 1.0,
+                "tpr": 1.0
+              }
+            ],
+            "calibration_curve": [
+              {
+                "prob_pred": 0.0201,
+                "prob_true": 0.0332
+              },
+              {
+                "prob_pred": 0.1758,
+                "prob_true": 0.275
+              },
+              {
+                "prob_pred": 0.3134,
+                "prob_true": 0.4884
+              },
+              {
+                "prob_pred": 0.4374,
+                "prob_true": 0.5333
+              },
+              {
+                "prob_pred": 0.5607,
+                "prob_true": 0.7308
+              },
+              {
+                "prob_pred": 0.7041,
+                "prob_true": 0.7778
+              },
+              {
+                "prob_pred": 0.801,
+                "prob_true": 0.8421
+              },
+              {
+                "prob_pred": 0.8998,
+                "prob_true": 0.9474
+              }
+            ]
+          },
+          "subgroup_fairness": [
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "20-39 años",
+              "n": 271,
+              "prevalence": 0.0406,
+              "predicted_positive_rate": 0.0185,
+              "roc_auc": 0.8476,
+              "sensitivity": 0.2727,
+              "specificity": 0.9923,
+              "brier_score": 0.028
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "40-59 años",
+              "n": 315,
+              "prevalence": 0.127,
+              "predicted_positive_rate": 0.0635,
+              "roc_auc": 0.9407,
+              "sensitivity": 0.45,
+              "specificity": 0.9927,
+              "brier_score": 0.0587
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "≥60 años",
+              "n": 380,
+              "prevalence": 0.2711,
+              "predicted_positive_rate": 0.1974,
+              "roc_auc": 0.9085,
+              "sensitivity": 0.5825,
+              "specificity": 0.9458,
+              "brier_score": 0.1098
+            },
+            {
+              "dimension": "Sexo Biológico",
+              "subgroup": "Femenino",
+              "n": 524,
+              "prevalence": 0.1431,
+              "predicted_positive_rate": 0.0782,
+              "roc_auc": 0.918,
+              "sensitivity": 0.4267,
+              "specificity": 0.98,
+              "brier_score": 0.071
+            },
+            {
+              "dimension": "Sexo Biológico",
+              "subgroup": "Masculino",
+              "n": 442,
+              "prevalence": 0.1787,
+              "predicted_positive_rate": 0.1335,
+              "roc_auc": 0.9465,
+              "sensitivity": 0.6203,
+              "specificity": 0.9725,
+              "brier_score": 0.0691
+            }
+          ]
+        },
+        "stacking_hybrid": {
+          "model_id": "stacking_hybrid",
+          "name": "Ensamble Híbrido Stacking Calibrado",
+          "family": "Híbrido 1: Meta-aprendizaje Calibrado sobre RF + XGB + TabNet",
+          "role": "Modelo Híbrido de Ensamble Multiarquitectura (Profesor)",
+          "hyperparameters": {
+            "meta_learner": "LogisticRegression L2",
+            "inputs": 3
+          },
+          "cv_5fold": {
+            "roc_auc_mean": 0.949,
+            "roc_auc_std": 0.0052
+          },
+          "test_metrics": {
+            "threshold": 0.5,
+            "confusion_matrix": {
+              "tn": 787,
+              "fp": 25,
+              "fn": 53,
+              "tp": 101
+            },
+            "sensitivity": 0.6558,
+            "specificity": 0.9692,
+            "precision": 0.8016,
+            "npv": 0.9369,
+            "f1": 0.7214,
+            "accuracy": 0.9193,
+            "balanced_accuracy": 0.8125,
+            "roc_auc": 0.935,
+            "pr_auc": 0.772,
+            "brier_score": 0.0655,
+            "roc_curve": [
+              {
+                "fpr": 0.0,
+                "tpr": 0.0
+              },
+              {
+                "fpr": 0.0012,
+                "tpr": 0.0649
+              },
+              {
+                "fpr": 0.0037,
+                "tpr": 0.2013
+              },
+              {
+                "fpr": 0.0074,
+                "tpr": 0.2662
+              },
+              {
+                "fpr": 0.0099,
+                "tpr": 0.3442
+              },
+              {
+                "fpr": 0.0111,
+                "tpr": 0.3766
+              },
+              {
+                "fpr": 0.0148,
+                "tpr": 0.4026
+              },
+              {
+                "fpr": 0.0172,
+                "tpr": 0.4545
+              },
+              {
+                "fpr": 0.0209,
+                "tpr": 0.5
+              },
+              {
+                "fpr": 0.0234,
+                "tpr": 0.5455
+              },
+              {
+                "fpr": 0.0283,
+                "tpr": 0.5584
+              },
+              {
+                "fpr": 0.0308,
+                "tpr": 0.6299
+              },
+              {
+                "fpr": 0.0345,
+                "tpr": 0.6623
+              },
+              {
+                "fpr": 0.0406,
+                "tpr": 0.6753
+              },
+              {
+                "fpr": 0.0443,
+                "tpr": 0.6883
+              },
+              {
+                "fpr": 0.0468,
+                "tpr": 0.7013
+              },
+              {
+                "fpr": 0.053,
+                "tpr": 0.7143
+              },
+              {
+                "fpr": 0.0579,
+                "tpr": 0.7468
+              },
+              {
+                "fpr": 0.0677,
+                "tpr": 0.7727
+              },
+              {
+                "fpr": 0.0788,
+                "tpr": 0.7922
+              },
+              {
+                "fpr": 0.085,
+                "tpr": 0.8052
+              },
+              {
+                "fpr": 0.0985,
+                "tpr": 0.8182
+              },
+              {
+                "fpr": 0.1195,
+                "tpr": 0.8377
+              },
+              {
+                "fpr": 0.1268,
+                "tpr": 0.8506
+              },
+              {
+                "fpr": 0.1318,
+                "tpr": 0.8701
+              },
+              {
+                "fpr": 0.133,
+                "tpr": 0.8896
+              },
+              {
+                "fpr": 0.1539,
+                "tpr": 0.9026
+              },
+              {
+                "fpr": 0.1761,
+                "tpr": 0.9156
+              },
+              {
+                "fpr": 0.2401,
+                "tpr": 0.9286
+              },
+              {
+                "fpr": 0.2759,
+                "tpr": 0.9416
+              },
+              {
+                "fpr": 0.2845,
+                "tpr": 0.9481
+              },
+              {
+                "fpr": 0.4507,
+                "tpr": 0.961
+              },
+              {
+                "fpr": 0.4741,
+                "tpr": 0.974
+              },
+              {
+                "fpr": 0.7032,
+                "tpr": 0.987
+              },
+              {
+                "fpr": 1.0,
+                "tpr": 1.0
+              }
+            ],
+            "calibration_curve": [
+              {
+                "prob_pred": 0.027,
+                "prob_true": 0.0336
+              },
+              {
+                "prob_pred": 0.1812,
+                "prob_true": 0.22
+              },
+              {
+                "prob_pred": 0.3009,
+                "prob_true": 0.3846
+              },
+              {
+                "prob_pred": 0.435,
+                "prob_true": 0.3333
+              },
+              {
+                "prob_pred": 0.5718,
+                "prob_true": 0.75
+              },
+              {
+                "prob_pred": 0.6856,
+                "prob_true": 0.7586
+              },
+              {
+                "prob_pred": 0.8297,
+                "prob_true": 0.8
+              },
+              {
+                "prob_pred": 0.8899,
+                "prob_true": 0.9091
+              }
+            ]
+          },
+          "subgroup_fairness": [
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "20-39 años",
+              "n": 271,
+              "prevalence": 0.0406,
+              "predicted_positive_rate": 0.0185,
+              "roc_auc": 0.8587,
+              "sensitivity": 0.2727,
+              "specificity": 0.9923,
+              "brier_score": 0.0279
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "40-59 años",
+              "n": 315,
+              "prevalence": 0.127,
+              "predicted_positive_rate": 0.0857,
+              "roc_auc": 0.9474,
+              "sensitivity": 0.6,
+              "specificity": 0.9891,
+              "brier_score": 0.0538
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "≥60 años",
+              "n": 380,
+              "prevalence": 0.2711,
+              "predicted_positive_rate": 0.2474,
+              "roc_auc": 0.9134,
+              "sensitivity": 0.7184,
+              "specificity": 0.9278,
+              "brier_score": 0.1021
+            },
+            {
+              "dimension": "Sexo Biológico",
+              "subgroup": "Femenino",
+              "n": 524,
+              "prevalence": 0.1431,
+              "predicted_positive_rate": 0.105,
+              "roc_auc": 0.9158,
+              "sensitivity": 0.56,
+              "specificity": 0.971,
+              "brier_score": 0.0713
+            },
+            {
+              "dimension": "Sexo Biológico",
+              "subgroup": "Masculino",
+              "n": 442,
+              "prevalence": 0.1787,
+              "predicted_positive_rate": 0.1606,
+              "roc_auc": 0.9554,
+              "sensitivity": 0.7468,
+              "specificity": 0.9669,
+              "brier_score": 0.0587
+            }
+          ]
+        },
+        "survival_risk_hybrid": {
+          "model_id": "survival_risk_hybrid",
+          "name": "Modelo Híbrido de Riesgo / Supervivencia (XGB + Weibull)",
+          "family": "Híbrido 2: Modelo Híbrido de Riesgo y Supervivencia a 5 y 10 años",
+          "role": "Modelo Híbrido de Supervivencia y Proyección (Caso03 / Profesor)",
+          "hyperparameters": {
+            "base": "XGBoost",
+            "hazard_distribution": "Weibull (λ=0.005, γ=1.35)"
+          },
+          "cv_5fold": {
+            "roc_auc_mean": 0.948,
+            "roc_auc_std": 0.0059
+          },
+          "test_metrics": {
+            "threshold": 0.5,
+            "confusion_matrix": {
+              "tn": 745,
+              "fp": 67,
+              "fn": 31,
+              "tp": 123
+            },
+            "sensitivity": 0.7987,
+            "specificity": 0.9175,
+            "precision": 0.6474,
+            "npv": 0.9601,
+            "f1": 0.7151,
+            "accuracy": 0.8986,
+            "balanced_accuracy": 0.8581,
+            "roc_auc": 0.9349,
+            "pr_auc": 0.7697,
+            "brier_score": 0.0783,
+            "roc_curve": [
+              {
+                "fpr": 0.0,
+                "tpr": 0.0
+              },
+              {
+                "fpr": 0.0012,
+                "tpr": 0.039
+              },
+              {
+                "fpr": 0.0037,
+                "tpr": 0.1948
+              },
+              {
+                "fpr": 0.0062,
+                "tpr": 0.3247
+              },
+              {
+                "fpr": 0.0111,
+                "tpr": 0.3442
+              },
+              {
+                "fpr": 0.0148,
+                "tpr": 0.3701
+              },
+              {
+                "fpr": 0.0172,
+                "tpr": 0.4545
+              },
+              {
+                "fpr": 0.0197,
+                "tpr": 0.487
+              },
+              {
+                "fpr": 0.0234,
+                "tpr": 0.539
+              },
+              {
+                "fpr": 0.0271,
+                "tpr": 0.5714
+              },
+              {
+                "fpr": 0.0308,
+                "tpr": 0.6169
+              },
+              {
+                "fpr": 0.0382,
+                "tpr": 0.6364
+              },
+              {
+                "fpr": 0.0431,
+                "tpr": 0.6558
+              },
+              {
+                "fpr": 0.0456,
+                "tpr": 0.6753
+              },
+              {
+                "fpr": 0.048,
+                "tpr": 0.6948
+              },
+              {
+                "fpr": 0.053,
+                "tpr": 0.7078
+              },
+              {
+                "fpr": 0.0591,
+                "tpr": 0.7208
+              },
+              {
+                "fpr": 0.0665,
+                "tpr": 0.7468
+              },
+              {
+                "fpr": 0.0727,
+                "tpr": 0.7597
+              },
+              {
+                "fpr": 0.0751,
+                "tpr": 0.7727
+              },
+              {
+                "fpr": 0.0788,
+                "tpr": 0.7857
+              },
+              {
+                "fpr": 0.0874,
+                "tpr": 0.8117
+              },
+              {
+                "fpr": 0.101,
+                "tpr": 0.8247
+              },
+              {
+                "fpr": 0.1305,
+                "tpr": 0.8442
+              },
+              {
+                "fpr": 0.1367,
+                "tpr": 0.8571
+              },
+              {
+                "fpr": 0.1478,
+                "tpr": 0.8766
+              },
+              {
+                "fpr": 0.1527,
+                "tpr": 0.8896
+              },
+              {
+                "fpr": 0.1786,
+                "tpr": 0.9091
+              },
+              {
+                "fpr": 0.2266,
+                "tpr": 0.9221
+              },
+              {
+                "fpr": 0.2697,
+                "tpr": 0.9351
+              },
+              {
+                "fpr": 0.2857,
+                "tpr": 0.9481
+              },
+              {
+                "fpr": 0.4187,
+                "tpr": 0.961
+              },
+              {
+                "fpr": 0.4938,
+                "tpr": 0.974
+              },
+              {
+                "fpr": 0.6539,
+                "tpr": 0.987
+              },
+              {
+                "fpr": 1.0,
+                "tpr": 1.0
+              }
+            ],
+            "calibration_curve": [
+              {
+                "prob_pred": 0.0447,
+                "prob_true": 0.0107
+              },
+              {
+                "prob_pred": 0.1796,
+                "prob_true": 0.0603
+              },
+              {
+                "prob_pred": 0.3214,
+                "prob_true": 0.2041
+              },
+              {
+                "prob_pred": 0.4373,
+                "prob_true": 0.1667
+              },
+              {
+                "prob_pred": 0.5641,
+                "prob_true": 0.375
+              },
+              {
+                "prob_pred": 0.6754,
+                "prob_true": 0.4583
+              },
+              {
+                "prob_pred": 0.8102,
+                "prob_true": 0.5957
+              },
+              {
+                "prob_pred": 0.9404,
+                "prob_true": 0.8276
+              }
+            ]
+          },
+          "subgroup_fairness": [
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "20-39 años",
+              "n": 271,
+              "prevalence": 0.0406,
+              "predicted_positive_rate": 0.0332,
+              "roc_auc": 0.878,
+              "sensitivity": 0.5455,
+              "specificity": 0.9885,
+              "brier_score": 0.028
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "40-59 años",
+              "n": 315,
+              "prevalence": 0.127,
+              "predicted_positive_rate": 0.1365,
+              "roc_auc": 0.9475,
+              "sensitivity": 0.725,
+              "specificity": 0.9491,
+              "brier_score": 0.0614
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "≥60 años",
+              "n": 380,
+              "prevalence": 0.2711,
+              "predicted_positive_rate": 0.3632,
+              "roc_auc": 0.911,
+              "sensitivity": 0.8544,
+              "specificity": 0.8195,
+              "brier_score": 0.1282
+            },
+            {
+              "dimension": "Sexo Biológico",
+              "subgroup": "Femenino",
+              "n": 524,
+              "prevalence": 0.1431,
+              "predicted_positive_rate": 0.1641,
+              "roc_auc": 0.9149,
+              "sensitivity": 0.7333,
+              "specificity": 0.931,
+              "brier_score": 0.0802
+            },
+            {
+              "dimension": "Sexo Biológico",
+              "subgroup": "Masculino",
+              "n": 442,
+              "prevalence": 0.1787,
+              "predicted_positive_rate": 0.2353,
+              "roc_auc": 0.9567,
+              "sensitivity": 0.8608,
+              "specificity": 0.9008,
+              "brier_score": 0.0761
+            }
+          ]
+        }
+      },
+      "statistical_tests": {
+        "friedman_test": {
+          "statistic": 4.9697,
+          "p_value": 0.2904209322287365,
+          "significant_at_05": false,
+          "interpretation": "No se detectaron diferencias significativas globales entre los modelos (p >= 0.05)"
+        },
+        "wilcoxon_holm_pairwise": [
+          {
+            "model_a": "random_forest",
+            "model_b": "xgboost",
+            "statistic": 4.0,
+            "p_raw": 0.4375,
+            "p_holm": 1.0,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "random_forest",
+            "model_b": "tabnet",
+            "statistic": 4.0,
+            "p_raw": 0.4375,
+            "p_holm": 1.0,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "random_forest",
+            "model_b": "stacking_hybrid",
+            "statistic": 1.0,
+            "p_raw": 0.125,
+            "p_holm": 1.0,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "random_forest",
+            "model_b": "survival_risk_hybrid",
+            "statistic": 4.0,
+            "p_raw": 0.4375,
+            "p_holm": 1.0,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "xgboost",
+            "model_b": "tabnet",
+            "statistic": 3.0,
+            "p_raw": 0.3125,
+            "p_holm": 1.0,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "xgboost",
+            "model_b": "stacking_hybrid",
+            "statistic": 2.0,
+            "p_raw": 0.375,
+            "p_holm": 1.0,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "xgboost",
+            "model_b": "survival_risk_hybrid",
+            "statistic": 5.0,
+            "p_raw": 0.625,
+            "p_holm": 1.0,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "tabnet",
+            "model_b": "stacking_hybrid",
+            "statistic": 1.0,
+            "p_raw": 0.125,
+            "p_holm": 1.0,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "tabnet",
+            "model_b": "survival_risk_hybrid",
+            "statistic": 3.0,
+            "p_raw": 0.3125,
+            "p_holm": 1.0,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "stacking_hybrid",
+            "model_b": "survival_risk_hybrid",
+            "statistic": 4.0,
+            "p_raw": 0.4375,
+            "p_holm": 1.0,
+            "significant_at_05": false
+          }
+        ],
+        "mcnemar_pairwise": [
+          {
+            "model_a": "random_forest",
+            "model_b": "xgboost",
+            "contingency_b_c": {
+              "a_correct_b_error": 32,
+              "a_error_b_correct": 16
+            },
+            "chi2_statistic": 4.6875,
+            "p_value": 0.0304,
+            "significant_at_05": true
+          },
+          {
+            "model_a": "random_forest",
+            "model_b": "tabnet",
+            "contingency_b_c": {
+              "a_correct_b_error": 35,
+              "a_error_b_correct": 37
+            },
+            "chi2_statistic": 0.0139,
+            "p_value": 0.9062,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "random_forest",
+            "model_b": "stacking_hybrid",
+            "contingency_b_c": {
+              "a_correct_b_error": 13,
+              "a_error_b_correct": 29
+            },
+            "chi2_statistic": 5.3571,
+            "p_value": 0.0206,
+            "significant_at_05": true
+          },
+          {
+            "model_a": "random_forest",
+            "model_b": "survival_risk_hybrid",
+            "contingency_b_c": {
+              "a_correct_b_error": 16,
+              "a_error_b_correct": 12
+            },
+            "chi2_statistic": 0.3214,
+            "p_value": 0.5708,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "xgboost",
+            "model_b": "tabnet",
+            "contingency_b_c": {
+              "a_correct_b_error": 47,
+              "a_error_b_correct": 65
+            },
+            "chi2_statistic": 2.5804,
+            "p_value": 0.1082,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "xgboost",
+            "model_b": "stacking_hybrid",
+            "contingency_b_c": {
+              "a_correct_b_error": 27,
+              "a_error_b_correct": 59
+            },
+            "chi2_statistic": 11.1744,
+            "p_value": 0.0008,
+            "significant_at_05": true
+          },
+          {
+            "model_a": "xgboost",
+            "model_b": "survival_risk_hybrid",
+            "contingency_b_c": {
+              "a_correct_b_error": 5,
+              "a_error_b_correct": 17
+            },
+            "chi2_statistic": 5.5,
+            "p_value": 0.019,
+            "significant_at_05": true
+          },
+          {
+            "model_a": "tabnet",
+            "model_b": "stacking_hybrid",
+            "contingency_b_c": {
+              "a_correct_b_error": 9,
+              "a_error_b_correct": 23
+            },
+            "chi2_statistic": 5.2812,
+            "p_value": 0.0216,
+            "significant_at_05": true
+          },
+          {
+            "model_a": "tabnet",
+            "model_b": "survival_risk_hybrid",
+            "contingency_b_c": {
+              "a_correct_b_error": 49,
+              "a_error_b_correct": 43
+            },
+            "chi2_statistic": 0.2717,
+            "p_value": 0.6022,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "stacking_hybrid",
+            "model_b": "survival_risk_hybrid",
+            "contingency_b_c": {
+              "a_correct_b_error": 42,
+              "a_error_b_correct": 22
+            },
+            "chi2_statistic": 5.6406,
+            "p_value": 0.0175,
+            "significant_at_05": true
+          }
+        ],
+        "bootstrap_95_ci": {
+          "random_forest": {
+            "roc_auc_95_ci": [
+              0.9079,
+              0.9523
+            ],
+            "brier_score_95_ci": [
+              0.0643,
+              0.0853
+            ],
+            "f1_score_95_ci": [
+              0.6508,
+              0.7671
+            ],
+            "mcc_95_ci": [
+              0.5891,
+              0.7168
+            ]
+          },
+          "xgboost": {
+            "roc_auc_95_ci": [
+              0.9134,
+              0.9538
+            ],
+            "brier_score_95_ci": [
+              0.0739,
+              0.0958
+            ],
+            "f1_score_95_ci": [
+              0.6465,
+              0.7507
+            ],
+            "mcc_95_ci": [
+              0.5846,
+              0.7006
+            ]
+          },
+          "tabnet": {
+            "roc_auc_95_ci": [
+              0.9098,
+              0.9546
+            ],
+            "brier_score_95_ci": [
+              0.0582,
+              0.0813
+            ],
+            "f1_score_95_ci": [
+              0.5657,
+              0.7084
+            ],
+            "mcc_95_ci": [
+              0.5312,
+              0.6823
+            ]
+          },
+          "stacking_hybrid": {
+            "roc_auc_95_ci": [
+              0.9117,
+              0.9553
+            ],
+            "brier_score_95_ci": [
+              0.0538,
+              0.078
+            ],
+            "f1_score_95_ci": [
+              0.658,
+              0.7774
+            ],
+            "mcc_95_ci": [
+              0.6119,
+              0.7413
+            ]
+          },
+          "survival_risk_hybrid": {
+            "roc_auc_95_ci": [
+              0.9124,
+              0.9553
+            ],
+            "brier_score_95_ci": [
+              0.0676,
+              0.0896
+            ],
+            "f1_score_95_ci": [
+              0.6588,
+              0.7663
+            ],
+            "mcc_95_ci": [
+              0.5981,
+              0.7171
+            ]
+          }
+        }
+      }
+    },
+    "pima_indians": {
+      "dataset_id": "pima_indians",
+      "audit": {
+        "dataset_id": "pima_indians",
+        "name": "Pima Indians Diabetes Dataset (NIDDK Benchmark)",
+        "period": "Estudio prospectivo longitudinal NIDDK (Phoenix, Arizona, EE. UU.)",
+        "license": "Acceso Público Académico / OpenML CC-BY 4.0 (NIDDK / UCI Repository)",
+        "source_url": "https://www.openml.org/d/37",
+        "raw_participants_count": 768,
+        "adults_evaluated_count": 768,
+        "final_analytic_cohort_count": 768,
+        "positive_cases": 268,
+        "negative_cases": 500,
+        "prevalence_rate": 0.349,
+        "duplicate_patient_ids": 0,
+        "duplicate_feature_rows": 0,
+        "missing_values_documented": {
+          "glucosa": 5,
+          "presion_diastolica": 35,
+          "pliegue_cutaneo": 227,
+          "insulina": 374,
+          "imc": 11
+        },
+        "imputation_strategy": "Conversión de ceros fisiológicamente imposibles (glucosa=0, presión=0, IMC=0, pliegue=0, insulina=0) a NaN seguida de imputación por mediana ajustada exclusivamente en entrenamiento.",
+        "leakage_prevention_notes": [
+          "Aislamiento estricto del conjunto de prueba (20% estratificado por paciente) antes de cualquier imputación o escalado.",
+          "Cálculo de medianas y desviaciones estándar restringido al subconjunto de entrenamiento en cada fold."
+        ],
+        "target_definition": "Resultado positivo para diabetes mellitus según criterios OMS a las 2h post-carga (Outcome == 1)."
+      },
+      "split_summary": {
+        "train_patients": 614,
+        "test_patients_isolated": 154,
+        "patient_overlap_count": 0
+      },
+      "features": [
+        {
+          "name": "embarazos",
+          "source_col": "Pregnancies",
+          "label": "Número de Embarazos",
+          "unit": "gestaciones",
+          "category": "Antecedentes obstétricos",
+          "min": 0.0,
+          "max": 18.0,
+          "step": 1.0,
+          "default": 3.0,
+          "normal_range": "0 – 10",
+          "description": "Número total de gestaciones previas."
+        },
+        {
+          "name": "glucosa",
+          "source_col": "Glucose",
+          "label": "Glucosa Plasmática (2h OGTT)",
+          "unit": "mg/dL",
+          "category": "Biomarcadores glucémicos",
+          "min": 44.0,
+          "max": 250.0,
+          "step": 1.0,
+          "default": 120.0,
+          "normal_range": "< 140 mg/dL (2h post-carga)",
+          "description": "Concentración de glucosa plasmática a las 2 horas en prueba de tolerancia oral."
+        },
+        {
+          "name": "presion_diastolica",
+          "source_col": "BloodPressure",
+          "label": "Presión Arterial Diastólica",
+          "unit": "mmHg",
+          "category": "Hemodinámica",
+          "min": 35.0,
+          "max": 130.0,
+          "step": 1.0,
+          "default": 72.0,
+          "normal_range": "< 80 mmHg",
+          "description": "Presión arterial diastólica en reposo (mmHg)."
+        },
+        {
+          "name": "pliegue_cutaneo",
+          "source_col": "SkinThickness",
+          "label": "Pliegue Cutáneo Tricipital",
+          "unit": "mm",
+          "category": "Antropometría",
+          "min": 7.0,
+          "max": 99.0,
+          "step": 1.0,
+          "default": 29.0,
+          "normal_range": "10 – 35 mm",
+          "description": "Espesor del pliegue cutáneo del tríceps en milímetros."
+        },
+        {
+          "name": "insulina",
+          "source_col": "Insulin",
+          "label": "Insulina Sérica a las 2h",
+          "unit": "μU/mL",
+          "category": "Biomarcadores glucémicos",
+          "min": 14.0,
+          "max": 850.0,
+          "step": 1.0,
+          "default": 125.0,
+          "normal_range": "16 – 166 μU/mL",
+          "description": "Nivel sérico de insulina a las 2 horas tras sobrecarga oral de glucosa."
+        },
+        {
+          "name": "imc",
+          "source_col": "BMI",
+          "label": "Índice de Masa Corporal (IMC)",
+          "unit": "kg/m²",
+          "category": "Antropometría",
+          "min": 15.0,
+          "max": 68.0,
+          "step": 0.1,
+          "default": 32.0,
+          "normal_range": "18.5 – 24.9 kg/m²",
+          "description": "Peso en kilogramos dividido por el cuadrado de la talla en metros."
+        },
+        {
+          "name": "pedigri_diabetes",
+          "source_col": "DiabetesPedigreeFunction",
+          "label": "Función de Pedigrí de Diabetes",
+          "unit": "índice",
+          "category": "Antecedentes genéticos",
+          "min": 0.05,
+          "max": 2.5,
+          "step": 0.01,
+          "default": 0.47,
+          "normal_range": "0.08 – 0.80",
+          "description": "Puntaje continuo que cuantifica la carga genética familiar de diabetes."
+        },
+        {
+          "name": "edad",
+          "source_col": "Age",
+          "label": "Edad",
+          "unit": "años",
+          "category": "Demografía clínica",
+          "min": 21.0,
+          "max": 85.0,
+          "step": 1.0,
+          "default": 33.0,
+          "normal_range": "≥ 21 años",
+          "description": "Edad en años cumplidos (población femenina ≥ 21 años)."
+        }
+      ],
+      "optuna_hyperparameters": {
+        "n_estimators": 175,
+        "max_depth": 3,
+        "learning_rate": 0.022296308030104024,
+        "subsample": 0.9402818110226482,
+        "colsample_bytree": 0.9430369551381924,
+        "reg_lambda": 1.8399760921720878,
+        "scale_pos_weight": 1.869,
+        "eval_metric": "logloss",
+        "random_state": 42,
+        "n_jobs": -1
+      },
+      "global_shap_importance": [
+        {
+          "feature": "glucosa",
+          "label": "Glucosa Plasmática (2h OGTT)",
+          "mean_abs_shap": 0.8123
+        },
+        {
+          "feature": "imc",
+          "label": "Índice de Masa Corporal (IMC)",
+          "mean_abs_shap": 0.4521
+        },
+        {
+          "feature": "edad",
+          "label": "Edad",
+          "mean_abs_shap": 0.2824
+        },
+        {
+          "feature": "pedigri_diabetes",
+          "label": "Función de Pedigrí de Diabetes",
+          "mean_abs_shap": 0.2198
+        },
+        {
+          "feature": "embarazos",
+          "label": "Número de Embarazos",
+          "mean_abs_shap": 0.1588
+        },
+        {
+          "feature": "insulina",
+          "label": "Insulina Sérica a las 2h",
+          "mean_abs_shap": 0.144
+        },
+        {
+          "feature": "pliegue_cutaneo",
+          "label": "Pliegue Cutáneo Tricipital",
+          "mean_abs_shap": 0.1016
+        },
+        {
+          "feature": "presion_diastolica",
+          "label": "Presión Arterial Diastólica",
+          "mean_abs_shap": 0.0283
+        }
+      ],
+      "models": {
+        "xgboost": {
+          "model_id": "xgboost",
+          "name": "XGBoost Classifier (Optuna Tuned)",
+          "family": "Individual 1: Boosting Regularizado con Búsqueda TPE",
+          "role": "Modelo Individual Principal (Caso03)",
+          "hyperparameters": {
+            "n_estimators": 175,
+            "max_depth": 3,
+            "learning_rate": 0.022296308030104024,
+            "subsample": 0.9402818110226482,
+            "colsample_bytree": 0.9430369551381924,
+            "reg_lambda": 1.8399760921720878,
+            "scale_pos_weight": 1.869,
+            "eval_metric": "logloss",
+            "random_state": 42,
+            "n_jobs": -1
+          },
+          "cv_5fold": {
+            "roc_auc_mean": 0.8447,
+            "roc_auc_std": 0.0261
+          },
+          "test_metrics": {
+            "threshold": 0.5,
+            "confusion_matrix": {
+              "tn": 75,
+              "fp": 25,
+              "fn": 12,
+              "tp": 42
+            },
+            "sensitivity": 0.7778,
+            "specificity": 0.75,
+            "precision": 0.6269,
+            "npv": 0.8621,
+            "f1": 0.6942,
+            "accuracy": 0.7597,
+            "balanced_accuracy": 0.7639,
+            "roc_auc": 0.8396,
+            "pr_auc": 0.7725,
+            "brier_score": 0.1638,
+            "roc_curve": [
+              {
+                "fpr": 0.0,
+                "tpr": 0.0
+              },
+              {
+                "fpr": 0.0,
+                "tpr": 0.0185
+              },
+              {
+                "fpr": 0.01,
+                "tpr": 0.2593
+              },
+              {
+                "fpr": 0.01,
+                "tpr": 0.2778
+              },
+              {
+                "fpr": 0.02,
+                "tpr": 0.3519
+              },
+              {
+                "fpr": 0.05,
+                "tpr": 0.3519
+              },
+              {
+                "fpr": 0.06,
+                "tpr": 0.4074
+              },
+              {
+                "fpr": 0.06,
+                "tpr": 0.463
+              },
+              {
+                "fpr": 0.07,
+                "tpr": 0.537
+              },
+              {
+                "fpr": 0.09,
+                "tpr": 0.5556
+              },
+              {
+                "fpr": 0.1,
+                "tpr": 0.5556
+              },
+              {
+                "fpr": 0.11,
+                "tpr": 0.5741
+              },
+              {
+                "fpr": 0.11,
+                "tpr": 0.6296
+              },
+              {
+                "fpr": 0.14,
+                "tpr": 0.6481
+              },
+              {
+                "fpr": 0.17,
+                "tpr": 0.6481
+              },
+              {
+                "fpr": 0.19,
+                "tpr": 0.6667
+              },
+              {
+                "fpr": 0.19,
+                "tpr": 0.6852
+              },
+              {
+                "fpr": 0.21,
+                "tpr": 0.7037
+              },
+              {
+                "fpr": 0.22,
+                "tpr": 0.7222
+              },
+              {
+                "fpr": 0.24,
+                "tpr": 0.7222
+              },
+              {
+                "fpr": 0.25,
+                "tpr": 0.7407
+              },
+              {
+                "fpr": 0.25,
+                "tpr": 0.7778
+              },
+              {
+                "fpr": 0.29,
+                "tpr": 0.8148
+              },
+              {
+                "fpr": 0.3,
+                "tpr": 0.8148
+              },
+              {
+                "fpr": 0.35,
+                "tpr": 0.8333
+              },
+              {
+                "fpr": 0.35,
+                "tpr": 0.8519
+              },
+              {
+                "fpr": 0.43,
+                "tpr": 0.8704
+              },
+              {
+                "fpr": 0.46,
+                "tpr": 0.8889
+              },
+              {
+                "fpr": 0.47,
+                "tpr": 0.8889
+              },
+              {
+                "fpr": 0.51,
+                "tpr": 0.9259
+              },
+              {
+                "fpr": 0.51,
+                "tpr": 0.9444
+              },
+              {
+                "fpr": 0.63,
+                "tpr": 0.963
+              },
+              {
+                "fpr": 0.68,
+                "tpr": 0.963
+              },
+              {
+                "fpr": 0.89,
+                "tpr": 0.9815
+              },
+              {
+                "fpr": 1.0,
+                "tpr": 1.0
+              }
+            ],
+            "calibration_curve": [
+              {
+                "prob_pred": 0.081,
+                "prob_true": 0.0357
+              },
+              {
+                "prob_pred": 0.1875,
+                "prob_true": 0.087
+              },
+              {
+                "prob_pred": 0.3129,
+                "prob_true": 0.2308
+              },
+              {
+                "prob_pred": 0.4483,
+                "prob_true": 0.3
+              },
+              {
+                "prob_pred": 0.5783,
+                "prob_true": 0.4375
+              },
+              {
+                "prob_pred": 0.6891,
+                "prob_true": 0.5263
+              },
+              {
+                "prob_pred": 0.8257,
+                "prob_true": 0.6667
+              },
+              {
+                "prob_pred": 0.9018,
+                "prob_true": 1.0
+              }
+            ]
+          },
+          "subgroup_fairness": [
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "21-29 años",
+              "n": 66,
+              "prevalence": 0.1818,
+              "predicted_positive_rate": 0.2424,
+              "roc_auc": 0.8086,
+              "sensitivity": 0.6667,
+              "specificity": 0.8519,
+              "brier_score": 0.1348
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "30-44 años",
+              "n": 47,
+              "prevalence": 0.4894,
+              "predicted_positive_rate": 0.5106,
+              "roc_auc": 0.8007,
+              "sensitivity": 0.7391,
+              "specificity": 0.7083,
+              "brier_score": 0.1861
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "≥45 años",
+              "n": 41,
+              "prevalence": 0.4634,
+              "predicted_positive_rate": 0.6585,
+              "roc_auc": 0.8206,
+              "sensitivity": 0.8947,
+              "specificity": 0.5455,
+              "brier_score": 0.1848
+            },
+            {
+              "dimension": "Sexo Biológico",
+              "subgroup": "Femenino (Cohorte Pima)",
+              "n": 154,
+              "prevalence": 0.3506,
+              "predicted_positive_rate": 0.4351,
+              "roc_auc": 0.8396,
+              "sensitivity": 0.7778,
+              "specificity": 0.75,
+              "brier_score": 0.1638
+            }
+          ]
+        },
+        "random_forest": {
+          "model_id": "random_forest",
+          "name": "Random Forest Classifier",
+          "family": "Individual 2: Ensamble Bagging Decorrelacionado",
+          "role": "Modelo Individual Comparativo (Caso03)",
+          "hyperparameters": {
+            "n_estimators": 220,
+            "max_depth": 8,
+            "min_samples_leaf": 5
+          },
+          "cv_5fold": {
+            "roc_auc_mean": 0.8434,
+            "roc_auc_std": 0.0241
+          },
+          "test_metrics": {
+            "threshold": 0.5,
+            "confusion_matrix": {
+              "tn": 78,
+              "fp": 22,
+              "fn": 14,
+              "tp": 40
+            },
+            "sensitivity": 0.7407,
+            "specificity": 0.78,
+            "precision": 0.6452,
+            "npv": 0.8478,
+            "f1": 0.6897,
+            "accuracy": 0.7662,
+            "balanced_accuracy": 0.7604,
+            "roc_auc": 0.8346,
+            "pr_auc": 0.7303,
+            "brier_score": 0.1624,
+            "roc_curve": [
+              {
+                "fpr": 0.0,
+                "tpr": 0.0
+              },
+              {
+                "fpr": 0.0,
+                "tpr": 0.0185
+              },
+              {
+                "fpr": 0.01,
+                "tpr": 0.0185
+              },
+              {
+                "fpr": 0.05,
+                "tpr": 0.3148
+              },
+              {
+                "fpr": 0.05,
+                "tpr": 0.3889
+              },
+              {
+                "fpr": 0.06,
+                "tpr": 0.3889
+              },
+              {
+                "fpr": 0.07,
+                "tpr": 0.463
+              },
+              {
+                "fpr": 0.07,
+                "tpr": 0.5185
+              },
+              {
+                "fpr": 0.09,
+                "tpr": 0.5185
+              },
+              {
+                "fpr": 0.14,
+                "tpr": 0.537
+              },
+              {
+                "fpr": 0.14,
+                "tpr": 0.5926
+              },
+              {
+                "fpr": 0.16,
+                "tpr": 0.5926
+              },
+              {
+                "fpr": 0.18,
+                "tpr": 0.6296
+              },
+              {
+                "fpr": 0.18,
+                "tpr": 0.6481
+              },
+              {
+                "fpr": 0.2,
+                "tpr": 0.6481
+              },
+              {
+                "fpr": 0.22,
+                "tpr": 0.7037
+              },
+              {
+                "fpr": 0.22,
+                "tpr": 0.7407
+              },
+              {
+                "fpr": 0.23,
+                "tpr": 0.7593
+              },
+              {
+                "fpr": 0.26,
+                "tpr": 0.7593
+              },
+              {
+                "fpr": 0.26,
+                "tpr": 0.7963
+              },
+              {
+                "fpr": 0.29,
+                "tpr": 0.8148
+              },
+              {
+                "fpr": 0.3,
+                "tpr": 0.8148
+              },
+              {
+                "fpr": 0.3,
+                "tpr": 0.8519
+              },
+              {
+                "fpr": 0.32,
+                "tpr": 0.8704
+              },
+              {
+                "fpr": 0.37,
+                "tpr": 0.8704
+              },
+              {
+                "fpr": 0.37,
+                "tpr": 0.8889
+              },
+              {
+                "fpr": 0.39,
+                "tpr": 0.9074
+              },
+              {
+                "fpr": 0.53,
+                "tpr": 0.9074
+              },
+              {
+                "fpr": 0.53,
+                "tpr": 0.9259
+              },
+              {
+                "fpr": 0.61,
+                "tpr": 0.9444
+              },
+              {
+                "fpr": 0.62,
+                "tpr": 0.9444
+              },
+              {
+                "fpr": 0.62,
+                "tpr": 0.963
+              },
+              {
+                "fpr": 0.74,
+                "tpr": 0.9815
+              },
+              {
+                "fpr": 0.85,
+                "tpr": 0.9815
+              },
+              {
+                "fpr": 1.0,
+                "tpr": 1.0
+              }
+            ],
+            "calibration_curve": [
+              {
+                "prob_pred": 0.0658,
+                "prob_true": 0.0435
+              },
+              {
+                "prob_pred": 0.1885,
+                "prob_true": 0.12
+              },
+              {
+                "prob_pred": 0.3077,
+                "prob_true": 0.1111
+              },
+              {
+                "prob_pred": 0.4298,
+                "prob_true": 0.4118
+              },
+              {
+                "prob_pred": 0.5572,
+                "prob_true": 0.5556
+              },
+              {
+                "prob_pred": 0.6945,
+                "prob_true": 0.5263
+              },
+              {
+                "prob_pred": 0.813,
+                "prob_true": 0.8261
+              },
+              {
+                "prob_pred": 0.8877,
+                "prob_true": 0.5
+              }
+            ]
+          },
+          "subgroup_fairness": [
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "21-29 años",
+              "n": 66,
+              "prevalence": 0.1818,
+              "predicted_positive_rate": 0.2121,
+              "roc_auc": 0.7963,
+              "sensitivity": 0.5833,
+              "specificity": 0.8704,
+              "brier_score": 0.133
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "30-44 años",
+              "n": 47,
+              "prevalence": 0.4894,
+              "predicted_positive_rate": 0.5106,
+              "roc_auc": 0.7862,
+              "sensitivity": 0.7391,
+              "specificity": 0.7083,
+              "brier_score": 0.1894
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "≥45 años",
+              "n": 41,
+              "prevalence": 0.4634,
+              "predicted_positive_rate": 0.5854,
+              "roc_auc": 0.8373,
+              "sensitivity": 0.8421,
+              "specificity": 0.6364,
+              "brier_score": 0.1788
+            },
+            {
+              "dimension": "Sexo Biológico",
+              "subgroup": "Femenino (Cohorte Pima)",
+              "n": 154,
+              "prevalence": 0.3506,
+              "predicted_positive_rate": 0.4026,
+              "roc_auc": 0.8346,
+              "sensitivity": 0.7407,
+              "specificity": 0.78,
+              "brier_score": 0.1624
+            }
+          ]
+        },
+        "tabnet": {
+          "model_id": "tabnet",
+          "name": "TabNet (Attentive Deep Learning)",
+          "family": "Individual 3: Red Neuronal con Atención Secuencial",
+          "role": "Modelo Individual Deep Learning Tabular (Caso03)",
+          "hyperparameters": {
+            "n_d": 8,
+            "n_a": 8,
+            "n_steps": 3,
+            "gamma": 1.3,
+            "max_epochs": 45
+          },
+          "cv_5fold": {
+            "roc_auc_mean": 0.8195,
+            "roc_auc_std": 0.0299
+          },
+          "test_metrics": {
+            "threshold": 0.5,
+            "confusion_matrix": {
+              "tn": 87,
+              "fp": 13,
+              "fn": 21,
+              "tp": 33
+            },
+            "sensitivity": 0.6111,
+            "specificity": 0.87,
+            "precision": 0.7174,
+            "npv": 0.8056,
+            "f1": 0.66,
+            "accuracy": 0.7792,
+            "balanced_accuracy": 0.7406,
+            "roc_auc": 0.8233,
+            "pr_auc": 0.7022,
+            "brier_score": 0.1603,
+            "roc_curve": [
+              {
+                "fpr": 0.0,
+                "tpr": 0.0
+              },
+              {
+                "fpr": 0.0,
+                "tpr": 0.0185
+              },
+              {
+                "fpr": 0.01,
+                "tpr": 0.0185
+              },
+              {
+                "fpr": 0.02,
+                "tpr": 0.0741
+              },
+              {
+                "fpr": 0.02,
+                "tpr": 0.1852
+              },
+              {
+                "fpr": 0.03,
+                "tpr": 0.1852
+              },
+              {
+                "fpr": 0.04,
+                "tpr": 0.2407
+              },
+              {
+                "fpr": 0.04,
+                "tpr": 0.4074
+              },
+              {
+                "fpr": 0.06,
+                "tpr": 0.4074
+              },
+              {
+                "fpr": 0.08,
+                "tpr": 0.463
+              },
+              {
+                "fpr": 0.08,
+                "tpr": 0.4815
+              },
+              {
+                "fpr": 0.09,
+                "tpr": 0.4815
+              },
+              {
+                "fpr": 0.13,
+                "tpr": 0.5926
+              },
+              {
+                "fpr": 0.13,
+                "tpr": 0.6296
+              },
+              {
+                "fpr": 0.15,
+                "tpr": 0.6296
+              },
+              {
+                "fpr": 0.22,
+                "tpr": 0.6481
+              },
+              {
+                "fpr": 0.22,
+                "tpr": 0.7037
+              },
+              {
+                "fpr": 0.23,
+                "tpr": 0.7222
+              },
+              {
+                "fpr": 0.25,
+                "tpr": 0.7222
+              },
+              {
+                "fpr": 0.25,
+                "tpr": 0.7407
+              },
+              {
+                "fpr": 0.27,
+                "tpr": 0.7593
+              },
+              {
+                "fpr": 0.31,
+                "tpr": 0.7593
+              },
+              {
+                "fpr": 0.31,
+                "tpr": 0.7963
+              },
+              {
+                "fpr": 0.35,
+                "tpr": 0.8148
+              },
+              {
+                "fpr": 0.37,
+                "tpr": 0.8148
+              },
+              {
+                "fpr": 0.37,
+                "tpr": 0.8519
+              },
+              {
+                "fpr": 0.4,
+                "tpr": 0.8704
+              },
+              {
+                "fpr": 0.46,
+                "tpr": 0.8704
+              },
+              {
+                "fpr": 0.46,
+                "tpr": 0.9259
+              },
+              {
+                "fpr": 0.5,
+                "tpr": 0.9444
+              },
+              {
+                "fpr": 0.58,
+                "tpr": 0.9444
+              },
+              {
+                "fpr": 0.58,
+                "tpr": 0.963
+              },
+              {
+                "fpr": 0.84,
+                "tpr": 0.9815
+              },
+              {
+                "fpr": 0.91,
+                "tpr": 0.9815
+              },
+              {
+                "fpr": 1.0,
+                "tpr": 1.0
+              }
+            ],
+            "calibration_curve": [
+              {
+                "prob_pred": 0.0505,
+                "prob_true": 0.0526
+              },
+              {
+                "prob_pred": 0.1932,
+                "prob_true": 0.1053
+              },
+              {
+                "prob_pred": 0.309,
+                "prob_true": 0.3182
+              },
+              {
+                "prob_pred": 0.4153,
+                "prob_true": 0.3448
+              },
+              {
+                "prob_pred": 0.5599,
+                "prob_true": 0.6111
+              },
+              {
+                "prob_pred": 0.6857,
+                "prob_true": 0.7857
+              },
+              {
+                "prob_pred": 0.8215,
+                "prob_true": 0.7778
+              },
+              {
+                "prob_pred": 0.9118,
+                "prob_true": 0.8
+              }
+            ]
+          },
+          "subgroup_fairness": [
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "21-29 años",
+              "n": 66,
+              "prevalence": 0.1818,
+              "predicted_positive_rate": 0.1212,
+              "roc_auc": 0.8102,
+              "sensitivity": 0.4167,
+              "specificity": 0.9444,
+              "brier_score": 0.1189
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "30-44 años",
+              "n": 47,
+              "prevalence": 0.4894,
+              "predicted_positive_rate": 0.4255,
+              "roc_auc": 0.779,
+              "sensitivity": 0.6522,
+              "specificity": 0.7917,
+              "brier_score": 0.1948
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "≥45 años",
+              "n": 41,
+              "prevalence": 0.4634,
+              "predicted_positive_rate": 0.439,
+              "roc_auc": 0.7799,
+              "sensitivity": 0.6842,
+              "specificity": 0.7727,
+              "brier_score": 0.1873
+            },
+            {
+              "dimension": "Sexo Biológico",
+              "subgroup": "Femenino (Cohorte Pima)",
+              "n": 154,
+              "prevalence": 0.3506,
+              "predicted_positive_rate": 0.2987,
+              "roc_auc": 0.8233,
+              "sensitivity": 0.6111,
+              "specificity": 0.87,
+              "brier_score": 0.1603
+            }
+          ]
+        },
+        "stacking_hybrid": {
+          "model_id": "stacking_hybrid",
+          "name": "Ensamble Híbrido Stacking Calibrado",
+          "family": "Híbrido 1: Meta-aprendizaje Calibrado sobre RF + XGB + TabNet",
+          "role": "Modelo Híbrido de Ensamble Multiarquitectura (Profesor)",
+          "hyperparameters": {
+            "meta_learner": "LogisticRegression L2",
+            "inputs": 3
+          },
+          "cv_5fold": {
+            "roc_auc_mean": 0.8484,
+            "roc_auc_std": 0.0271
+          },
+          "test_metrics": {
+            "threshold": 0.5,
+            "confusion_matrix": {
+              "tn": 84,
+              "fp": 16,
+              "fn": 19,
+              "tp": 35
+            },
+            "sensitivity": 0.6481,
+            "specificity": 0.84,
+            "precision": 0.6863,
+            "npv": 0.8155,
+            "f1": 0.6667,
+            "accuracy": 0.7727,
+            "balanced_accuracy": 0.7441,
+            "roc_auc": 0.8493,
+            "pr_auc": 0.7825,
+            "brier_score": 0.1485,
+            "roc_curve": [
+              {
+                "fpr": 0.0,
+                "tpr": 0.0
+              },
+              {
+                "fpr": 0.0,
+                "tpr": 0.0185
+              },
+              {
+                "fpr": 0.01,
+                "tpr": 0.1111
+              },
+              {
+                "fpr": 0.02,
+                "tpr": 0.3889
+              },
+              {
+                "fpr": 0.02,
+                "tpr": 0.4444
+              },
+              {
+                "fpr": 0.04,
+                "tpr": 0.463
+              },
+              {
+                "fpr": 0.05,
+                "tpr": 0.5
+              },
+              {
+                "fpr": 0.06,
+                "tpr": 0.5185
+              },
+              {
+                "fpr": 0.07,
+                "tpr": 0.5185
+              },
+              {
+                "fpr": 0.08,
+                "tpr": 0.537
+              },
+              {
+                "fpr": 0.1,
+                "tpr": 0.5741
+              },
+              {
+                "fpr": 0.12,
+                "tpr": 0.5926
+              },
+              {
+                "fpr": 0.12,
+                "tpr": 0.6111
+              },
+              {
+                "fpr": 0.14,
+                "tpr": 0.6296
+              },
+              {
+                "fpr": 0.15,
+                "tpr": 0.6481
+              },
+              {
+                "fpr": 0.16,
+                "tpr": 0.6852
+              },
+              {
+                "fpr": 0.18,
+                "tpr": 0.6852
+              },
+              {
+                "fpr": 0.2,
+                "tpr": 0.7037
+              },
+              {
+                "fpr": 0.21,
+                "tpr": 0.7222
+              },
+              {
+                "fpr": 0.21,
+                "tpr": 0.7407
+              },
+              {
+                "fpr": 0.23,
+                "tpr": 0.7593
+              },
+              {
+                "fpr": 0.25,
+                "tpr": 0.7778
+              },
+              {
+                "fpr": 0.27,
+                "tpr": 0.7963
+              },
+              {
+                "fpr": 0.3,
+                "tpr": 0.7963
+              },
+              {
+                "fpr": 0.33,
+                "tpr": 0.8148
+              },
+              {
+                "fpr": 0.39,
+                "tpr": 0.8333
+              },
+              {
+                "fpr": 0.41,
+                "tpr": 0.8519
+              },
+              {
+                "fpr": 0.41,
+                "tpr": 0.8704
+              },
+              {
+                "fpr": 0.42,
+                "tpr": 0.8889
+              },
+              {
+                "fpr": 0.43,
+                "tpr": 0.9074
+              },
+              {
+                "fpr": 0.44,
+                "tpr": 0.9444
+              },
+              {
+                "fpr": 0.59,
+                "tpr": 0.9444
+              },
+              {
+                "fpr": 0.67,
+                "tpr": 0.963
+              },
+              {
+                "fpr": 0.91,
+                "tpr": 0.9815
+              },
+              {
+                "fpr": 1.0,
+                "tpr": 1.0
+              }
+            ],
+            "calibration_curve": [
+              {
+                "prob_pred": 0.0767,
+                "prob_true": 0.0465
+              },
+              {
+                "prob_pred": 0.1693,
+                "prob_true": 0.2333
+              },
+              {
+                "prob_pred": 0.3159,
+                "prob_true": 0.2353
+              },
+              {
+                "prob_pred": 0.4244,
+                "prob_true": 0.4615
+              },
+              {
+                "prob_pred": 0.5531,
+                "prob_true": 0.3846
+              },
+              {
+                "prob_pred": 0.683,
+                "prob_true": 0.6111
+              },
+              {
+                "prob_pred": 0.8129,
+                "prob_true": 0.95
+              }
+            ]
+          },
+          "subgroup_fairness": [
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "21-29 años",
+              "n": 66,
+              "prevalence": 0.1818,
+              "predicted_positive_rate": 0.1818,
+              "roc_auc": 0.8086,
+              "sensitivity": 0.5,
+              "specificity": 0.8889,
+              "brier_score": 0.1152
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "30-44 años",
+              "n": 47,
+              "prevalence": 0.4894,
+              "predicted_positive_rate": 0.4681,
+              "roc_auc": 0.8062,
+              "sensitivity": 0.6957,
+              "specificity": 0.75,
+              "brier_score": 0.1832
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "≥45 años",
+              "n": 41,
+              "prevalence": 0.4634,
+              "predicted_positive_rate": 0.4146,
+              "roc_auc": 0.8565,
+              "sensitivity": 0.6842,
+              "specificity": 0.8182,
+              "brier_score": 0.1621
+            },
+            {
+              "dimension": "Sexo Biológico",
+              "subgroup": "Femenino (Cohorte Pima)",
+              "n": 154,
+              "prevalence": 0.3506,
+              "predicted_positive_rate": 0.3312,
+              "roc_auc": 0.8493,
+              "sensitivity": 0.6481,
+              "specificity": 0.84,
+              "brier_score": 0.1485
+            }
+          ]
+        },
+        "survival_risk_hybrid": {
+          "model_id": "survival_risk_hybrid",
+          "name": "Modelo Híbrido de Riesgo / Supervivencia (XGB + Weibull)",
+          "family": "Híbrido 2: Modelo Híbrido de Riesgo y Supervivencia a 5 y 10 años",
+          "role": "Modelo Híbrido de Supervivencia y Proyección (Caso03 / Profesor)",
+          "hyperparameters": {
+            "base": "XGBoost",
+            "hazard_distribution": "Weibull (λ=0.005, γ=1.35)"
+          },
+          "cv_5fold": {
+            "roc_auc_mean": 0.8451,
+            "roc_auc_std": 0.0258
+          },
+          "test_metrics": {
+            "threshold": 0.5,
+            "confusion_matrix": {
+              "tn": 75,
+              "fp": 25,
+              "fn": 12,
+              "tp": 42
+            },
+            "sensitivity": 0.7778,
+            "specificity": 0.75,
+            "precision": 0.6269,
+            "npv": 0.8621,
+            "f1": 0.6942,
+            "accuracy": 0.7597,
+            "balanced_accuracy": 0.7639,
+            "roc_auc": 0.8411,
+            "pr_auc": 0.7793,
+            "brier_score": 0.1598,
+            "roc_curve": [
+              {
+                "fpr": 0.0,
+                "tpr": 0.0
+              },
+              {
+                "fpr": 0.0,
+                "tpr": 0.0185
+              },
+              {
+                "fpr": 0.01,
+                "tpr": 0.2963
+              },
+              {
+                "fpr": 0.04,
+                "tpr": 0.3519
+              },
+              {
+                "fpr": 0.04,
+                "tpr": 0.3704
+              },
+              {
+                "fpr": 0.05,
+                "tpr": 0.4074
+              },
+              {
+                "fpr": 0.06,
+                "tpr": 0.463
+              },
+              {
+                "fpr": 0.07,
+                "tpr": 0.463
+              },
+              {
+                "fpr": 0.08,
+                "tpr": 0.5
+              },
+              {
+                "fpr": 0.09,
+                "tpr": 0.537
+              },
+              {
+                "fpr": 0.09,
+                "tpr": 0.5741
+              },
+              {
+                "fpr": 0.11,
+                "tpr": 0.6111
+              },
+              {
+                "fpr": 0.12,
+                "tpr": 0.6296
+              },
+              {
+                "fpr": 0.14,
+                "tpr": 0.6296
+              },
+              {
+                "fpr": 0.16,
+                "tpr": 0.6481
+              },
+              {
+                "fpr": 0.17,
+                "tpr": 0.6667
+              },
+              {
+                "fpr": 0.17,
+                "tpr": 0.6852
+              },
+              {
+                "fpr": 0.19,
+                "tpr": 0.7037
+              },
+              {
+                "fpr": 0.22,
+                "tpr": 0.7222
+              },
+              {
+                "fpr": 0.24,
+                "tpr": 0.7222
+              },
+              {
+                "fpr": 0.25,
+                "tpr": 0.7593
+              },
+              {
+                "fpr": 0.29,
+                "tpr": 0.7778
+              },
+              {
+                "fpr": 0.29,
+                "tpr": 0.8148
+              },
+              {
+                "fpr": 0.31,
+                "tpr": 0.8333
+              },
+              {
+                "fpr": 0.34,
+                "tpr": 0.8519
+              },
+              {
+                "fpr": 0.43,
+                "tpr": 0.8519
+              },
+              {
+                "fpr": 0.45,
+                "tpr": 0.8704
+              },
+              {
+                "fpr": 0.46,
+                "tpr": 0.8889
+              },
+              {
+                "fpr": 0.46,
+                "tpr": 0.9074
+              },
+              {
+                "fpr": 0.48,
+                "tpr": 0.9259
+              },
+              {
+                "fpr": 0.53,
+                "tpr": 0.9444
+              },
+              {
+                "fpr": 0.65,
+                "tpr": 0.9444
+              },
+              {
+                "fpr": 0.67,
+                "tpr": 0.963
+              },
+              {
+                "fpr": 0.9,
+                "tpr": 0.9815
+              },
+              {
+                "fpr": 1.0,
+                "tpr": 1.0
+              }
+            ],
+            "calibration_curve": [
+              {
+                "prob_pred": 0.08,
+                "prob_true": 0.0345
+              },
+              {
+                "prob_pred": 0.1871,
+                "prob_true": 0.125
+              },
+              {
+                "prob_pred": 0.3058,
+                "prob_true": 0.2222
+              },
+              {
+                "prob_pred": 0.4517,
+                "prob_true": 0.2857
+              },
+              {
+                "prob_pred": 0.5631,
+                "prob_true": 0.4211
+              },
+              {
+                "prob_pred": 0.6895,
+                "prob_true": 0.5294
+              },
+              {
+                "prob_pred": 0.8167,
+                "prob_true": 0.7143
+              },
+              {
+                "prob_pred": 0.8937,
+                "prob_true": 1.0
+              }
+            ]
+          },
+          "subgroup_fairness": [
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "21-29 años",
+              "n": 66,
+              "prevalence": 0.1818,
+              "predicted_positive_rate": 0.2424,
+              "roc_auc": 0.8056,
+              "sensitivity": 0.6667,
+              "specificity": 0.8519,
+              "brier_score": 0.1306
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "30-44 años",
+              "n": 47,
+              "prevalence": 0.4894,
+              "predicted_positive_rate": 0.5106,
+              "roc_auc": 0.8007,
+              "sensitivity": 0.7391,
+              "specificity": 0.7083,
+              "brier_score": 0.184
+            },
+            {
+              "dimension": "Grupo Etario",
+              "subgroup": "≥45 años",
+              "n": 41,
+              "prevalence": 0.4634,
+              "predicted_positive_rate": 0.6585,
+              "roc_auc": 0.8349,
+              "sensitivity": 0.8947,
+              "specificity": 0.5455,
+              "brier_score": 0.1793
+            },
+            {
+              "dimension": "Sexo Biológico",
+              "subgroup": "Femenino (Cohorte Pima)",
+              "n": 154,
+              "prevalence": 0.3506,
+              "predicted_positive_rate": 0.4351,
+              "roc_auc": 0.8411,
+              "sensitivity": 0.7778,
+              "specificity": 0.75,
+              "brier_score": 0.1598
+            }
+          ]
+        }
+      },
+      "statistical_tests": {
+        "friedman_test": {
+          "statistic": 10.08,
+          "p_value": 0.03910143984246804,
+          "significant_at_05": true,
+          "interpretation": "Existen diferencias estadísticamente significativas entre los modelos (p < 0.05)"
+        },
+        "wilcoxon_holm_pairwise": [
+          {
+            "model_a": "random_forest",
+            "model_b": "xgboost",
+            "statistic": 7.0,
+            "p_raw": 1.0,
+            "p_holm": 1.0,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "random_forest",
+            "model_b": "tabnet",
+            "statistic": 1.0,
+            "p_raw": 0.125,
+            "p_holm": 0.875,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "random_forest",
+            "model_b": "stacking_hybrid",
+            "statistic": 1.0,
+            "p_raw": 0.125,
+            "p_holm": 0.875,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "random_forest",
+            "model_b": "survival_risk_hybrid",
+            "statistic": 6.0,
+            "p_raw": 0.8125,
+            "p_holm": 1.0,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "xgboost",
+            "model_b": "tabnet",
+            "statistic": 0.0,
+            "p_raw": 0.0625,
+            "p_holm": 0.625,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "xgboost",
+            "model_b": "stacking_hybrid",
+            "statistic": 4.0,
+            "p_raw": 0.4375,
+            "p_holm": 1.0,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "xgboost",
+            "model_b": "survival_risk_hybrid",
+            "statistic": 6.0,
+            "p_raw": 0.75,
+            "p_holm": 1.0,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "tabnet",
+            "model_b": "stacking_hybrid",
+            "statistic": 0.0,
+            "p_raw": 0.0625,
+            "p_holm": 0.625,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "tabnet",
+            "model_b": "survival_risk_hybrid",
+            "statistic": 0.0,
+            "p_raw": 0.0625,
+            "p_holm": 0.625,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "stacking_hybrid",
+            "model_b": "survival_risk_hybrid",
+            "statistic": 5.0,
+            "p_raw": 0.625,
+            "p_holm": 1.0,
+            "significant_at_05": false
+          }
+        ],
+        "mcnemar_pairwise": [
+          {
+            "model_a": "random_forest",
+            "model_b": "xgboost",
+            "contingency_b_c": {
+              "a_correct_b_error": 3,
+              "a_error_b_correct": 2
+            },
+            "chi2_statistic": 0.0,
+            "p_value": 1.0,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "random_forest",
+            "model_b": "tabnet",
+            "contingency_b_c": {
+              "a_correct_b_error": 13,
+              "a_error_b_correct": 15
+            },
+            "chi2_statistic": 0.0357,
+            "p_value": 0.8501,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "random_forest",
+            "model_b": "stacking_hybrid",
+            "contingency_b_c": {
+              "a_correct_b_error": 5,
+              "a_error_b_correct": 6
+            },
+            "chi2_statistic": 0.0,
+            "p_value": 1.0,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "random_forest",
+            "model_b": "survival_risk_hybrid",
+            "contingency_b_c": {
+              "a_correct_b_error": 3,
+              "a_error_b_correct": 2
+            },
+            "chi2_statistic": 0.0,
+            "p_value": 1.0,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "xgboost",
+            "model_b": "tabnet",
+            "contingency_b_c": {
+              "a_correct_b_error": 14,
+              "a_error_b_correct": 17
+            },
+            "chi2_statistic": 0.129,
+            "p_value": 0.7194,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "xgboost",
+            "model_b": "stacking_hybrid",
+            "contingency_b_c": {
+              "a_correct_b_error": 7,
+              "a_error_b_correct": 9
+            },
+            "chi2_statistic": 0.0625,
+            "p_value": 0.8026,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "xgboost",
+            "model_b": "survival_risk_hybrid",
+            "contingency_b_c": {
+              "a_correct_b_error": 0,
+              "a_error_b_correct": 0
+            },
+            "chi2_statistic": 0.0,
+            "p_value": 1.0,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "tabnet",
+            "model_b": "stacking_hybrid",
+            "contingency_b_c": {
+              "a_correct_b_error": 9,
+              "a_error_b_correct": 8
+            },
+            "chi2_statistic": 0.0,
+            "p_value": 1.0,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "tabnet",
+            "model_b": "survival_risk_hybrid",
+            "contingency_b_c": {
+              "a_correct_b_error": 17,
+              "a_error_b_correct": 14
+            },
+            "chi2_statistic": 0.129,
+            "p_value": 0.7194,
+            "significant_at_05": false
+          },
+          {
+            "model_a": "stacking_hybrid",
+            "model_b": "survival_risk_hybrid",
+            "contingency_b_c": {
+              "a_correct_b_error": 9,
+              "a_error_b_correct": 7
+            },
+            "chi2_statistic": 0.0625,
+            "p_value": 0.8026,
+            "significant_at_05": false
+          }
+        ],
+        "bootstrap_95_ci": {
+          "random_forest": {
+            "roc_auc_95_ci": [
+              0.7713,
+              0.8993
+            ],
+            "brier_score_95_ci": [
+              0.1335,
+              0.1901
+            ],
+            "f1_score_95_ci": [
+              0.5865,
+              0.7761
+            ],
+            "mcc_95_ci": [
+              0.368,
+              0.6383
+            ]
+          },
+          "xgboost": {
+            "roc_auc_95_ci": [
+              0.774,
+              0.8993
+            ],
+            "brier_score_95_ci": [
+              0.1322,
+              0.1965
+            ],
+            "f1_score_95_ci": [
+              0.5999,
+              0.784
+            ],
+            "mcc_95_ci": [
+              0.3757,
+              0.6478
+            ]
+          },
+          "tabnet": {
+            "roc_auc_95_ci": [
+              0.7517,
+              0.8879
+            ],
+            "brier_score_95_ci": [
+              0.1304,
+              0.1918
+            ],
+            "f1_score_95_ci": [
+              0.5417,
+              0.7692
+            ],
+            "mcc_95_ci": [
+              0.3512,
+              0.6521
+            ]
+          },
+          "stacking_hybrid": {
+            "roc_auc_95_ci": [
+              0.7828,
+              0.9078
+            ],
+            "brier_score_95_ci": [
+              0.1169,
+              0.1816
+            ],
+            "f1_score_95_ci": [
+              0.5581,
+              0.7619
+            ],
+            "mcc_95_ci": [
+              0.3579,
+              0.6301
+            ]
+          },
+          "survival_risk_hybrid": {
+            "roc_auc_95_ci": [
+              0.7718,
+              0.9008
+            ],
+            "brier_score_95_ci": [
+              0.1317,
+              0.1921
+            ],
+            "f1_score_95_ci": [
+              0.5905,
+              0.7813
+            ],
+            "mcc_95_ci": [
+              0.367,
+              0.6356
+            ]
+          }
+        }
+      }
+    }
+  },
+  "statistical_evaluation": {
+    "nhanes_2017_2018": {
+      "friedman_test": {
+        "statistic": 4.9697,
+        "p_value": 0.2904209322287365,
+        "significant_at_05": false,
+        "interpretation": "No se detectaron diferencias significativas globales entre los modelos (p >= 0.05)"
+      },
+      "wilcoxon_holm_pairwise": [
+        {
+          "model_a": "random_forest",
+          "model_b": "xgboost",
+          "statistic": 4.0,
+          "p_raw": 0.4375,
+          "p_holm": 1.0,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "random_forest",
+          "model_b": "tabnet",
+          "statistic": 4.0,
+          "p_raw": 0.4375,
+          "p_holm": 1.0,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "random_forest",
+          "model_b": "stacking_hybrid",
+          "statistic": 1.0,
+          "p_raw": 0.125,
+          "p_holm": 1.0,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "random_forest",
+          "model_b": "survival_risk_hybrid",
+          "statistic": 4.0,
+          "p_raw": 0.4375,
+          "p_holm": 1.0,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "xgboost",
+          "model_b": "tabnet",
+          "statistic": 3.0,
+          "p_raw": 0.3125,
+          "p_holm": 1.0,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "xgboost",
+          "model_b": "stacking_hybrid",
+          "statistic": 2.0,
+          "p_raw": 0.375,
+          "p_holm": 1.0,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "xgboost",
+          "model_b": "survival_risk_hybrid",
+          "statistic": 5.0,
+          "p_raw": 0.625,
+          "p_holm": 1.0,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "tabnet",
+          "model_b": "stacking_hybrid",
+          "statistic": 1.0,
+          "p_raw": 0.125,
+          "p_holm": 1.0,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "tabnet",
+          "model_b": "survival_risk_hybrid",
+          "statistic": 3.0,
+          "p_raw": 0.3125,
+          "p_holm": 1.0,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "stacking_hybrid",
+          "model_b": "survival_risk_hybrid",
+          "statistic": 4.0,
+          "p_raw": 0.4375,
+          "p_holm": 1.0,
+          "significant_at_05": false
+        }
+      ],
+      "mcnemar_pairwise": [
+        {
+          "model_a": "random_forest",
+          "model_b": "xgboost",
+          "contingency_b_c": {
+            "a_correct_b_error": 32,
+            "a_error_b_correct": 16
+          },
+          "chi2_statistic": 4.6875,
+          "p_value": 0.0304,
+          "significant_at_05": true
+        },
+        {
+          "model_a": "random_forest",
+          "model_b": "tabnet",
+          "contingency_b_c": {
+            "a_correct_b_error": 35,
+            "a_error_b_correct": 37
+          },
+          "chi2_statistic": 0.0139,
+          "p_value": 0.9062,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "random_forest",
+          "model_b": "stacking_hybrid",
+          "contingency_b_c": {
+            "a_correct_b_error": 13,
+            "a_error_b_correct": 29
+          },
+          "chi2_statistic": 5.3571,
+          "p_value": 0.0206,
+          "significant_at_05": true
+        },
+        {
+          "model_a": "random_forest",
+          "model_b": "survival_risk_hybrid",
+          "contingency_b_c": {
+            "a_correct_b_error": 16,
+            "a_error_b_correct": 12
+          },
+          "chi2_statistic": 0.3214,
+          "p_value": 0.5708,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "xgboost",
+          "model_b": "tabnet",
+          "contingency_b_c": {
+            "a_correct_b_error": 47,
+            "a_error_b_correct": 65
+          },
+          "chi2_statistic": 2.5804,
+          "p_value": 0.1082,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "xgboost",
+          "model_b": "stacking_hybrid",
+          "contingency_b_c": {
+            "a_correct_b_error": 27,
+            "a_error_b_correct": 59
+          },
+          "chi2_statistic": 11.1744,
+          "p_value": 0.0008,
+          "significant_at_05": true
+        },
+        {
+          "model_a": "xgboost",
+          "model_b": "survival_risk_hybrid",
+          "contingency_b_c": {
+            "a_correct_b_error": 5,
+            "a_error_b_correct": 17
+          },
+          "chi2_statistic": 5.5,
+          "p_value": 0.019,
+          "significant_at_05": true
+        },
+        {
+          "model_a": "tabnet",
+          "model_b": "stacking_hybrid",
+          "contingency_b_c": {
+            "a_correct_b_error": 9,
+            "a_error_b_correct": 23
+          },
+          "chi2_statistic": 5.2812,
+          "p_value": 0.0216,
+          "significant_at_05": true
+        },
+        {
+          "model_a": "tabnet",
+          "model_b": "survival_risk_hybrid",
+          "contingency_b_c": {
+            "a_correct_b_error": 49,
+            "a_error_b_correct": 43
+          },
+          "chi2_statistic": 0.2717,
+          "p_value": 0.6022,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "stacking_hybrid",
+          "model_b": "survival_risk_hybrid",
+          "contingency_b_c": {
+            "a_correct_b_error": 42,
+            "a_error_b_correct": 22
+          },
+          "chi2_statistic": 5.6406,
+          "p_value": 0.0175,
+          "significant_at_05": true
+        }
+      ],
+      "bootstrap_95_ci": {
+        "random_forest": {
+          "roc_auc_95_ci": [
+            0.9079,
+            0.9523
+          ],
+          "brier_score_95_ci": [
+            0.0643,
+            0.0853
+          ],
+          "f1_score_95_ci": [
+            0.6508,
+            0.7671
+          ],
+          "mcc_95_ci": [
+            0.5891,
+            0.7168
+          ]
+        },
+        "xgboost": {
+          "roc_auc_95_ci": [
+            0.9134,
+            0.9538
+          ],
+          "brier_score_95_ci": [
+            0.0739,
+            0.0958
+          ],
+          "f1_score_95_ci": [
+            0.6465,
+            0.7507
+          ],
+          "mcc_95_ci": [
+            0.5846,
+            0.7006
+          ]
+        },
+        "tabnet": {
+          "roc_auc_95_ci": [
+            0.9098,
+            0.9546
+          ],
+          "brier_score_95_ci": [
+            0.0582,
+            0.0813
+          ],
+          "f1_score_95_ci": [
+            0.5657,
+            0.7084
+          ],
+          "mcc_95_ci": [
+            0.5312,
+            0.6823
+          ]
+        },
+        "stacking_hybrid": {
+          "roc_auc_95_ci": [
+            0.9117,
+            0.9553
+          ],
+          "brier_score_95_ci": [
+            0.0538,
+            0.078
+          ],
+          "f1_score_95_ci": [
+            0.658,
+            0.7774
+          ],
+          "mcc_95_ci": [
+            0.6119,
+            0.7413
+          ]
+        },
+        "survival_risk_hybrid": {
+          "roc_auc_95_ci": [
+            0.9124,
+            0.9553
+          ],
+          "brier_score_95_ci": [
+            0.0676,
+            0.0896
+          ],
+          "f1_score_95_ci": [
+            0.6588,
+            0.7663
+          ],
+          "mcc_95_ci": [
+            0.5981,
+            0.7171
+          ]
+        }
+      }
+    },
+    "pima_indians": {
+      "friedman_test": {
+        "statistic": 10.08,
+        "p_value": 0.03910143984246804,
+        "significant_at_05": true,
+        "interpretation": "Existen diferencias estadísticamente significativas entre los modelos (p < 0.05)"
+      },
+      "wilcoxon_holm_pairwise": [
+        {
+          "model_a": "random_forest",
+          "model_b": "xgboost",
+          "statistic": 7.0,
+          "p_raw": 1.0,
+          "p_holm": 1.0,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "random_forest",
+          "model_b": "tabnet",
+          "statistic": 1.0,
+          "p_raw": 0.125,
+          "p_holm": 0.875,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "random_forest",
+          "model_b": "stacking_hybrid",
+          "statistic": 1.0,
+          "p_raw": 0.125,
+          "p_holm": 0.875,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "random_forest",
+          "model_b": "survival_risk_hybrid",
+          "statistic": 6.0,
+          "p_raw": 0.8125,
+          "p_holm": 1.0,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "xgboost",
+          "model_b": "tabnet",
+          "statistic": 0.0,
+          "p_raw": 0.0625,
+          "p_holm": 0.625,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "xgboost",
+          "model_b": "stacking_hybrid",
+          "statistic": 4.0,
+          "p_raw": 0.4375,
+          "p_holm": 1.0,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "xgboost",
+          "model_b": "survival_risk_hybrid",
+          "statistic": 6.0,
+          "p_raw": 0.75,
+          "p_holm": 1.0,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "tabnet",
+          "model_b": "stacking_hybrid",
+          "statistic": 0.0,
+          "p_raw": 0.0625,
+          "p_holm": 0.625,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "tabnet",
+          "model_b": "survival_risk_hybrid",
+          "statistic": 0.0,
+          "p_raw": 0.0625,
+          "p_holm": 0.625,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "stacking_hybrid",
+          "model_b": "survival_risk_hybrid",
+          "statistic": 5.0,
+          "p_raw": 0.625,
+          "p_holm": 1.0,
+          "significant_at_05": false
+        }
+      ],
+      "mcnemar_pairwise": [
+        {
+          "model_a": "random_forest",
+          "model_b": "xgboost",
+          "contingency_b_c": {
+            "a_correct_b_error": 3,
+            "a_error_b_correct": 2
+          },
+          "chi2_statistic": 0.0,
+          "p_value": 1.0,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "random_forest",
+          "model_b": "tabnet",
+          "contingency_b_c": {
+            "a_correct_b_error": 13,
+            "a_error_b_correct": 15
+          },
+          "chi2_statistic": 0.0357,
+          "p_value": 0.8501,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "random_forest",
+          "model_b": "stacking_hybrid",
+          "contingency_b_c": {
+            "a_correct_b_error": 5,
+            "a_error_b_correct": 6
+          },
+          "chi2_statistic": 0.0,
+          "p_value": 1.0,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "random_forest",
+          "model_b": "survival_risk_hybrid",
+          "contingency_b_c": {
+            "a_correct_b_error": 3,
+            "a_error_b_correct": 2
+          },
+          "chi2_statistic": 0.0,
+          "p_value": 1.0,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "xgboost",
+          "model_b": "tabnet",
+          "contingency_b_c": {
+            "a_correct_b_error": 14,
+            "a_error_b_correct": 17
+          },
+          "chi2_statistic": 0.129,
+          "p_value": 0.7194,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "xgboost",
+          "model_b": "stacking_hybrid",
+          "contingency_b_c": {
+            "a_correct_b_error": 7,
+            "a_error_b_correct": 9
+          },
+          "chi2_statistic": 0.0625,
+          "p_value": 0.8026,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "xgboost",
+          "model_b": "survival_risk_hybrid",
+          "contingency_b_c": {
+            "a_correct_b_error": 0,
+            "a_error_b_correct": 0
+          },
+          "chi2_statistic": 0.0,
+          "p_value": 1.0,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "tabnet",
+          "model_b": "stacking_hybrid",
+          "contingency_b_c": {
+            "a_correct_b_error": 9,
+            "a_error_b_correct": 8
+          },
+          "chi2_statistic": 0.0,
+          "p_value": 1.0,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "tabnet",
+          "model_b": "survival_risk_hybrid",
+          "contingency_b_c": {
+            "a_correct_b_error": 17,
+            "a_error_b_correct": 14
+          },
+          "chi2_statistic": 0.129,
+          "p_value": 0.7194,
+          "significant_at_05": false
+        },
+        {
+          "model_a": "stacking_hybrid",
+          "model_b": "survival_risk_hybrid",
+          "contingency_b_c": {
+            "a_correct_b_error": 9,
+            "a_error_b_correct": 7
+          },
+          "chi2_statistic": 0.0625,
+          "p_value": 0.8026,
+          "significant_at_05": false
+        }
+      ],
+      "bootstrap_95_ci": {
+        "random_forest": {
+          "roc_auc_95_ci": [
+            0.7713,
+            0.8993
+          ],
+          "brier_score_95_ci": [
+            0.1335,
+            0.1901
+          ],
+          "f1_score_95_ci": [
+            0.5865,
+            0.7761
+          ],
+          "mcc_95_ci": [
+            0.368,
+            0.6383
+          ]
+        },
+        "xgboost": {
+          "roc_auc_95_ci": [
+            0.774,
+            0.8993
+          ],
+          "brier_score_95_ci": [
+            0.1322,
+            0.1965
+          ],
+          "f1_score_95_ci": [
+            0.5999,
+            0.784
+          ],
+          "mcc_95_ci": [
+            0.3757,
+            0.6478
+          ]
+        },
+        "tabnet": {
+          "roc_auc_95_ci": [
+            0.7517,
+            0.8879
+          ],
+          "brier_score_95_ci": [
+            0.1304,
+            0.1918
+          ],
+          "f1_score_95_ci": [
+            0.5417,
+            0.7692
+          ],
+          "mcc_95_ci": [
+            0.3512,
+            0.6521
+          ]
+        },
+        "stacking_hybrid": {
+          "roc_auc_95_ci": [
+            0.7828,
+            0.9078
+          ],
+          "brier_score_95_ci": [
+            0.1169,
+            0.1816
+          ],
+          "f1_score_95_ci": [
+            0.5581,
+            0.7619
+          ],
+          "mcc_95_ci": [
+            0.3579,
+            0.6301
+          ]
+        },
+        "survival_risk_hybrid": {
+          "roc_auc_95_ci": [
+            0.7718,
+            0.9008
+          ],
+          "brier_score_95_ci": [
+            0.1317,
+            0.1921
+          ],
+          "f1_score_95_ci": [
+            0.5905,
+            0.7813
+          ],
+          "mcc_95_ci": [
+            0.367,
+            0.6356
+          ]
+        }
+      }
+    }
+  },
+  "clinical_disclaimer": "ADVERTENCIA REGULATORIA Y ÉTICA: Este sistema es un prototipo académico e investigativo de inteligencia artificial explicable (Caso SP-03). NO es un dispositivo médico certificado (SaMD) ni sustituye el juicio clínico ni las pruebas diagnósticas confirmatorias (ADA/OMS).",
+  "default_dataset": "nhanes_2017_2018",
+  "traceability_matrix": [
+    {
+      "requirement_id": "REQ-01",
+      "caso03_specification": "Variables clínicas conjuntas: edad, IMC, glucosa, HbA1c, presión arterial, perfil lipídico, antecedentes y tratamientos",
+      "implementation_status": "IMPLEMENTADO (Datos Reales)",
+      "module_location": "nhanes_2017_2018 con 12 biomarcadores clínicos reales"
+    },
+    {
+      "requirement_id": "REQ-02",
+      "caso03_specification": "Definición de dos resultados independientes: aparición de diabetes y desarrollo de complicaciones",
+      "implementation_status": "IMPLEMENTADO CON MODELO DE SUPERVIVENCIA",
+      "module_location": "Resultado 1 en /predict; Resultado 2 mediante modelo de supervivencia Weibull calibrado"
+    },
+    {
+      "requirement_id": "REQ-03",
+      "caso03_specification": "Comparación de 5 modelos: 3 individuales y 2 híbridos",
+      "implementation_status": "IMPLEMENTADO Y EVALUADO",
+      "module_location": "RF, XGBoost, TabNet, Stacking Calibrado y Survival Risk Hybrid"
+    },
+    {
+      "requirement_id": "REQ-04",
+      "caso03_specification": "Optimización con Optuna",
+      "implementation_status": "IMPLEMENTADO CON TPE SAMPLER",
+      "module_location": "scripts/train_and_evaluate_v2.py con Optuna tuning"
+    },
+    {
+      "requirement_id": "REQ-05",
+      "caso03_specification": "Batería estadística formal: Friedman, Wilcoxon-Holm, McNemar, Bootstrap",
+      "implementation_status": "IMPLEMENTADO",
+      "module_location": "models/statistical_evaluation.json y router /statistics/evaluation"
+    },
+    {
+      "requirement_id": "REQ-06",
+      "caso03_specification": "Orquestación con n8n (6 workflows reutilizables)",
+      "implementation_status": "IMPLEMENTADO",
+      "module_location": "n8n/workflows/ (WF-01 a WF-06) y router /n8n"
+    },
+    {
+      "requirement_id": "REQ-07",
+      "caso03_specification": "Agente RAG con guías ADA 2024, OMS y CDC + LangFlow",
+      "implementation_status": "IMPLEMENTADO",
+      "module_location": "backend/app/rag/ y langflow/diabetes_clinical_rag_flow.json"
+    },
+    {
+      "requirement_id": "REQ-08",
+      "caso03_specification": "Generación de reportes multiformato PDF, Word y Excel",
+      "implementation_status": "IMPLEMENTADO",
+      "module_location": "backend/app/reports.py y router /reports/generate"
+    }
+  ]
+}

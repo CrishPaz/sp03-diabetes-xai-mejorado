@@ -1,0 +1,72 @@
+{
+  "name": "WF-03: Ejecución Programada de Inferencia Multimodelo en FastAPI",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 4
+            }
+          ]
+        }
+      },
+      "id": "node-trigger-hourly",
+      "name": "Cron (Cada 4 horas)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [180, 240]
+    },
+    {
+      "parameters": {
+        "url": "http://backend:8000/health",
+        "options": {}
+      },
+      "id": "node-health-check",
+      "name": "Verificar Estado de API y Modelos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [400, 240]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://backend:8000/predict-batch",
+        "sendBinaryData": true,
+        "binaryPropertyName": "data",
+        "options": {}
+      },
+      "id": "node-exec-batch",
+      "name": "Disparar Inferencia Multimodelo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [620, 240]
+    }
+  ],
+  "connections": {
+    "Cron (Cada 4 horas)": {
+      "main": [
+        [
+          {
+            "node": "Verificar Estado de API y Modelos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar Estado de API y Modelos": {
+      "main": [
+        [
+          {
+            "node": "Disparar Inferencia Multimodelo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true
+}

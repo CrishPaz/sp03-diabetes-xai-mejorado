@@ -1,0 +1,72 @@
+{
+  "name": "WF-06: Auditoría, Monitoreo de Deriva de Datos (Drift) y MLOps",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "triggerAtHour": 1,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      },
+      "id": "node-trigger-audit",
+      "name": "Cron Madrugada (01:00)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [180, 240]
+    },
+    {
+      "parameters": {
+        "url": "http://backend:8000/model-info",
+        "options": {}
+      },
+      "id": "node-get-metrics",
+      "name": "Consultar Métricas y Deriva",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [420, 240]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://backend:8000/api/v1/n8n/webhook/alert",
+        "jsonParameters": true,
+        "bodyParametersJson": "={\n  \"workflow_id\": \"WF-06\",\n  \"event\": \"monitoreo_rendimiento_drift\",\n  \"status\": \"OPTIMAL\",\n  \"brier_score\": $json.cohorts?.nhanes_2017_2018?.models?.xgboost?.test_metrics?.brier_score,\n  \"roc_auc\": $json.cohorts?.nhanes_2017_2018?.models?.xgboost?.test_metrics?.roc_auc,\n  \"timestamp\": new Date().toISOString()\n}"
+      },
+      "id": "node-record-mlops",
+      "name": "Registrar Estado en MLOps",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 240]
+    }
+  ],
+  "connections": {
+    "Cron Madrugada (01:00)": {
+      "main": [
+        [
+          {
+            "node": "Consultar Métricas y Deriva",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Métricas y Deriva": {
+      "main": [
+        [
+          {
+            "node": "Registrar Estado en MLOps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true
+}
