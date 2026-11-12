@@ -1,0 +1,15 @@
+catalogo: [lr, rf, xgb, tabnet, stack]
+nombres:
+  lr: Regresion Logistica L2 (linea base)
+  rf: Random Forest
+  xgb: XGBoost
+  tabnet: TabNet
+  stack: Stacking calibrado (meta-LR sobre OOF)
+supervivencia:
+  habilitado: false
+  motivo: "Requiere datos longitudinales con tiempo hasta evento (T) y censura (delta); ninguna cohorte los tiene."
+severidad_modelo:          # capa 1: cortes iniciales sobre probabilidad calibrada
+  cortes: [0.10, 0.30, 0.60]
+  etiquetas: [Bajo, Moderado, Alto, Muy alto]
+ood:
+  percentil: 99

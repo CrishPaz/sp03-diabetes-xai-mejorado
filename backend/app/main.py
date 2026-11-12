@@ -21,6 +21,7 @@ from backend.app.routers.n8n_router import router as n8n_router
 from backend.app.routers.rag_router import router as rag_router
 from backend.app.routers.reports_router import router as reports_router
 from backend.app.routers.stats_router import router as stats_router
+from backend.app.routers.v3_router import router as v3_router
 from backend.app.schemas import (
     BatchPredictResponse,
     HealthResponse,
@@ -61,29 +62,41 @@ app.include_router(rag_router)
 app.include_router(n8n_router)
 app.include_router(reports_router)
 app.include_router(stats_router)
+app.include_router(v3_router)
 
 predictor_service = DiabetesPredictorService()
 
 
+_HEALTH_CACHE: dict = {}
+
+
+def _health_extras() -> dict:
+    """Versiones, hashes de datasets (cacheados) y estado del proveedor LLM sin exponer la clave."""
+    import platform
+    import sklearn, xgboost, optuna, shap, torch
+    from backend.app.llm.deepseek_client import status as llm_status
+    from diabetes_ml.config import ROOT as _R, load as _load, sha256_path
+    from diabetes_ml.inference import available
+    if "hashes" not in _HEALTH_CACHE:
+        _HEALTH_CACHE["hashes"] = {k: sha256_path(_R / v["ruta"])[:16] for k, v in _load("datasets").items()}
+    return {"versiones": {"python": platform.python_version(), "scikit-learn": sklearn.__version__, "xgboost": xgboost.__version__,
+                          "optuna": optuna.__version__, "shap": shap.__version__, "torch": torch.__version__},
+            "llm": llm_status(), "hash_datasets": _HEALTH_CACHE["hashes"], "modelos_v3": available()}
+
+
 @app.get("/health", response_model=HealthResponse, tags=["Sistema"])
 def get_health() -> HealthResponse:
-    """Verifica disponibilidad del servicio y de los artefactos de modelos entrenados."""
+    """Verifica disponibilidad del servicio, artefactos, versiones, hashes de datos y estado del LLM."""
     return HealthResponse(
         status="ok" if predictor_service.is_ready else "degraded",
         service="sp03-diabetes-xai-api",
-        version="2.0.0",
+        version="3.0.0",
         models_loaded=predictor_service.is_ready,
         available_cohorts=list(predictor_service.bundles.keys()),
-        available_models=[
-            "random_forest",
-            "xgboost",
-            "tabnet",
-            "stacking_ensemble",
-            "hybrid_survival",
-            "logistic_regression",
-        ],
+        available_models=["logistic_regression", "random_forest", "xgboost", "tabnet", "stacking_ensemble"],
         random_seed=int(predictor_service.metadata.get("random_seed", 42)),
         disclaimer=predictor_service.metadata.get("clinical_disclaimer", ""),
+        **_health_extras(),
     )
 
 
@@ -105,6 +118,11 @@ def post_predict(payload: PredictRequest) -> PredictResponse:
     Ejecuta predicción probabilística individual para aparición/presencia de Diabetes Mellitus Tipo 2
     y calcula las contribuciones individuales SHAP para cada variable clínica.
     """
+    if payload.model_id == "hybrid_survival":
+        raise HTTPException(
+            status_code=422,
+            detail="Modelo de supervivencia deshabilitado: requiere datos longitudinales con tiempo hasta evento (T) y censura (δ).",
+        )
     try:
         response = predictor_service.predict_single(
             dataset_id=payload.dataset_id,

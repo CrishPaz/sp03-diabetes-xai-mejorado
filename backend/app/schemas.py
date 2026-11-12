@@ -13,6 +13,10 @@ class HealthResponse(BaseModel):
     available_models: List[str]
     random_seed: int
     disclaimer: str
+    versiones: Dict[str, str] = {}
+    llm: str = "sin clave"
+    hash_datasets: Dict[str, str] = {}
+    modelos_v3: List[str] = []
 
 
 class NhanesPatientInput(BaseModel):

@@ -1,0 +1,46 @@
+# Registro de cohortes reales (Fase 1). sha256 se completa con `python -m scripts.run_pipeline_v3 --hash-only`.
+nhanes_2017_2018:
+  nombre: CDC NHANES 2017-2018 (ciclo J)
+  url: https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2017
+  licencia: Dominio publico EE. UU.
+  formato: xpt
+  ruta: data/raw/nhanes
+  grupo: SEQN
+  tarea: dm2
+  rol: primaria
+pima_indians:
+  nombre: NIDDK Pima Indians
+  url: https://api.openml.org/d/37
+  licencia: Publico academico (UCI / OpenML)
+  formato: csv
+  ruta: data/raw/pima/pima-indians-diabetes.csv
+  grupo: indice
+  tarea: dm2
+  rol: benchmark
+brfss_2015:
+  nombre: CDC BRFSS 2015 (Diabetes Health Indicators 50/50)
+  url: https://archive.ics.uci.edu/dataset/891/cdc%2Bdiabetes%2Bhealth%2Bindicators
+  licencia: CC BY 4.0 (UCI 891); verificar en origen
+  formato: csv
+  ruta: data/raw/brfss/diabetes_binary_5050split_health_indicators_BRFSS2015.csv
+  grupo: indice
+  tarea: dm2_o_prediabetes
+  rol: secundaria
+diabetes_130_hospitals:
+  nombre: Diabetes 130-US Hospitals 1999-2008
+  url: https://archive.ics.uci.edu/dataset/296/diabetes-130-us-hospitals-for-years-1999-2008
+  licencia: CC BY 4.0 (DOI 10.24432/C5230J)
+  formato: csv
+  ruta: data/raw/diabetes_130_hospitals/diabetic_data.csv
+  grupo: patient_nbr
+  tarea: reingreso_30d
+  rol: secundaria (no es evidencia del Resultado 2)
+early_stage_sylhet:
+  nombre: Early Stage Diabetes Risk Prediction (Sylhet)
+  url: https://archive.ics.uci.edu/dataset/529
+  licencia: CC BY 4.0 (DOI 10.24432/C5VG8H)
+  formato: csv
+  ruta: data/raw/early_stage_sylhet/diabetes_data_upload.csv
+  grupo: indice
+  tarea: dm2
+  rol: secundaria

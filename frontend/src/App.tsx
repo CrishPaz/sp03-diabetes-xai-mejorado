@@ -36,6 +36,7 @@ import {
   RagQueryResponse,
   StatisticalEvaluation,
 } from './types';
+import PipelineV3 from './modules/PipelineV3';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
@@ -47,7 +48,8 @@ type TabKey =
   | 'orquestacion_n8n'
   | 'reportes'
   | 'lotes'
-  | 'metodologia';
+  | 'metodologia'
+  | 'pipeline_v3';
 
 const NHANES_PRESETS: Record<string, { label: string; values: Record<string, number> }> = {
   bajo_riesgo: {
@@ -517,6 +519,7 @@ export function App() {
             { key: 'reportes', label: '6. Reportes PDF / Word / Excel', icon: FileText },
             { key: 'lotes', label: '7. Lotes CSV & DEMO', icon: FileSpreadsheet },
             { key: 'metodologia', label: '8. Metodología F1-F12 & Trazabilidad', icon: BookOpen },
+            { key: 'pipeline_v3', label: '9. Pipeline v3 (Fases 0–7)', icon: ShieldCheck },
           ].map((tab) => {
             const Icon = tab.icon;
             const isSelected = activeTab === tab.key;
@@ -717,7 +720,7 @@ export function App() {
                 >
                   <optgroup label="Modelos Híbridos (Recomendados)">
                     <option value="stacking_ensemble">Stacking Calibrado (Meta-Clasificador)</option>
-                    <option value="hybrid_survival">Híbrido Riesgo + Supervivencia Weibull</option>
+                    <option value="hybrid_survival" disabled>Supervivencia (deshabilitado: requiere T y censura)</option>
                   </optgroup>
                   <optgroup label="Modelos Individuales">
                     <option value="xgboost">XGBoost Classifier (Optuna Tuned)</option>
@@ -1987,6 +1990,7 @@ export function App() {
             )}
           </div>
         )}
+        {activeTab === 'pipeline_v3' && <PipelineV3 apiBase={API_BASE} />}
       </main>
 
       {/* Pie de Página */}

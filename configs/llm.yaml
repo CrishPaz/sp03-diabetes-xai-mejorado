@@ -1,0 +1,9 @@
+proveedor: deepseek
+base_url_env: DEEPSEEK_BASE_URL
+api_key_env: DEEPSEEK_API_KEY
+modelo_env: DEEPSEEK_MODEL
+modelo_por_defecto: deepseek-chat
+temperatura: 0.1
+timeout_s: 30
+max_reintentos: 2
+edicion_guia_ada: "Standards of Care in Diabetes 2024 (configurable: indexar la edicion vigente)"

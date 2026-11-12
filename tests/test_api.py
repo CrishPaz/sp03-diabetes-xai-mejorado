@@ -22,7 +22,8 @@ def test_health_endpoint() -> None:
     assert "random_forest" in data["available_models"]
     assert "tabnet" in data["available_models"]
     assert "stacking_ensemble" in data["available_models"]
-    assert "hybrid_survival" in data["available_models"]
+    assert "hybrid_survival" not in data["available_models"]  # H2: supervivencia deshabilitada
+    assert data["version"] == "3.0.0" and "llm" in data and data["hash_datasets"]
 
 
 def test_model_info_endpoint() -> None:
@@ -63,7 +64,7 @@ def test_predict_nhanes_all_models() -> None:
             "tratamiento_antihipertensivo": 1,
         },
     }
-    for model_id in ["xgboost", "random_forest", "tabnet", "stacking_ensemble", "hybrid_survival"]:
+    for model_id in ["xgboost", "random_forest", "tabnet", "stacking_ensemble"]:
         payload["model_id"] = model_id
         resp = client.post("/predict", json=payload)
         assert resp.status_code == 200
@@ -73,8 +74,9 @@ def test_predict_nhanes_all_models() -> None:
         assert 0.0 < body["probability"] < 1.0
         assert len(body["shap_contributions"]) == 12
         assert len(body["all_models_comparison"]) >= 4
-        assert body["survival_projections"] is not None
-        assert len(body["survival_projections"]) == 2
+        assert body["survival_projections"] is None
+    payload["model_id"] = "hybrid_survival"
+    assert client.post("/predict", json=payload).status_code == 422
 
 
 def test_predict_pima_cohort() -> None:

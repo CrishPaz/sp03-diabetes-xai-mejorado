@@ -39,3 +39,8 @@ data/reports/*.pdf
 data/reports/*.docx
 data/reports/*.xlsx
 !data/reports/.gitkeep
+
+# v3: ejecución local
+logs/
+mlruns/
+frontend/dist/

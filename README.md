@@ -7,6 +7,33 @@
 
 ---
 
+## 0. Versión 3 (Fases 0–7 del Mejoramiento del Promptuario)
+
+La v3 reemplaza el protocolo de entrenamiento y corrige los hallazgos del documento *Mejoramiento del Promptuario* y de [`docs/PROTOCOLO_ENTRENAMIENTO.md`](docs/PROTOCOLO_ENTRENAMIENTO.md). **Las cifras de las secciones 1 y 4 corresponden al pipeline v2 (partición 80/20, CV simple) y quedan superadas**; los resultados vigentes están en [`docs/RESULTADOS_V3.md`](docs/RESULTADOS_V3.md), generados desde los artefactos reales de `models/v3/`.
+
+| Fase | Qué se implementó | Dónde |
+| :--- | :--- | :--- |
+| 0 · Preparación | `configs/*.yaml`, paquete `diabetes_ml/`, jobs en procesos separados, DeepSeek vía API compatible con OpenAI con guardrails y respaldo determinista, `/health` con versiones, hashes y estado del LLM, `HARNESS.md`, banco `tests/llm_eval/` | `diabetes_ml/`, `backend/app/llm/` |
+| 1 · Datos | Registro con licencia y SHA-256, diagrama de exclusiones y n oficial único, etiqueta escrita y escenarios A/B, deduplicación (Sylhet −269 filas, BRFSS −1,635), ceros→NaN en Pima, Tabla 1 con SMD, editor de metadata versionado, validación de grupos PASS/FAIL | `diabetes_ml/data.py`, `/v3/data/*` |
+| 2 · Entrenamiento | Partición 70/15/15 agrupada, CV anidada 5×3 con Optuna (TPE multivariado + MedianPruner, storage `optuna/optuna.db`), LR/RF/XGBoost/TabNet/Stacking, TabNet sin fuga, jobs + SSE con progreso por pliegue, trials, pérdidas y CPU/RAM, MLflow | `diabetes_ml/training.py`, `/v3/train/*` |
+| 3 · Evaluación | Prueba leída una vez, umbral y calibración en Validación, IC bootstrap, DeLong, McNemar, bootstrap pareado, Friedman + Nemenyi, t de Nadeau-Bengio, Holm, curva de decisión, equidad | `diabetes_ml/evaluation.py`, `/v3/evaluate/*` |
+| 4 · Explicabilidad | SHAP (Tree/Linear), permutación, máscaras TabNet por paso/paciente/clase, Integrated Gradients/Saliency/Gradiente×Entrada (equivalente tabular de Grad-CAM++), concordancia Spearman/Jaccard, estabilidad entre pliegues, plausibilidad ADA | `diabetes_ml/explain.py`, `/v3/explain/*` |
+| 5 · Reportes | Figuras a 600 DPI (PNG/TIFF/PDF, Okabe-Ito), PDF/Word/Excel con paridad de cifras y hoja de metadatos | `diabetes_ml/reports.py`, `/v3/reports/*` |
+| 6 · Inferencia | Probabilidad calibrada, conformal (α = 0.10), OOD por Mahalanobis, severidad en dos capas (modelo y ADA) con discordancia, SHAP en frases, «¿qué pasaría si?», deriva PSI/KS | `diabetes_ml/inference.py`, `/v3/predict`, `/v3/drift` |
+| 7 · Optuna UI | Estudios exploratorios (TPE/Random/CMA-ES/NSGA-II, Median/Hyperband), monitoreo, historial, importancia fANOVA, contorno, EDF, Pareto, exportación a YAML | `diabetes_ml/optuna_ui.py`, `/v3/optuna/*` |
+
+**Hallazgos corregidos:** H1 (escenario B sin HbA1c ni glucosa), H2 (supervivencia deshabilitada en UI y API con el motivo visible), H3 (n oficial NHANES = 4,829), H4 (la suite tiene hoy 24 pruebas), H5 (pruebas con potencia real), H6 (catálogo fijo LR/RF/XGB/TabNet/Stacking), H7 (130-Hospitals como tarea secundaria de reingreso), H8 (deduplicación), H9 (ceros→NaN), H10 (600 DPI), H11 (edición de la guía ADA configurable en `configs/llm.yaml`), H12 (licencias por cohorte en `configs/datasets.yaml`).
+
+**No implementado (opcional en el documento):** cliente Streamlit y extensión de retinografía con Grad-CAM++ real. Las dependencias de frontend propuestas (react-query, plotly, zod) se sustituyeron por gráficos SVG propios y validación manual, para no añadir paquetes.
+
+```bash
+.venv/Scripts/python.exe -m scripts.run_pipeline_v3 --all     # entrena NHANES y Pima, escenarios A y B
+.venv/Scripts/python.exe -m scripts.summarize_v3              # regenera docs/RESULTADOS_V3.md
+.venv/Scripts/python.exe -m pytest -q tests/                  # 24 pruebas
+```
+
+---
+
 ## 1. Qué se ejecutó y verificó realmente en este entorno
 
 En este entorno Linux (`x86_64`) se ejecutaron y verificaron de principio a fin las siguientes fases reales:
@@ -47,7 +74,7 @@ En este entorno Linux (`x86_64`) se ejecutaron y verificaron de principio a fin 
 8. **Despliegue local activo y verificado:**
    - **Backend FastAPI (v2.0.0):** `http://localhost:8000` (Docs en `/docs`)
    - **Frontend React 18 + Vite + Tailwind CSS:** `http://localhost:5173`
-   - **Suite de Pruebas:** 10 de 10 tests pasando exitosamente con `pytest`.
+   - **Suite de Pruebas:** 11 pruebas en v2; 24 en v3 (`tests/test_api.py` + `tests/test_v3.py`).
 
 ---
 
@@ -75,7 +102,7 @@ Siguiendo estrictamente las directrices de integridad científica:
 
 ## 4. Resultados Reales Verificados (`RANDOM_SEED = 42`)
 
-### 4.1 Cohorte Primaria: CDC NHANES 2017–2018 ($n = 4,832$ adultos; Desarrollo 80% = $3,866$; Prueba Aislada 20% = $966$)
+### 4.1 Cohorte Primaria: CDC NHANES 2017–2018 ($n = 4,832$ adultos — cifra del pipeline v2; el n oficial v3 es 4,829; Desarrollo 80% = $3,866$; Prueba Aislada 20% = $966$)
 
 | Algoritmo | ROC-AUC (Prueba Aislada) | ROC-AUC (5-Fold CV Agrupado) | Sensibilidad | Especificidad | Precisión (VPP) | F1-Score | Brier Score (Calibración) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |

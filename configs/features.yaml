@@ -1,0 +1,40 @@
+# Definicion de etiqueta y escenarios (Fase 1, hallazgo H1).
+nhanes_2017_2018:
+  etiqueta: "DIQ010 == 1 (diagnostico medico autorreportado de diabetes); DIQ010 == 3 (limitrofe) se codifica 0"
+  excluidas: [DIQ050, DIQ070]          # farmacos post-diagnostico: fuga directa
+  sensibles_solo_auditoria: [RIAGENDR, RIDRETH1, INDFMPIR]
+  escenarios:
+    A:
+      descripcion: "Deteccion con biomarcadores glucemicos (circular: HbA1c y glucosa son criterios diagnosticos)"
+      predictores: [edad, imc, glucosa, hba1c, presion_sistolica, presion_diastolica, colesterol_total, colesterol_hdl, trigliceridos, antecedente_familiar_diabetes, antecedente_hipertension, tratamiento_antihipertensivo]
+    B:
+      descripcion: "Prediccion temprana sin HbA1c ni glucosa"
+      predictores: [edad, imc, presion_sistolica, presion_diastolica, colesterol_total, colesterol_hdl, trigliceridos, antecedente_familiar_diabetes, antecedente_hipertension, tratamiento_antihipertensivo]
+pima_indians:
+  etiqueta: "outcome == 1 (DM a 5 anos, criterio OMS en el estudio NIDDK)"
+  ceros_a_nan: [glucosa, presion_diastolica, pliegue_cutaneo, insulina, imc]
+  escenarios:
+    A:
+      descripcion: "Con glucosa a 2 h de OGTT"
+      predictores: [embarazos, glucosa, presion_diastolica, pliegue_cutaneo, insulina, imc, pedigri_diabetes, edad]
+    B:
+      descripcion: "Sin glucosa ni insulina"
+      predictores: [embarazos, presion_diastolica, pliegue_cutaneo, imc, pedigri_diabetes, edad]
+# Direccion esperada del efecto segun factores de riesgo ADA (tabla de plausibilidad, Fase 4)
+direccion_esperada:
+  edad: "+"
+  imc: "+"
+  glucosa: "+"
+  hba1c: "+"
+  presion_sistolica: "+"
+  presion_diastolica: "+"
+  colesterol_total: "+"
+  colesterol_hdl: "-"
+  trigliceridos: "+"
+  antecedente_familiar_diabetes: "+"
+  antecedente_hipertension: "+"
+  tratamiento_antihipertensivo: "+"
+  embarazos: "+"
+  pliegue_cutaneo: "+"
+  insulina: "+"
+  pedigri_diabetes: "+"

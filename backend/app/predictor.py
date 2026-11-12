@@ -414,7 +414,7 @@ class DiabetesPredictorService:
             base_value=round(base_val, 4),
             shap_contributions=contributions,
             all_models_comparison=comparisons,
-            survival_projections=survival_projs,
+            survival_projections=None,  # H2: sin T ni censura no se proyectan complicaciones
             clinical_evidence_summary=(
                 "Directrices ADA 2024 / OMS: Se sugiere intervención en estilo de vida con reducción del 7% "
                 "del peso corporal y 150 min/semana de ejercicio aeróbico estructurado."

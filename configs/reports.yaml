@@ -1,0 +1,6 @@
+dpi: 600
+columna_mm: 85
+doble_columna_mm: 180
+fuente_pt: 8
+paleta: okabe_ito
+salida: reports/v3

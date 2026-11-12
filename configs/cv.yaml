@@ -1,0 +1,17 @@
+random_seed: 42
+particion:            # 70/15/15 agrupada y estratificada (Fase 2)
+  n_splits: 20
+  folds_prueba: 3
+  folds_validacion: 3
+cv_anidada:
+  externos: 5
+  internos: 3
+umbral:
+  metodo: youden       # youden | sensibilidad
+  sensibilidad_objetivo: 0.80
+calibracion:
+  isotonica_min_eventos: 1000   # si hay menos eventos en validacion se usa sigmoide (Platt)
+conformal:
+  alpha: 0.10
+bootstrap:
+  B: 2000

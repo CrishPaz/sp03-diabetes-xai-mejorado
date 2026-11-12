@@ -1,0 +1,32 @@
+# Espacios de busqueda Optuna (Fase 2). Rangos acotados al tamano tabular de NHANES/Pima.
+optuna:
+  sampler: tpe
+  multivariate: true
+  pruner: median
+  n_trials: {lr: 20, rf: 15, xgb: 20, tabnet: 0}   # tabnet 0 = hiperparametros fijos (coste CPU); configurable
+  storage: sqlite:///optuna/optuna.db
+lr:
+  C: {type: float, low: 1.0e-4, high: 100.0, log: true}       # regularizacion amplia, escala log
+  class_weight: {type: cat, choices: [none, balanced]}
+rf:
+  n_estimators: {type: int, low: 200, high: 600, step: 100}  # >600 no mejora AUC en n<5000 y encarece
+  max_depth: {type: int, low: 3, high: 20}
+  min_samples_leaf: {type: int, low: 1, high: 20}
+  max_features: {type: cat, choices: [sqrt, log2, 0.5]}
+xgb:
+  learning_rate: {type: float, low: 0.01, high: 0.3, log: true}
+  max_depth: {type: int, low: 2, high: 8}
+  min_child_weight: {type: float, low: 1.0, high: 20.0}
+  subsample: {type: float, low: 0.5, high: 1.0}
+  colsample_bytree: {type: float, low: 0.5, high: 1.0}
+  gamma: {type: float, low: 0.0, high: 5.0}
+  reg_alpha: {type: float, low: 1.0e-8, high: 10.0, log: true}
+  reg_lambda: {type: float, low: 1.0e-3, high: 10.0, log: true}
+  n_estimators: {type: int, low: 100, high: 600, step: 50}
+tabnet_fijo: {n_d: 16, n_a: 16, n_steps: 4, gamma: 1.3, lambda_sparse: 1.0e-4, lr: 0.02, max_epochs: 100, patience: 15, batch_size: 256, virtual_batch_size: 128}
+tabnet:                    # se usa solo si n_trials.tabnet > 0
+  n_d: {type: cat, choices: [8, 16, 24, 32]}
+  n_steps: {type: int, low: 3, high: 7}
+  gamma: {type: float, low: 1.0, high: 2.0}
+  lambda_sparse: {type: float, low: 1.0e-6, high: 1.0e-3, log: true}
+  lr: {type: float, low: 1.0e-3, high: 2.0e-2, log: true}

@@ -1,0 +1,4895 @@
+{
+ "cohorte": "pima_indians",
+ "escenario": "A",
+ "auditoria": {
+  "flujo_exclusiones": [
+   {
+    "paso": "Registros NIDDK",
+    "n": 768,
+    "excluidos": null
+   }
+  ],
+  "ceros_convertidos_a_nan": {
+   "glucosa": 5,
+   "presion_diastolica": 35,
+   "pliegue_cutaneo": 227,
+   "insulina": 374,
+   "imc": 11
+  },
+  "cohorte": "pima_indians",
+  "escenario": "A",
+  "n_oficial": 768,
+  "eventos": 268,
+  "prevalencia": 0.349,
+  "etiqueta": "outcome == 1 (DM a 5 anos, criterio OMS en el estudio NIDDK)",
+  "descripcion_escenario": "Con glucosa a 2 h de OGTT",
+  "predictores": [
+   "embarazos",
+   "glucosa",
+   "presion_diastolica",
+   "pliegue_cutaneo",
+   "insulina",
+   "imc",
+   "pedigri_diabetes",
+   "edad"
+  ],
+  "sha256_datos": "c1e0f7d59d2e366cff1ab9fee1796e1e381ea5da64c6d96ef4baabf1eda5f238"
+ },
+ "predictores": [
+  "embarazos",
+  "glucosa",
+  "presion_diastolica",
+  "pliegue_cutaneo",
+  "insulina",
+  "imc",
+  "pedigri_diabetes",
+  "edad"
+ ],
+ "particion": {
+  "tabla": [
+   {
+    "clase": "Sin DM2",
+    "desarrollo": 350,
+    "validacion": 75,
+    "prueba": 75,
+    "total": 500
+   },
+   {
+    "clase": "Con DM2",
+    "desarrollo": 187,
+    "validacion": 39,
+    "prueba": 42,
+    "total": 268
+   }
+  ],
+  "hash_prueba": "4b4809ee77c3087e",
+  "validacion_grupos": {
+   "estado": "PASS",
+   "alertas": [
+    "Balance entre particiones (SMD < 0.1)",
+    "Representatividad (>= 30 eventos por subgrupo)"
+   ],
+   "controles": [
+    {
+     "control": "Identificador único por paciente",
+     "ok": true,
+     "detalle": "0 duplicados"
+    },
+    {
+     "control": "Intersección vacía entre particiones",
+     "ok": true,
+     "detalle": "0 pacientes compartidos"
+    },
+    {
+     "control": "Balance entre particiones (SMD < 0.1)",
+     "ok": false,
+     "detalle": {
+      "embarazos": 0.02,
+      "glucosa": 0.015,
+      "presion_diastolica": 0.039,
+      "pliegue_cutaneo": 0.035,
+      "insulina": 0.124,
+      "imc": 0.032,
+      "pedigri_diabetes": 0.088,
+      "edad": 0.097
+     }
+    },
+    {
+     "control": "Representatividad (>= 30 eventos por subgrupo)",
+     "ok": false,
+     "detalle": [
+      ">=60/Femenino: 9"
+     ]
+    }
+   ]
+  },
+  "interpretabilidad": {
+   "que_muestra": "Partición 70/15/15 agrupada y estratificada.",
+   "como_leerla": "Desarrollo: CV anidada y modelo final; Validación: calibración, umbral y conformal; Prueba: evaluación única.",
+   "interpretacion": "Validación de grupos: PASS.",
+   "limitaciones": "La agrupación puede desviar las proporciones en ±1 %."
+  }
+ },
+ "cv_anidada": {
+  "resumen": {
+   "lr": {
+    "auc_externo": [
+     0.8643,
+     0.7575,
+     0.8139,
+     0.8293,
+     0.8498
+    ],
+    "media": 0.823,
+    "de": 0.0413,
+    "ic95_t": [
+     0.7716,
+     0.8743
+    ],
+    "brecha_optimismo": -0.0064,
+    "params_por_pliegue": [
+     {
+      "C": 0.3289000640527835,
+      "class_weight": "balanced"
+     },
+     {
+      "C": 0.08519038030690229,
+      "class_weight": "balanced"
+     },
+     {
+      "C": 0.054502936945582565,
+      "class_weight": "none"
+     },
+     {
+      "C": 0.48985959029188514,
+      "class_weight": "balanced"
+     },
+     {
+      "C": 0.054502936945582565,
+      "class_weight": "none"
+     }
+    ],
+    "segundos": [
+     2.4,
+     3.0,
+     3.2,
+     2.7,
+     2.5
+    ]
+   },
+   "rf": {
+    "auc_externo": [
+     0.8932,
+     0.7293,
+     0.8143,
+     0.8367,
+     0.8687
+    ],
+    "media": 0.8284,
+    "de": 0.0631,
+    "ic95_t": [
+     0.7501,
+     0.9068
+    ],
+    "brecha_optimismo": -0.0112,
+    "params_por_pliegue": [
+     {
+      "n_estimators": 600,
+      "max_depth": 6,
+      "min_samples_leaf": 4,
+      "max_features": 0.5
+     },
+     {
+      "n_estimators": 300,
+      "max_depth": 14,
+      "min_samples_leaf": 11,
+      "max_features": "log2"
+     },
+     {
+      "n_estimators": 400,
+      "max_depth": 18,
+      "min_samples_leaf": 6,
+      "max_features": "sqrt"
+     },
+     {
+      "n_estimators": 300,
+      "max_depth": 16,
+      "min_samples_leaf": 18,
+      "max_features": 0.5
+     },
+     {
+      "n_estimators": 200,
+      "max_depth": 4,
+      "min_samples_leaf": 7,
+      "max_features": 0.5
+     }
+    ],
+    "segundos": [
+     45.0,
+     48.9,
+     50.4,
+     44.5,
+     40.3
+    ]
+   },
+   "xgb": {
+    "auc_externo": [
+     0.8853,
+     0.7143,
+     0.8004,
+     0.8305,
+     0.8699
+    ],
+    "media": 0.8201,
+    "de": 0.0679,
+    "ic95_t": [
+     0.7358,
+     0.9044
+    ],
+    "brecha_optimismo": -0.003,
+    "params_por_pliegue": [
+     {
+      "learning_rate": 0.12801344968238024,
+      "max_depth": 3,
+      "min_child_weight": 3.2436524153291204,
+      "subsample": 0.816062099072678,
+      "colsample_bytree": 0.5338926633135659,
+      "gamma": 4.650525134193995,
+      "reg_alpha": 0.17079749341091435,
+      "reg_lambda": 4.410980354192721,
+      "n_estimators": 400
+     },
+     {
+      "learning_rate": 0.1133405407448625,
+      "max_depth": 6,
+      "min_child_weight": 3.0788110105227116,
+      "subsample": 0.9954338342610138,
+      "colsample_bytree": 0.5261906026785287,
+      "gamma": 0.6159678731960276,
+      "reg_alpha": 4.255137107721162,
+      "reg_lambda": 1.290816276261692,
+      "n_estimators": 550
+     },
+     {
+      "learning_rate": 0.059799109628186034,
+      "max_depth": 3,
+      "min_child_weight": 6.592199608486126,
+      "subsample": 0.7629521292453955,
+      "colsample_bytree": 0.6022037624104817,
+      "gamma": 4.591204000301667,
+      "reg_alpha": 0.0033799702693931826,
+      "reg_lambda": 0.02040230399723546,
+      "n_estimators": 400
+     },
+     {
+      "learning_rate": 0.06099075519692415,
+      "max_depth": 4,
+      "min_child_weight": 7.474991059314818,
+      "subsample": 0.8121975907014797,
+      "colsample_bytree": 0.7491585419386547,
+      "gamma": 3.5392222354510285,
+      "reg_alpha": 0.00030627115269892316,
+      "reg_lambda": 3.10970939638473,
+      "n_estimators": 600
+     },
+     {
+      "learning_rate": 0.2389488050058883,
+      "max_depth": 5,
+      "min_child_weight": 1.6367410778840448,
+      "subsample": 0.9935821797894574,
+      "colsample_bytree": 0.6776412613681428,
+      "gamma": 1.1051964246485106,
+      "reg_alpha": 3.3249654291555273,
+      "reg_lambda": 1.9057397977638417,
+      "n_estimators": 550
+     }
+    ],
+    "segundos": [
+     47.8,
+     48.0,
+     43.6,
+     51.1,
+     47.9
+    ]
+   },
+   "tabnet": {
+    "auc_externo": [
+     0.8771,
+     0.7105,
+     0.7201,
+     0.7927,
+     0.778
+    ],
+    "media": 0.7757,
+    "de": 0.0669,
+    "ic95_t": [
+     0.6926,
+     0.8588
+    ],
+    "brecha_optimismo": null,
+    "params_por_pliegue": [
+     {
+      "n_d": 16,
+      "n_a": 16,
+      "n_steps": 4,
+      "gamma": 1.3,
+      "lambda_sparse": 0.0001,
+      "lr": 0.02,
+      "max_epochs": 100,
+      "patience": 15,
+      "batch_size": 256,
+      "virtual_batch_size": 128
+     },
+     {
+      "n_d": 16,
+      "n_a": 16,
+      "n_steps": 4,
+      "gamma": 1.3,
+      "lambda_sparse": 0.0001,
+      "lr": 0.02,
+      "max_epochs": 100,
+      "patience": 15,
+      "batch_size": 256,
+      "virtual_batch_size": 128
+     },
+     {
+      "n_d": 16,
+      "n_a": 16,
+      "n_steps": 4,
+      "gamma": 1.3,
+      "lambda_sparse": 0.0001,
+      "lr": 0.02,
+      "max_epochs": 100,
+      "patience": 15,
+      "batch_size": 256,
+      "virtual_batch_size": 128
+     },
+     {
+      "n_d": 16,
+      "n_a": 16,
+      "n_steps": 4,
+      "gamma": 1.3,
+      "lambda_sparse": 0.0001,
+      "lr": 0.02,
+      "max_epochs": 100,
+      "patience": 15,
+      "batch_size": 256,
+      "virtual_batch_size": 128
+     },
+     {
+      "n_d": 16,
+      "n_a": 16,
+      "n_steps": 4,
+      "gamma": 1.3,
+      "lambda_sparse": 0.0001,
+      "lr": 0.02,
+      "max_epochs": 100,
+      "patience": 15,
+      "batch_size": 256,
+      "virtual_batch_size": 128
+     }
+    ],
+    "segundos": [
+     6.3,
+     3.0,
+     2.3,
+     4.5,
+     4.7
+    ]
+   },
+   "stack": {
+    "auc_externo": [
+     0.8947,
+     0.7368,
+     0.8139,
+     0.8405,
+     0.871
+    ],
+    "media": 0.8314,
+    "de": 0.0611,
+    "ic95_t": [
+     0.7556,
+     0.9072
+    ],
+    "brecha_optimismo": null,
+    "params_por_pliegue": [],
+    "segundos": []
+   }
+  },
+  "importancia_xgb_por_pliegue": [
+   {
+    "embarazos": 0.08399999886751175,
+    "glucosa": 0.2002899944782257,
+    "presion_diastolica": 0.0727199986577034,
+    "pliegue_cutaneo": 0.11817000061273575,
+    "insulina": 0.14653000235557556,
+    "imc": 0.1488499939441681,
+    "pedigri_diabetes": 0.11375000327825546,
+    "edad": 0.11569000035524368
+   },
+   {
+    "embarazos": 0.06747999787330627,
+    "glucosa": 0.29802998900413513,
+    "presion_diastolica": 0.03858000040054321,
+    "pliegue_cutaneo": 0.10159999877214432,
+    "insulina": 0.15952999889850616,
+    "imc": 0.14226000010967255,
+    "pedigri_diabetes": 0.07266999781131744,
+    "edad": 0.11985000222921371
+   },
+   {
+    "embarazos": 0.1151999980211258,
+    "glucosa": 0.18796999752521515,
+    "presion_diastolica": 0.0763700008392334,
+    "pliegue_cutaneo": 0.10055000334978104,
+    "insulina": 0.13241000473499298,
+    "imc": 0.15133999288082123,
+    "pedigri_diabetes": 0.09460999816656113,
+    "edad": 0.14156000316143036
+   },
+   {
+    "embarazos": 0.08659999817609787,
+    "glucosa": 0.2141599953174591,
+    "presion_diastolica": 0.0728600025177002,
+    "pliegue_cutaneo": 0.10215000063180923,
+    "insulina": 0.1412999927997589,
+    "imc": 0.14813999831676483,
+    "pedigri_diabetes": 0.10756000131368637,
+    "edad": 0.12724000215530396
+   },
+   {
+    "embarazos": 0.0744599997997284,
+    "glucosa": 0.26471999287605286,
+    "presion_diastolica": 0.06069000065326691,
+    "pliegue_cutaneo": 0.09883999824523926,
+    "insulina": 0.12689000368118286,
+    "imc": 0.12961000204086304,
+    "pedigri_diabetes": 0.1014299988746643,
+    "edad": 0.1433500051498413
+   }
+  ],
+  "pruebas": {
+   "friedman": {
+    "chi2": 12.646464646464642,
+    "p": 0.013138866689888722
+   },
+   "rangos_medios": {
+    "lr": 3.3,
+    "rf": 2.2,
+    "xgb": 3.2,
+    "tabnet": 4.8,
+    "stack": 1.5
+   },
+   "diferencia_critica_nemenyi": 2.728,
+   "pares_nadeau_bengio": [
+    {
+     "t": -0.3758166378090261,
+     "p": 0.7261349367616459,
+     "media_diferencia": -0.005480000000000018,
+     "modelo_a": "lr",
+     "modelo_b": "rf",
+     "p_nemenyi": 0.8066256029368728,
+     "p_holm": 1.0
+    },
+    {
+     "t": 0.16084631345239034,
+     "p": 0.8800110891215395,
+     "media_diferencia": 0.0028799999999999716,
+     "modelo_a": "lr",
+     "modelo_b": "xgb",
+     "p_nemenyi": 0.99997744933817,
+     "p_holm": 1.0
+    },
+    {
+     "t": 1.7510186145587268,
+     "p": 0.15483190027152233,
+     "media_diferencia": 0.04727999999999999,
+     "modelo_a": "lr",
+     "modelo_b": "tabnet",
+     "p_nemenyi": 0.5624494379172433,
+     "p_holm": 0.928991401629134
+    },
+    {
+     "t": -0.6333535819060491,
+     "p": 0.5609074777734617,
+     "media_diferencia": -0.008420000000000028,
+     "modelo_a": "lr",
+     "modelo_b": "stack",
+     "p_nemenyi": 0.3734806214642937,
+     "p_holm": 1.0
+    },
+    {
+     "t": 1.9069852160257807,
+     "p": 0.12919404332612955,
+     "media_diferencia": 0.008359999999999989,
+     "modelo_a": "rf",
+     "modelo_b": "xgb",
+     "p_nemenyi": 0.8554745643109433,
+     "p_holm": 0.9043583032829068
+    },
+    {
+     "t": 2.0792484194910776,
+     "p": 0.10611315221618721,
+     "media_diferencia": 0.05276000000000001,
+     "modelo_a": "rf",
+     "modelo_b": "tabnet",
+     "p_nemenyi": 0.07032412785494346,
+     "p_holm": 0.8547808437008699
+    },
+    {
+     "t": -1.4789514759881426,
+     "p": 0.21323867931239895,
+     "media_diferencia": -0.0029400000000000094,
+     "modelo_a": "rf",
+     "modelo_b": "stack",
+     "p_nemenyi": 0.9565436477413238,
+     "p_holm": 0.928991401629134
+    },
+    {
+     "t": 1.6370162735523794,
+     "p": 0.1769684801894035,
+     "media_diferencia": 0.044400000000000016,
+     "modelo_a": "xgb",
+     "modelo_b": "tabnet",
+     "p_nemenyi": 0.49732480971524584,
+     "p_holm": 0.928991401629134
+    },
+    {
+     "t": -2.1778202843813603,
+     "p": 0.09497564930009667,
+     "media_diferencia": -0.0113,
+     "modelo_a": "xgb",
+     "modelo_b": "stack",
+     "p_nemenyi": 0.43387799393354354,
+     "p_holm": 0.8547808437008699
+    },
+    {
+     "t": -2.299703416094484,
+     "p": 0.08296610156591498,
+     "media_diferencia": -0.05570000000000001,
+     "modelo_a": "tabnet",
+     "modelo_b": "stack",
+     "p_nemenyi": 0.008579522647740978,
+     "p_holm": 0.8296610156591498
+    }
+   ],
+   "nota_wilcoxon": "Con 5 pliegues, Wilcoxon bilateral tiene un p mínimo exacto de 0.0625; se reporta solo como descriptivo.",
+   "interpretabilidad": {
+    "que_muestra": "Comparación de modelos sobre las estimaciones externas de la CV anidada.",
+    "como_leerla": "Friedman contrasta si algún modelo difiere; Nemenyi y Nadeau-Bengio (t corregida por solapamiento de pliegues) comparan pares, con ajuste de Holm.",
+    "interpretacion": "Friedman p = 0.013. No se demostraron diferencias tras Holm.",
+    "limitaciones": "Solo 5 observaciones externas por modelo: potencia baja."
+   }
+  },
+  "interpretabilidad": {
+   "que_muestra": "Desempeño del procedimiento (CV anidada 5 externos x 3 internos).",
+   "como_leerla": "Cada AUC externo se obtiene en un pliegue que Optuna nunca vio; la brecha de optimismo es mejor AUC interno menos AUC externo.",
+   "interpretacion": "lr: 0.823 ± 0.0413; rf: 0.8284 ± 0.0631; xgb: 0.8201 ± 0.0679; tabnet: 0.7757 ± 0.0669; stack: 0.8314 ± 0.0611",
+   "limitaciones": "Estima el procedimiento, no un modelo concreto; IC t con n = 5 es amplio."
+  }
+ },
+ "modelo_final": {
+  "lr": {
+   "params": {
+    "C": 0.6279818082717105,
+    "class_weight": "balanced"
+   },
+   "best_inner": 0.8293275031317301
+  },
+  "rf": {
+   "params": {
+    "n_estimators": 600,
+    "max_depth": 6,
+    "min_samples_leaf": 4,
+    "max_features": 0.5
+   },
+   "best_inner": 0.8318036863643092
+  },
+  "xgb": {
+   "params": {
+    "learning_rate": 0.1393230017684103,
+    "max_depth": 2,
+    "min_child_weight": 2.7053997507489322,
+    "subsample": 0.8444627798886792,
+    "colsample_bytree": 0.5368884339696256,
+    "gamma": 4.6481299016471365,
+    "reg_alpha": 0.04449135671965411,
+    "reg_lambda": 0.660937416468849,
+    "n_estimators": 350
+   },
+   "best_inner": 0.8319292611561799
+  },
+  "tabnet": {
+   "params": {
+    "n_d": 16,
+    "n_a": 16,
+    "n_steps": 4,
+    "gamma": 1.3,
+    "lambda_sparse": 0.0001,
+    "lr": 0.02,
+    "max_epochs": 100,
+    "patience": 15,
+    "batch_size": 256,
+    "virtual_batch_size": 128
+   },
+   "best_inner": null
+  }
+ },
+ "calibracion": {
+  "metodo": "sigmoide",
+  "umbrales": {
+   "lr": 0.30014694339133596,
+   "rf": 0.25406255185359106,
+   "xgb": 0.2724458060457926,
+   "tabnet": 0.3680026642436953,
+   "stack": 0.2827338487853308
+  },
+  "conformal": {
+   "alpha": 0.1,
+   "q": {
+    "lr": 0.733990983948041,
+    "rf": 0.7163328219511119,
+    "xgb": 0.700292924622723,
+    "tabnet": 0.6499379206344245,
+    "stack": 0.7305283770217887
+   },
+   "cobertura_prueba": {
+    "lr": 0.9402,
+    "rf": 0.9231,
+    "xgb": 0.9316,
+    "tabnet": 0.906,
+    "stack": 0.9231
+   }
+  }
+ },
+ "evaluacion_prueba": {
+  "por_modelo": {
+   "lr": {
+    "metricas": {
+     "roc_auc": 0.8825,
+     "pr_auc": 0.805,
+     "exactitud": 0.7863,
+     "exactitud_balanceada": 0.7967,
+     "sensibilidad": 0.8333,
+     "especificidad": 0.76,
+     "vpp": 0.6604,
+     "vpn": 0.8906,
+     "f1": 0.7368,
+     "mcc": 0.5718,
+     "log_loss": 0.4218,
+     "brier": 0.1363,
+     "ece": 0.0731,
+     "pendiente": 1.3005,
+     "intercepto": 0.1431,
+     "matriz_confusion": {
+      "tp": 35,
+      "tn": 57,
+      "fp": 18,
+      "fn": 7
+     }
+    },
+    "ic95": {
+     "roc_auc": [
+      0.8146,
+      0.9375
+     ],
+     "pr_auc": [
+      0.7027,
+      0.9035
+     ],
+     "sensibilidad": [
+      0.7143,
+      0.9286
+     ],
+     "especificidad": [
+      0.6663,
+      0.8533
+     ],
+     "f1": [
+      0.6465,
+      0.8172
+     ],
+     "brier": [
+      0.107,
+      0.1695
+     ]
+    },
+    "umbral": 0.30014694339133596,
+    "curvas": {
+     "roc": {
+      "fpr": [
+       0.0,
+       0.0,
+       0.0,
+       0.0133,
+       0.0133,
+       0.0267,
+       0.0267,
+       0.04,
+       0.04,
+       0.0667,
+       0.0667,
+       0.08,
+       0.08,
+       0.0933,
+       0.0933,
+       0.1067,
+       0.1067,
+       0.12,
+       0.12,
+       0.1333,
+       0.1333,
+       0.1467,
+       0.1467,
+       0.24,
+       0.24,
+       0.3467,
+       0.3467,
+       0.4,
+       0.4,
+       0.4533,
+       0.4533,
+       0.4933,
+       0.4933,
+       0.5733,
+       0.5733,
+       1.0
+      ],
+      "tpr": [
+       0.0,
+       0.0238,
+       0.0952,
+       0.0952,
+       0.3333,
+       0.3333,
+       0.4524,
+       0.4524,
+       0.4762,
+       0.4762,
+       0.5238,
+       0.5238,
+       0.5714,
+       0.5714,
+       0.619,
+       0.619,
+       0.6667,
+       0.6667,
+       0.7143,
+       0.7143,
+       0.7857,
+       0.7857,
+       0.8095,
+       0.8095,
+       0.8571,
+       0.8571,
+       0.881,
+       0.881,
+       0.9286,
+       0.9286,
+       0.9524,
+       0.9524,
+       0.9762,
+       0.9762,
+       1.0,
+       1.0
+      ]
+     },
+     "pr": {
+      "recall": [
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       0.9762,
+       0.9762,
+       0.9762,
+       0.9762,
+       0.9762,
+       0.9762,
+       0.9762,
+       0.9524,
+       0.9524,
+       0.9524,
+       0.9524,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9048,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8333,
+       0.8095,
+       0.8095,
+       0.8095,
+       0.8095,
+       0.8095,
+       0.8095,
+       0.8095,
+       0.8095,
+       0.7857,
+       0.7857,
+       0.7619,
+       0.7381,
+       0.7143,
+       0.7143,
+       0.6905,
+       0.6667,
+       0.6667,
+       0.6429,
+       0.619,
+       0.619,
+       0.5952,
+       0.5714,
+       0.5714,
+       0.5476,
+       0.5238,
+       0.5238,
+       0.5,
+       0.4762,
+       0.4762,
+       0.4762,
+       0.4524,
+       0.4524,
+       0.4286,
+       0.4048,
+       0.381,
+       0.3571,
+       0.3333,
+       0.3333,
+       0.3095,
+       0.2857,
+       0.2619,
+       0.2381,
+       0.2143,
+       0.1905,
+       0.1667,
+       0.1429,
+       0.119,
+       0.0952,
+       0.0952,
+       0.0714,
+       0.0476,
+       0.0238,
+       0.0
+      ],
+      "precision": [
+       0.359,
+       0.3621,
+       0.3652,
+       0.3684,
+       0.3717,
+       0.375,
+       0.3784,
+       0.3818,
+       0.3853,
+       0.3889,
+       0.3925,
+       0.3962,
+       0.4,
+       0.4038,
+       0.4078,
+       0.4118,
+       0.4158,
+       0.42,
+       0.4242,
+       0.4286,
+       0.433,
+       0.4375,
+       0.4421,
+       0.4468,
+       0.4516,
+       0.4565,
+       0.4615,
+       0.4667,
+       0.4719,
+       0.4773,
+       0.4828,
+       0.4884,
+       0.4941,
+       0.4881,
+       0.494,
+       0.5,
+       0.5062,
+       0.5125,
+       0.519,
+       0.5256,
+       0.5195,
+       0.5263,
+       0.5333,
+       0.5405,
+       0.5342,
+       0.5417,
+       0.5493,
+       0.5571,
+       0.5652,
+       0.5588,
+       0.5522,
+       0.5606,
+       0.5692,
+       0.5781,
+       0.5873,
+       0.5806,
+       0.5902,
+       0.6,
+       0.6102,
+       0.6207,
+       0.6316,
+       0.6429,
+       0.6545,
+       0.6667,
+       0.6604,
+       0.6538,
+       0.6667,
+       0.68,
+       0.6939,
+       0.7083,
+       0.7234,
+       0.7391,
+       0.7556,
+       0.75,
+       0.7674,
+       0.7619,
+       0.7561,
+       0.75,
+       0.7692,
+       0.7632,
+       0.7568,
+       0.7778,
+       0.7714,
+       0.7647,
+       0.7879,
+       0.7812,
+       0.7742,
+       0.8,
+       0.7931,
+       0.7857,
+       0.8148,
+       0.8077,
+       0.8,
+       0.8333,
+       0.8696,
+       0.8636,
+       0.9048,
+       0.9,
+       0.8947,
+       0.8889,
+       0.8824,
+       0.875,
+       0.9333,
+       0.9286,
+       0.9231,
+       0.9167,
+       0.9091,
+       0.9,
+       0.8889,
+       0.875,
+       0.8571,
+       0.8333,
+       0.8,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0
+      ],
+      "prevalencia": 0.358974358974359
+     },
+     "calibracion": [
+      {
+       "pred": 0.029811824862622727,
+       "obs": 0.0,
+       "n": 12
+      },
+      {
+       "pred": 0.06893269555345079,
+       "obs": 0.0,
+       "n": 12
+      },
+      {
+       "pred": 0.112072455541467,
+       "obs": 0.09090909090909091,
+       "n": 11
+      },
+      {
+       "pred": 0.15738350170621465,
+       "obs": 0.16666666666666666,
+       "n": 12
+      },
+      {
+       "pred": 0.2119414880476365,
+       "obs": 0.2727272727272727,
+       "n": 11
+      },
+      {
+       "pred": 0.2979575671083124,
+       "obs": 0.16666666666666666,
+       "n": 12
+      },
+      {
+       "pred": 0.40718410465051696,
+       "obs": 0.5833333333333334,
+       "n": 12
+      },
+      {
+       "pred": 0.5172344529223238,
+       "obs": 0.6363636363636364,
+       "n": 11
+      },
+      {
+       "pred": 0.6985869144507163,
+       "obs": 0.75,
+       "n": 12
+      },
+      {
+       "pred": 0.8551899824397168,
+       "obs": 0.9166666666666666,
+       "n": 12
+      }
+     ],
+     "histograma_prob": [
+      13,
+      13,
+      13,
+      11,
+      11,
+      3,
+      4,
+      9,
+      2,
+      7,
+      4,
+      3,
+      0,
+      7,
+      5,
+      3,
+      1,
+      5,
+      3,
+      0
+     ]
+    },
+    "curva_decision": [
+     {
+      "umbral": 0.05,
+      "modelo": 0.3310841205578048,
+      "tratar_todos": 0.3252361673414305,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.06,
+      "modelo": 0.3262411347517731,
+      "tratar_todos": 0.3180578286961266,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.07,
+      "modelo": 0.32166161198419263,
+      "tratar_todos": 0.31072511717673007,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.08,
+      "modelo": 0.3203270159791899,
+      "tratar_todos": 0.3032329988851728,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.09,
+      "modelo": 0.3158636235559312,
+      "tratar_todos": 0.29557621865314176,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.1,
+      "modelo": 0.3124406457739791,
+      "tratar_todos": 0.28774928774928776,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.11,
+      "modelo": 0.30932488235859024,
+      "tratar_todos": 0.27974647075770676,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.12,
+      "modelo": 0.30885780885780884,
+      "tratar_todos": 0.2715617715617716,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.13,
+      "modelo": 0.29806464289222906,
+      "tratar_todos": 0.2631889183613322,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.14,
+      "modelo": 0.29338103756708406,
+      "tratar_todos": 0.2546213476446035,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.15,
+      "modelo": 0.29462041226747104,
+      "tratar_todos": 0.24585218702865763,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.16,
+      "modelo": 0.28327228327228327,
+      "tratar_todos": 0.23687423687423687,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.17,
+      "modelo": 0.27556379363608274,
+      "tratar_todos": 0.22767995057151683,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.18,
+      "modelo": 0.2714196372732958,
+      "tratar_todos": 0.21826141338336463,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.19,
+      "modelo": 0.27118286377545636,
+      "tratar_todos": 0.20861031972143085,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.2,
+      "modelo": 0.25213675213675213,
+      "tratar_todos": 0.19871794871794873,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.21,
+      "modelo": 0.25035161744022505,
+      "tratar_todos": 0.18857513794222658,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.22,
+      "modelo": 0.24501424501424504,
+      "tratar_todos": 0.17817225509533205,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.23,
+      "modelo": 0.24642024642024646,
+      "tratar_todos": 0.16749916749916752,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.24,
+      "modelo": 0.2483130904183536,
+      "tratar_todos": 0.15654520917678816,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.25,
+      "modelo": 0.25071225071225073,
+      "tratar_todos": 0.14529914529914534,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.26,
+      "modelo": 0.25063525063525066,
+      "tratar_todos": 0.13374913374913375,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.27,
+      "modelo": 0.2476290832455216,
+      "tratar_todos": 0.12188268352651915,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.28,
+      "modelo": 0.24453941120607786,
+      "tratar_todos": 0.10968660968660968,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.29,
+      "modelo": 0.24136270615143857,
+      "tratar_todos": 0.09714698447092818,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.3,
+      "modelo": 0.23321123321123322,
+      "tratar_todos": 0.08424908424908423,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.31,
+      "modelo": 0.22147900408769974,
+      "tratar_todos": 0.07097733184689708,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.32,
+      "modelo": 0.22222222222222224,
+      "tratar_todos": 0.05731523378582204,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.33,
+      "modelo": 0.2232427605561934,
+      "tratar_todos": 0.043245311902028294,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.34,
+      "modelo": 0.22015022015022015,
+      "tratar_todos": 0.028749028749028738,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.35,
+      "modelo": 0.22156476002629852,
+      "tratar_todos": 0.013806706114398493,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.36,
+      "modelo": 0.23771367521367523,
+      "tratar_todos": -0.0016025641025640414,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.37,
+      "modelo": 0.22683489350156016,
+      "tratar_todos": -0.017501017501017457,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.38,
+      "modelo": 0.2244279018472567,
+      "tratar_todos": -0.03391232423490487,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.39,
+      "modelo": 0.21031245621409556,
+      "tratar_todos": -0.05086170659941153,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.4,
+      "modelo": 0.1994301994301994,
+      "tratar_todos": -0.06837606837606841,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.41,
+      "modelo": 0.1970157902361292,
+      "tratar_todos": -0.08648413733159482,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.42,
+      "modelo": 0.1945181255526083,
+      "tratar_todos": -0.10521662245800167,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.43,
+      "modelo": 0.19838056680161942,
+      "tratar_todos": -0.1246063877642824,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.44,
+      "modelo": 0.19597069597069594,
+      "tratar_todos": -0.14468864468864467,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.45,
+      "modelo": 0.18492618492618496,
+      "tratar_todos": -0.1655011655011654,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.46,
+      "modelo": 0.18106995884773663,
+      "tratar_todos": -0.18708452041785367,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.47,
+      "modelo": 0.1701338493791324,
+      "tratar_todos": -0.20948234155781315,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.48,
+      "modelo": 0.16699539776462852,
+      "tratar_todos": -0.23274161735700188,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.49,
+      "modelo": 0.15619239148650912,
+      "tratar_todos": -0.2569130216189039,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.5,
+      "modelo": 0.14529914529914528,
+      "tratar_todos": -0.282051282051282,
+      "ninguno": 0.0
+     }
+    ],
+    "equidad": {
+     "sexo": {
+      "filas": [
+       {
+        "grupo": "Femenino",
+        "n": 117,
+        "eventos": 42,
+        "roc_auc": 0.8825,
+        "sensibilidad": 0.8333,
+        "especificidad": 0.76,
+        "ic95": {
+         "roc_auc": [
+          0.816,
+          0.9346
+         ],
+         "sensibilidad": [
+          0.7143,
+          0.9286
+         ],
+         "especificidad": [
+          0.6667,
+          0.8533
+         ]
+        },
+        "prob_media": 0.337,
+        "prevalencia_obs": 0.359
+       }
+      ],
+      "brecha_sensibilidad": 0.0,
+      "alerta": false
+     },
+     "edad": {
+      "filas": [
+       {
+        "grupo": "18-39",
+        "n": 88,
+        "eventos": 25,
+        "roc_auc": 0.8927,
+        "sensibilidad": 0.84,
+        "especificidad": 0.8254,
+        "ic95": {
+         "roc_auc": [
+          0.8174,
+          0.9578
+         ],
+         "sensibilidad": [
+          0.68,
+          0.96
+         ],
+         "especificidad": [
+          0.7302,
+          0.9206
+         ]
+        },
+        "prob_media": 0.2826,
+        "prevalencia_obs": 0.2841
+       },
+       {
+        "grupo": "40-59",
+        "n": 25,
+        "eventos": 16,
+        "roc_auc": 0.8403,
+        "sensibilidad": 0.875,
+        "especificidad": 0.4444,
+        "ic95": {
+         "roc_auc": [
+          0.67,
+          0.9722
+         ],
+         "sensibilidad": [
+          0.6875,
+          1.0
+         ],
+         "especificidad": [
+          0.1111,
+          0.7778
+         ]
+        },
+        "prob_media": 0.5293,
+        "prevalencia_obs": 0.64
+       }
+      ],
+      "brecha_sensibilidad": 0.035,
+      "alerta": false
+     }
+    }
+   },
+   "rf": {
+    "metricas": {
+     "roc_auc": 0.8632,
+     "pr_auc": 0.8122,
+     "exactitud": 0.7607,
+     "exactitud_balanceada": 0.7767,
+     "sensibilidad": 0.8333,
+     "especificidad": 0.72,
+     "vpp": 0.625,
+     "vpn": 0.8852,
+     "f1": 0.7143,
+     "mcc": 0.5314,
+     "log_loss": 0.4419,
+     "brier": 0.1425,
+     "ece": 0.1011,
+     "pendiente": 1.0734,
+     "intercepto": 0.1917,
+     "matriz_confusion": {
+      "tp": 35,
+      "tn": 54,
+      "fp": 21,
+      "fn": 7
+     }
+    },
+    "ic95": {
+     "roc_auc": [
+      0.7876,
+      0.9238
+     ],
+     "pr_auc": [
+      0.7176,
+      0.8941
+     ],
+     "sensibilidad": [
+      0.7143,
+      0.9286
+     ],
+     "especificidad": [
+      0.6133,
+      0.8133
+     ],
+     "f1": [
+      0.6262,
+      0.7959
+     ],
+     "brier": [
+      0.1113,
+      0.1782
+     ]
+    },
+    "umbral": 0.25406255185359106,
+    "curvas": {
+     "roc": {
+      "fpr": [
+       0.0,
+       0.0,
+       0.0,
+       0.0133,
+       0.0133,
+       0.0267,
+       0.0267,
+       0.04,
+       0.04,
+       0.0667,
+       0.0667,
+       0.08,
+       0.08,
+       0.1333,
+       0.1333,
+       0.1467,
+       0.1467,
+       0.1733,
+       0.1733,
+       0.1867,
+       0.1867,
+       0.2533,
+       0.2533,
+       0.2667,
+       0.2667,
+       0.2933,
+       0.2933,
+       0.3733,
+       0.3733,
+       0.4933,
+       0.4933,
+       0.52,
+       0.52,
+       0.6267,
+       0.6267,
+       0.72,
+       0.72,
+       1.0
+      ],
+      "tpr": [
+       0.0,
+       0.0238,
+       0.2381,
+       0.2381,
+       0.4524,
+       0.4524,
+       0.4762,
+       0.4762,
+       0.5,
+       0.5,
+       0.5476,
+       0.5476,
+       0.5952,
+       0.5952,
+       0.6905,
+       0.6905,
+       0.7143,
+       0.7143,
+       0.7381,
+       0.7381,
+       0.7857,
+       0.7857,
+       0.8095,
+       0.8095,
+       0.8333,
+       0.8333,
+       0.8571,
+       0.8571,
+       0.881,
+       0.881,
+       0.9286,
+       0.9286,
+       0.9524,
+       0.9524,
+       0.9762,
+       0.9762,
+       1.0,
+       1.0
+      ]
+     },
+     "pr": {
+      "recall": [
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       0.9762,
+       0.9762,
+       0.9762,
+       0.9762,
+       0.9762,
+       0.9762,
+       0.9762,
+       0.9762,
+       0.9524,
+       0.9524,
+       0.9524,
+       0.9524,
+       0.9524,
+       0.9524,
+       0.9524,
+       0.9524,
+       0.9524,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9048,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8333,
+       0.8333,
+       0.8333,
+       0.8095,
+       0.8095,
+       0.7857,
+       0.7857,
+       0.7857,
+       0.7857,
+       0.7857,
+       0.7857,
+       0.7619,
+       0.7381,
+       0.7381,
+       0.7143,
+       0.7143,
+       0.7143,
+       0.6905,
+       0.6905,
+       0.6667,
+       0.6429,
+       0.619,
+       0.5952,
+       0.5952,
+       0.5952,
+       0.5952,
+       0.5952,
+       0.5714,
+       0.5476,
+       0.5476,
+       0.5238,
+       0.5,
+       0.5,
+       0.5,
+       0.4762,
+       0.4762,
+       0.4524,
+       0.4524,
+       0.4286,
+       0.4048,
+       0.381,
+       0.3571,
+       0.3333,
+       0.3095,
+       0.2857,
+       0.2619,
+       0.2381,
+       0.2381,
+       0.2143,
+       0.1905,
+       0.1667,
+       0.1429,
+       0.119,
+       0.0952,
+       0.0714,
+       0.0476,
+       0.0238,
+       0.0
+      ],
+      "precision": [
+       0.359,
+       0.3621,
+       0.3652,
+       0.3684,
+       0.3717,
+       0.375,
+       0.3784,
+       0.3818,
+       0.3853,
+       0.3889,
+       0.3925,
+       0.3962,
+       0.4,
+       0.4038,
+       0.4078,
+       0.4118,
+       0.4158,
+       0.42,
+       0.4242,
+       0.4286,
+       0.433,
+       0.4375,
+       0.4316,
+       0.4362,
+       0.4409,
+       0.4457,
+       0.4505,
+       0.4556,
+       0.4607,
+       0.4659,
+       0.4598,
+       0.4651,
+       0.4706,
+       0.4762,
+       0.4819,
+       0.4878,
+       0.4938,
+       0.5,
+       0.5063,
+       0.5,
+       0.5065,
+       0.5132,
+       0.5067,
+       0.5,
+       0.5068,
+       0.5139,
+       0.5211,
+       0.5286,
+       0.5362,
+       0.5441,
+       0.5522,
+       0.5606,
+       0.5692,
+       0.5625,
+       0.5714,
+       0.5806,
+       0.5902,
+       0.6,
+       0.6102,
+       0.6207,
+       0.614,
+       0.625,
+       0.6364,
+       0.6296,
+       0.6415,
+       0.6346,
+       0.6471,
+       0.66,
+       0.6735,
+       0.6875,
+       0.7021,
+       0.6957,
+       0.6889,
+       0.7045,
+       0.6977,
+       0.7143,
+       0.7317,
+       0.725,
+       0.7436,
+       0.7368,
+       0.7297,
+       0.7222,
+       0.7143,
+       0.7353,
+       0.7576,
+       0.7812,
+       0.8065,
+       0.8,
+       0.7931,
+       0.8214,
+       0.8148,
+       0.8077,
+       0.84,
+       0.875,
+       0.8696,
+       0.9091,
+       0.9048,
+       0.95,
+       0.9474,
+       0.9444,
+       0.9412,
+       0.9375,
+       0.9333,
+       0.9286,
+       0.9231,
+       0.9167,
+       0.9091,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0
+      ],
+      "prevalencia": 0.358974358974359
+     },
+     "calibracion": [
+      {
+       "pred": 0.014499053275240675,
+       "obs": 0.0,
+       "n": 12
+      },
+      {
+       "pred": 0.04812918973665806,
+       "obs": 0.08333333333333333,
+       "n": 12
+      },
+      {
+       "pred": 0.07559203428749495,
+       "obs": 0.09090909090909091,
+       "n": 11
+      },
+      {
+       "pred": 0.11951408329703243,
+       "obs": 0.25,
+       "n": 12
+      },
+      {
+       "pred": 0.20047969822628844,
+       "obs": 0.09090909090909091,
+       "n": 11
+      },
+      {
+       "pred": 0.30029943562456723,
+       "obs": 0.25,
+       "n": 12
+      },
+      {
+       "pred": 0.47452212671221167,
+       "obs": 0.6666666666666666,
+       "n": 12
+      },
+      {
+       "pred": 0.5705439264439298,
+       "obs": 0.36363636363636365,
+       "n": 11
+      },
+      {
+       "pred": 0.686694610771363,
+       "obs": 0.8333333333333334,
+       "n": 12
+      },
+      {
+       "pred": 0.8048403789848607,
+       "obs": 0.9166666666666666,
+       "n": 12
+      }
+     ],
+     "histograma_prob": [
+      18,
+      18,
+      10,
+      5,
+      8,
+      7,
+      1,
+      4,
+      3,
+      3,
+      7,
+      8,
+      3,
+      5,
+      8,
+      5,
+      2,
+      0,
+      2,
+      0
+     ]
+    },
+    "curva_decision": [
+     {
+      "umbral": 0.05,
+      "modelo": 0.3333333333333333,
+      "tratar_todos": 0.3252361673414305,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.06,
+      "modelo": 0.3209674486270231,
+      "tratar_todos": 0.3180578286961266,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.07,
+      "modelo": 0.32019115890083627,
+      "tratar_todos": 0.31072511717673007,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.08,
+      "modelo": 0.3076923076923077,
+      "tratar_todos": 0.3032329988851728,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.09,
+      "modelo": 0.305532074762844,
+      "tratar_todos": 0.29557621865314176,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.1,
+      "modelo": 0.3029439696106363,
+      "tratar_todos": 0.28774928774928776,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.11,
+      "modelo": 0.29213483146067415,
+      "tratar_todos": 0.27974647075770676,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.12,
+      "modelo": 0.2816627816627817,
+      "tratar_todos": 0.2715617715617716,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.13,
+      "modelo": 0.27153944395323704,
+      "tratar_todos": 0.2631889183613322,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.14,
+      "modelo": 0.2689326177698271,
+      "tratar_todos": 0.2546213476446035,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.15,
+      "modelo": 0.26495726495726496,
+      "tratar_todos": 0.24585218702865763,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.16,
+      "modelo": 0.26251526251526247,
+      "tratar_todos": 0.23687423687423687,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.17,
+      "modelo": 0.2602203686541036,
+      "tratar_todos": 0.22767995057151683,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.18,
+      "modelo": 0.2580779653950386,
+      "tratar_todos": 0.21826141338336463,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.19,
+      "modelo": 0.25609370053814495,
+      "tratar_todos": 0.20861031972143085,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.2,
+      "modelo": 0.25427350427350426,
+      "tratar_todos": 0.19871794871794873,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.21,
+      "modelo": 0.2486205777345018,
+      "tratar_todos": 0.18857513794222658,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.22,
+      "modelo": 0.24742493973263208,
+      "tratar_todos": 0.17817225509533205,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.23,
+      "modelo": 0.24642024642024646,
+      "tratar_todos": 0.16749916749916752,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.24,
+      "modelo": 0.2456140350877193,
+      "tratar_todos": 0.15654520917678816,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.25,
+      "modelo": 0.24501424501424504,
+      "tratar_todos": 0.14529914529914534,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.26,
+      "modelo": 0.23908523908523907,
+      "tratar_todos": 0.13374913374913375,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.27,
+      "modelo": 0.2273738438122,
+      "tratar_todos": 0.12188268352651915,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.28,
+      "modelo": 0.22744539411206077,
+      "tratar_todos": 0.10968660968660968,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.29,
+      "modelo": 0.22426868905742148,
+      "tratar_todos": 0.09714698447092818,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.3,
+      "modelo": 0.21611721611721613,
+      "tratar_todos": 0.08424908424908423,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.31,
+      "modelo": 0.21293199554069117,
+      "tratar_todos": 0.07097733184689708,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.32,
+      "modelo": 0.20965309200603316,
+      "tratar_todos": 0.05731523378582204,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.33,
+      "modelo": 0.21048603138155375,
+      "tratar_todos": 0.043245311902028294,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.34,
+      "modelo": 0.20720020720020718,
+      "tratar_todos": 0.028749028749028738,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.35,
+      "modelo": 0.20381328073635765,
+      "tratar_todos": 0.013806706114398493,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.36,
+      "modelo": 0.20032051282051283,
+      "tratar_todos": -0.0016025641025640414,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.37,
+      "modelo": 0.19671686338353003,
+      "tratar_todos": -0.017501017501017457,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.38,
+      "modelo": 0.1982354562999724,
+      "tratar_todos": -0.03391232423490487,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.39,
+      "modelo": 0.2055485498108449,
+      "tratar_todos": -0.05086170659941153,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.4,
+      "modelo": 0.19373219373219375,
+      "tratar_todos": -0.06837606837606841,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.41,
+      "modelo": 0.19035202086049546,
+      "tratar_todos": -0.08648413733159482,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.42,
+      "modelo": 0.17830828175655764,
+      "tratar_todos": -0.10521662245800167,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.43,
+      "modelo": 0.17468885889938524,
+      "tratar_todos": -0.1246063877642824,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.44,
+      "modelo": 0.17765567765567766,
+      "tratar_todos": -0.14468864468864467,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.45,
+      "modelo": 0.1655011655011655,
+      "tratar_todos": -0.1655011655011654,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.46,
+      "modelo": 0.16904083570750233,
+      "tratar_todos": -0.18708452041785367,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.47,
+      "modelo": 0.16545718432510884,
+      "tratar_todos": -0.20948234155781315,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.48,
+      "modelo": 0.16173570019723865,
+      "tratar_todos": -0.23274161735700188,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.49,
+      "modelo": 0.15786827551533433,
+      "tratar_todos": -0.2569130216189039,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.5,
+      "modelo": 0.15384615384615385,
+      "tratar_todos": -0.282051282051282,
+      "ninguno": 0.0
+     }
+    ],
+    "equidad": {
+     "sexo": {
+      "filas": [
+       {
+        "grupo": "Femenino",
+        "n": 117,
+        "eventos": 42,
+        "roc_auc": 0.8632,
+        "sensibilidad": 0.8333,
+        "especificidad": 0.72,
+        "ic95": {
+         "roc_auc": [
+          0.79,
+          0.9216
+         ],
+         "sensibilidad": [
+          0.7143,
+          0.9286
+         ],
+         "especificidad": [
+          0.6133,
+          0.8
+         ]
+        },
+        "prob_media": 0.3307,
+        "prevalencia_obs": 0.359
+       }
+      ],
+      "brecha_sensibilidad": 0.0,
+      "alerta": false
+     },
+     "edad": {
+      "filas": [
+       {
+        "grupo": "18-39",
+        "n": 88,
+        "eventos": 25,
+        "roc_auc": 0.8641,
+        "sensibilidad": 0.84,
+        "especificidad": 0.7619,
+        "ic95": {
+         "roc_auc": [
+          0.7717,
+          0.9426
+         ],
+         "sensibilidad": [
+          0.68,
+          0.96
+         ],
+         "especificidad": [
+          0.6508,
+          0.873
+         ]
+        },
+        "prob_media": 0.277,
+        "prevalencia_obs": 0.2841
+       },
+       {
+        "grupo": "40-59",
+        "n": 25,
+        "eventos": 16,
+        "roc_auc": 0.8681,
+        "sensibilidad": 0.875,
+        "especificidad": 0.4444,
+        "ic95": {
+         "roc_auc": [
+          0.6908,
+          0.9792
+         ],
+         "sensibilidad": [
+          0.6875,
+          1.0
+         ],
+         "especificidad": [
+          0.1111,
+          0.7778
+         ]
+        },
+        "prob_media": 0.5435,
+        "prevalencia_obs": 0.64
+       }
+      ],
+      "brecha_sensibilidad": 0.035,
+      "alerta": false
+     }
+    }
+   },
+   "xgb": {
+    "metricas": {
+     "roc_auc": 0.8514,
+     "pr_auc": 0.8085,
+     "exactitud": 0.7265,
+     "exactitud_balanceada": 0.7552,
+     "sensibilidad": 0.8571,
+     "especificidad": 0.6533,
+     "vpp": 0.5806,
+     "vpn": 0.8909,
+     "f1": 0.6923,
+     "mcc": 0.4906,
+     "log_loss": 0.4483,
+     "brier": 0.1472,
+     "ece": 0.0868,
+     "pendiente": 1.0999,
+     "intercepto": 0.1231,
+     "matriz_confusion": {
+      "tp": 36,
+      "tn": 49,
+      "fp": 26,
+      "fn": 6
+     }
+    },
+    "ic95": {
+     "roc_auc": [
+      0.773,
+      0.9171
+     ],
+     "pr_auc": [
+      0.717,
+      0.8883
+     ],
+     "sensibilidad": [
+      0.7381,
+      0.9524
+     ],
+     "especificidad": [
+      0.5467,
+      0.76
+     ],
+     "f1": [
+      0.6111,
+      0.7709
+     ],
+     "brier": [
+      0.1156,
+      0.1808
+     ]
+    },
+    "umbral": 0.2724458060457926,
+    "curvas": {
+     "roc": {
+      "fpr": [
+       0.0,
+       0.0,
+       0.0,
+       0.0133,
+       0.0133,
+       0.0267,
+       0.0267,
+       0.0667,
+       0.0667,
+       0.08,
+       0.08,
+       0.0933,
+       0.0933,
+       0.1333,
+       0.1333,
+       0.1733,
+       0.1733,
+       0.1867,
+       0.1867,
+       0.2267,
+       0.2267,
+       0.24,
+       0.24,
+       0.2667,
+       0.2667,
+       0.3333,
+       0.3333,
+       0.3467,
+       0.3467,
+       0.5067,
+       0.5067,
+       0.5333,
+       0.5333,
+       0.5733,
+       0.5733,
+       0.6267,
+       0.6267,
+       0.6533,
+       0.6533,
+       1.0
+      ],
+      "tpr": [
+       0.0,
+       0.0238,
+       0.3571,
+       0.3571,
+       0.4048,
+       0.4048,
+       0.5,
+       0.5,
+       0.5476,
+       0.5476,
+       0.5714,
+       0.5714,
+       0.619,
+       0.619,
+       0.6667,
+       0.6667,
+       0.6905,
+       0.6905,
+       0.7143,
+       0.7143,
+       0.7381,
+       0.7381,
+       0.7619,
+       0.7619,
+       0.8095,
+       0.8095,
+       0.8333,
+       0.8333,
+       0.8571,
+       0.8571,
+       0.9048,
+       0.9048,
+       0.9286,
+       0.9286,
+       0.9524,
+       0.9524,
+       0.9762,
+       0.9762,
+       1.0,
+       1.0
+      ]
+     },
+     "pr": {
+      "recall": [
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       0.9762,
+       0.9762,
+       0.9762,
+       0.9524,
+       0.9524,
+       0.9524,
+       0.9524,
+       0.9524,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9048,
+       0.9048,
+       0.9048,
+       0.881,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8333,
+       0.8333,
+       0.8095,
+       0.8095,
+       0.8095,
+       0.8095,
+       0.8095,
+       0.8095,
+       0.7857,
+       0.7619,
+       0.7619,
+       0.7619,
+       0.7381,
+       0.7381,
+       0.7143,
+       0.7143,
+       0.7143,
+       0.7143,
+       0.6905,
+       0.6905,
+       0.6667,
+       0.6667,
+       0.6667,
+       0.6667,
+       0.6429,
+       0.619,
+       0.619,
+       0.619,
+       0.619,
+       0.5952,
+       0.5714,
+       0.5714,
+       0.5476,
+       0.5476,
+       0.5238,
+       0.5,
+       0.5,
+       0.5,
+       0.5,
+       0.4762,
+       0.4524,
+       0.4286,
+       0.4048,
+       0.4048,
+       0.381,
+       0.3571,
+       0.3571,
+       0.3333,
+       0.3095,
+       0.2857,
+       0.2619,
+       0.2381,
+       0.2143,
+       0.1905,
+       0.1667,
+       0.1429,
+       0.119,
+       0.0952,
+       0.0714,
+       0.0476,
+       0.0238,
+       0.0
+      ],
+      "precision": [
+       0.359,
+       0.3621,
+       0.3652,
+       0.3684,
+       0.3717,
+       0.375,
+       0.3784,
+       0.3818,
+       0.3853,
+       0.3889,
+       0.3925,
+       0.3962,
+       0.4,
+       0.4038,
+       0.4078,
+       0.4118,
+       0.4158,
+       0.42,
+       0.4242,
+       0.4286,
+       0.433,
+       0.4375,
+       0.4421,
+       0.4468,
+       0.4516,
+       0.4565,
+       0.4615,
+       0.4556,
+       0.4607,
+       0.4659,
+       0.4598,
+       0.4651,
+       0.4706,
+       0.4762,
+       0.4819,
+       0.4756,
+       0.4815,
+       0.4875,
+       0.4937,
+       0.4872,
+       0.4935,
+       0.5,
+       0.4933,
+       0.4865,
+       0.4932,
+       0.5,
+       0.507,
+       0.5143,
+       0.5217,
+       0.5294,
+       0.5373,
+       0.5455,
+       0.5538,
+       0.5625,
+       0.5714,
+       0.5806,
+       0.5738,
+       0.5833,
+       0.5763,
+       0.5862,
+       0.5965,
+       0.6071,
+       0.6182,
+       0.6296,
+       0.6226,
+       0.6154,
+       0.6275,
+       0.64,
+       0.6327,
+       0.6458,
+       0.6383,
+       0.6522,
+       0.6667,
+       0.6818,
+       0.6744,
+       0.6905,
+       0.6829,
+       0.7,
+       0.7179,
+       0.7368,
+       0.7297,
+       0.7222,
+       0.7429,
+       0.7647,
+       0.7879,
+       0.7812,
+       0.7742,
+       0.8,
+       0.7931,
+       0.8214,
+       0.8148,
+       0.8077,
+       0.84,
+       0.875,
+       0.913,
+       0.9091,
+       0.9048,
+       0.9,
+       0.8947,
+       0.9444,
+       0.9412,
+       0.9375,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0
+      ],
+      "prevalencia": 0.358974358974359
+     },
+     "calibracion": [
+      {
+       "pred": 0.013759349487470457,
+       "obs": 0.0,
+       "n": 12
+      },
+      {
+       "pred": 0.04327000198783593,
+       "obs": 0.0,
+       "n": 12
+      },
+      {
+       "pred": 0.10666534544619384,
+       "obs": 0.2727272727272727,
+       "n": 11
+      },
+      {
+       "pred": 0.15118655796076289,
+       "obs": 0.25,
+       "n": 12
+      },
+      {
+       "pred": 0.22065518597025086,
+       "obs": 0.18181818181818182,
+       "n": 11
+      },
+      {
+       "pred": 0.3252689110494062,
+       "obs": 0.3333333333333333,
+       "n": 12
+      },
+      {
+       "pred": 0.4577625183080681,
+       "obs": 0.3333333333333333,
+       "n": 12
+      },
+      {
+       "pred": 0.5792092936539092,
+       "obs": 0.45454545454545453,
+       "n": 11
+      },
+      {
+       "pred": 0.6883669788649,
+       "obs": 0.75,
+       "n": 12
+      },
+      {
+       "pred": 0.8058135117730939,
+       "obs": 1.0,
+       "n": 12
+      }
+     ],
+     "histograma_prob": [
+      20,
+      9,
+      12,
+      12,
+      0,
+      5,
+      12,
+      1,
+      2,
+      10,
+      1,
+      5,
+      6,
+      7,
+      4,
+      6,
+      3,
+      1,
+      1,
+      0
+     ]
+    },
+    "curva_decision": [
+     {
+      "umbral": 0.05,
+      "modelo": 0.33423301844354475,
+      "tratar_todos": 0.3252361673414305,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.06,
+      "modelo": 0.33006001091107473,
+      "tratar_todos": 0.3180578286961266,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.07,
+      "modelo": 0.3255215513280029,
+      "tratar_todos": 0.31072511717673007,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.08,
+      "modelo": 0.3218134522482349,
+      "tratar_todos": 0.3032329988851728,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.09,
+      "modelo": 0.30985254062177137,
+      "tratar_todos": 0.29557621865314176,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.1,
+      "modelo": 0.3057929724596391,
+      "tratar_todos": 0.28774928774928776,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.11,
+      "modelo": 0.30077787381158166,
+      "tratar_todos": 0.27974647075770676,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.12,
+      "modelo": 0.28826728826728826,
+      "tratar_todos": 0.2715617715617716,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.13,
+      "modelo": 0.2869633559288732,
+      "tratar_todos": 0.2631889183613322,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.14,
+      "modelo": 0.2776783939574637,
+      "tratar_todos": 0.2546213476446035,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.15,
+      "modelo": 0.26747109100050276,
+      "tratar_todos": 0.24585218702865763,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.16,
+      "modelo": 0.24582824582824583,
+      "tratar_todos": 0.23687423687423687,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.17,
+      "modelo": 0.25517454433117087,
+      "tratar_todos": 0.22767995057151683,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.18,
+      "modelo": 0.2532833020637899,
+      "tratar_todos": 0.21826141338336463,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.19,
+      "modelo": 0.24955154584784217,
+      "tratar_todos": 0.20861031972143085,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.2,
+      "modelo": 0.24786324786324787,
+      "tratar_todos": 0.19871794871794873,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.21,
+      "modelo": 0.24407659850697827,
+      "tratar_todos": 0.18857513794222658,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.22,
+      "modelo": 0.24019285557747097,
+      "tratar_todos": 0.17817225509533205,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.23,
+      "modelo": 0.23620823620823622,
+      "tratar_todos": 0.16749916749916752,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.24,
+      "modelo": 0.23211875843454793,
+      "tratar_todos": 0.15654520917678816,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.25,
+      "modelo": 0.22792022792022792,
+      "tratar_todos": 0.14529914529914534,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.26,
+      "modelo": 0.22661122661122662,
+      "tratar_todos": 0.13374913374913375,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.27,
+      "modelo": 0.2255005268703899,
+      "tratar_todos": 0.12188268352651915,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.28,
+      "modelo": 0.2127255460588794,
+      "tratar_todos": 0.10968660968660968,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.29,
+      "modelo": 0.21186950764415552,
+      "tratar_todos": 0.09714698447092818,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.3,
+      "modelo": 0.19902319902319904,
+      "tratar_todos": 0.08424908424908423,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.31,
+      "modelo": 0.19843924191750278,
+      "tratar_todos": 0.07097733184689708,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.32,
+      "modelo": 0.2016088486676722,
+      "tratar_todos": 0.05731523378582204,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.33,
+      "modelo": 0.19772930220691415,
+      "tratar_todos": 0.043245311902028294,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.34,
+      "modelo": 0.19425019425019424,
+      "tratar_todos": 0.028749028749028738,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.35,
+      "modelo": 0.178172255095332,
+      "tratar_todos": 0.013806706114398493,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.36,
+      "modelo": 0.17467948717948717,
+      "tratar_todos": -0.0016025641025640414,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.37,
+      "modelo": 0.17107583774250437,
+      "tratar_todos": -0.017501017501017457,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.38,
+      "modelo": 0.17259443065894675,
+      "tratar_todos": -0.03391232423490487,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.39,
+      "modelo": 0.16897856242118534,
+      "tratar_todos": -0.05086170659941153,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.4,
+      "modelo": 0.1652421652421652,
+      "tratar_todos": -0.06837606837606841,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.41,
+      "modelo": 0.16137911053165288,
+      "tratar_todos": -0.08648413733159482,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.42,
+      "modelo": 0.1573828470380194,
+      "tratar_todos": -0.10521662245800167,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.43,
+      "modelo": 0.15324636377267953,
+      "tratar_todos": -0.1246063877642824,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.44,
+      "modelo": 0.15567765567765568,
+      "tratar_todos": -0.14468864468864467,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.45,
+      "modelo": 0.15850815850815847,
+      "tratar_todos": -0.1655011655011654,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.46,
+      "modelo": 0.14466603355492247,
+      "tratar_todos": -0.18708452041785367,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.47,
+      "modelo": 0.14836316723109177,
+      "tratar_todos": -0.20948234155781315,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.48,
+      "modelo": 0.1525312294543064,
+      "tratar_todos": -0.23274161735700188,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.49,
+      "modelo": 0.14010390480978716,
+      "tratar_todos": -0.2569130216189039,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.5,
+      "modelo": 0.15384615384615383,
+      "tratar_todos": -0.282051282051282,
+      "ninguno": 0.0
+     }
+    ],
+    "equidad": {
+     "sexo": {
+      "filas": [
+       {
+        "grupo": "Femenino",
+        "n": 117,
+        "eventos": 42,
+        "roc_auc": 0.8514,
+        "sensibilidad": 0.8571,
+        "especificidad": 0.6533,
+        "ic95": {
+         "roc_auc": [
+          0.7785,
+          0.9102
+         ],
+         "sensibilidad": [
+          0.7381,
+          0.9524
+         ],
+         "especificidad": [
+          0.5467,
+          0.7537
+         ]
+        },
+        "prob_media": 0.3401,
+        "prevalencia_obs": 0.359
+       }
+      ],
+      "brecha_sensibilidad": 0.0,
+      "alerta": false
+     },
+     "edad": {
+      "filas": [
+       {
+        "grupo": "18-39",
+        "n": 88,
+        "eventos": 25,
+        "roc_auc": 0.866,
+        "sensibilidad": 0.88,
+        "especificidad": 0.6984,
+        "ic95": {
+         "roc_auc": [
+          0.7774,
+          0.9397
+         ],
+         "sensibilidad": [
+          0.72,
+          1.0
+         ],
+         "especificidad": [
+          0.5714,
+          0.8254
+         ]
+        },
+        "prob_media": 0.2918,
+        "prevalencia_obs": 0.2841
+       },
+       {
+        "grupo": "40-59",
+        "n": 25,
+        "eventos": 16,
+        "roc_auc": 0.7917,
+        "sensibilidad": 0.875,
+        "especificidad": 0.3333,
+        "ic95": {
+         "roc_auc": [
+          0.5903,
+          0.9444
+         ],
+         "sensibilidad": [
+          0.6875,
+          1.0
+         ],
+         "especificidad": [
+          0.0528,
+          0.6667
+         ]
+        },
+        "prob_media": 0.5354,
+        "prevalencia_obs": 0.64
+       }
+      ],
+      "brecha_sensibilidad": 0.005,
+      "alerta": false
+     }
+    }
+   },
+   "tabnet": {
+    "metricas": {
+     "roc_auc": 0.821,
+     "pr_auc": 0.7006,
+     "exactitud": 0.7521,
+     "exactitud_balanceada": 0.7543,
+     "sensibilidad": 0.7619,
+     "especificidad": 0.7467,
+     "vpp": 0.6275,
+     "vpn": 0.8485,
+     "f1": 0.6882,
+     "mcc": 0.492,
+     "log_loss": 0.5241,
+     "brier": 0.1696,
+     "ece": 0.1159,
+     "pendiente": 0.8182,
+     "intercepto": 0.2468,
+     "matriz_confusion": {
+      "tp": 32,
+      "tn": 56,
+      "fp": 19,
+      "fn": 10
+     }
+    },
+    "ic95": {
+     "roc_auc": [
+      0.7346,
+      0.8959
+     ],
+     "pr_auc": [
+      0.5846,
+      0.8442
+     ],
+     "sensibilidad": [
+      0.619,
+      0.881
+     ],
+     "especificidad": [
+      0.64,
+      0.84
+     ],
+     "f1": [
+      0.5909,
+      0.7778
+     ],
+     "brier": [
+      0.1376,
+      0.2057
+     ]
+    },
+    "umbral": 0.3680026642436953,
+    "curvas": {
+     "roc": {
+      "fpr": [
+       0.0,
+       0.0,
+       0.0133,
+       0.0133,
+       0.0267,
+       0.0267,
+       0.04,
+       0.04,
+       0.0667,
+       0.0667,
+       0.08,
+       0.08,
+       0.0933,
+       0.0933,
+       0.12,
+       0.12,
+       0.1333,
+       0.1333,
+       0.16,
+       0.16,
+       0.2,
+       0.2,
+       0.2533,
+       0.2533,
+       0.3467,
+       0.3467,
+       0.36,
+       0.36,
+       0.4,
+       0.4,
+       0.4267,
+       0.4267,
+       0.5867,
+       0.5867,
+       0.76,
+       0.76,
+       0.7733,
+       0.7733,
+       1.0
+      ],
+      "tpr": [
+       0.0,
+       0.0238,
+       0.0238,
+       0.0476,
+       0.0476,
+       0.2143,
+       0.2143,
+       0.3571,
+       0.3571,
+       0.4048,
+       0.4048,
+       0.4286,
+       0.4286,
+       0.619,
+       0.619,
+       0.6667,
+       0.6667,
+       0.7143,
+       0.7143,
+       0.7381,
+       0.7381,
+       0.7619,
+       0.7619,
+       0.7857,
+       0.7857,
+       0.8095,
+       0.8095,
+       0.8333,
+       0.8333,
+       0.8571,
+       0.8571,
+       0.881,
+       0.881,
+       0.9286,
+       0.9286,
+       0.9762,
+       0.9762,
+       1.0,
+       1.0
+      ]
+     },
+     "pr": {
+      "recall": [
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       0.9762,
+       0.9762,
+       0.9524,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9048,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8333,
+       0.8333,
+       0.8333,
+       0.8333,
+       0.8095,
+       0.8095,
+       0.7857,
+       0.7857,
+       0.7857,
+       0.7857,
+       0.7857,
+       0.7857,
+       0.7857,
+       0.7857,
+       0.7619,
+       0.7619,
+       0.7619,
+       0.7619,
+       0.7619,
+       0.7381,
+       0.7381,
+       0.7381,
+       0.7381,
+       0.7143,
+       0.7143,
+       0.7143,
+       0.6905,
+       0.6667,
+       0.6667,
+       0.6429,
+       0.619,
+       0.619,
+       0.619,
+       0.5952,
+       0.5714,
+       0.5476,
+       0.5238,
+       0.5,
+       0.4762,
+       0.4524,
+       0.4286,
+       0.4286,
+       0.4048,
+       0.4048,
+       0.381,
+       0.3571,
+       0.3571,
+       0.3571,
+       0.3333,
+       0.3095,
+       0.2857,
+       0.2619,
+       0.2381,
+       0.2143,
+       0.2143,
+       0.1905,
+       0.1667,
+       0.1429,
+       0.119,
+       0.0952,
+       0.0714,
+       0.0476,
+       0.0476,
+       0.0238,
+       0.0238,
+       0.0
+      ],
+      "precision": [
+       0.359,
+       0.3621,
+       0.3652,
+       0.3684,
+       0.3717,
+       0.375,
+       0.3784,
+       0.3818,
+       0.3853,
+       0.3889,
+       0.3925,
+       0.3962,
+       0.4,
+       0.4038,
+       0.4078,
+       0.4118,
+       0.4158,
+       0.42,
+       0.4141,
+       0.4184,
+       0.4124,
+       0.4062,
+       0.4105,
+       0.4149,
+       0.4194,
+       0.4239,
+       0.4286,
+       0.4333,
+       0.4382,
+       0.4432,
+       0.4483,
+       0.4535,
+       0.4588,
+       0.4643,
+       0.4699,
+       0.4634,
+       0.4568,
+       0.4625,
+       0.4684,
+       0.4744,
+       0.4805,
+       0.4868,
+       0.4933,
+       0.5,
+       0.5068,
+       0.5139,
+       0.5211,
+       0.5286,
+       0.5362,
+       0.5294,
+       0.5373,
+       0.5455,
+       0.5385,
+       0.5469,
+       0.5556,
+       0.5645,
+       0.5574,
+       0.5667,
+       0.5593,
+       0.569,
+       0.5789,
+       0.5893,
+       0.6,
+       0.6111,
+       0.6226,
+       0.6346,
+       0.6275,
+       0.64,
+       0.6531,
+       0.6667,
+       0.6809,
+       0.6739,
+       0.6889,
+       0.7045,
+       0.7209,
+       0.7143,
+       0.7317,
+       0.75,
+       0.7436,
+       0.7368,
+       0.7568,
+       0.75,
+       0.7429,
+       0.7647,
+       0.7879,
+       0.7812,
+       0.7742,
+       0.7667,
+       0.7586,
+       0.75,
+       0.7407,
+       0.7308,
+       0.72,
+       0.75,
+       0.7391,
+       0.7727,
+       0.7619,
+       0.75,
+       0.7895,
+       0.8333,
+       0.8235,
+       0.8125,
+       0.8,
+       0.7857,
+       0.7692,
+       0.75,
+       0.8182,
+       0.8,
+       0.7778,
+       0.75,
+       0.7143,
+       0.6667,
+       0.6,
+       0.5,
+       0.6667,
+       0.5,
+       1.0,
+       1.0
+      ],
+      "prevalencia": 0.358974358974359
+     },
+     "calibracion": [
+      {
+       "pred": 0.005825332001935193,
+       "obs": 0.0,
+       "n": 12
+      },
+      {
+       "pred": 0.0449572294978673,
+       "obs": 0.25,
+       "n": 12
+      },
+      {
+       "pred": 0.09675090058871182,
+       "obs": 0.09090909090909091,
+       "n": 11
+      },
+      {
+       "pred": 0.14406759426370083,
+       "obs": 0.08333333333333333,
+       "n": 12
+      },
+      {
+       "pred": 0.2414458106958288,
+       "obs": 0.36363636363636365,
+       "n": 11
+      },
+      {
+       "pred": 0.35183696253724567,
+       "obs": 0.08333333333333333,
+       "n": 12
+      },
+      {
+       "pred": 0.4502011122582143,
+       "obs": 0.5,
+       "n": 12
+      },
+      {
+       "pred": 0.5018078622288941,
+       "obs": 0.7272727272727273,
+       "n": 11
+      },
+      {
+       "pred": 0.5668033733504402,
+       "obs": 0.75,
+       "n": 12
+      },
+      {
+       "pred": 0.7827007858405232,
+       "obs": 0.75,
+       "n": 12
+      }
+     ],
+     "histograma_prob": [
+      20,
+      12,
+      9,
+      8,
+      4,
+      5,
+      6,
+      6,
+      4,
+      14,
+      8,
+      8,
+      2,
+      4,
+      1,
+      2,
+      1,
+      0,
+      2,
+      1
+     ]
+    },
+    "curva_decision": [
+     {
+      "umbral": 0.05,
+      "modelo": 0.3162393162393162,
+      "tratar_todos": 0.3252361673414305,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.06,
+      "modelo": 0.3022367703218767,
+      "tratar_todos": 0.3180578286961266,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.07,
+      "modelo": 0.2985938792390405,
+      "tratar_todos": 0.31072511717673007,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.08,
+      "modelo": 0.2946859903381642,
+      "tratar_todos": 0.3032329988851728,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.09,
+      "modelo": 0.29106790645252184,
+      "tratar_todos": 0.29557621865314176,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.1,
+      "modelo": 0.2896486229819563,
+      "tratar_todos": 0.28774928774928776,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.11,
+      "modelo": 0.2847402285604533,
+      "tratar_todos": 0.27974647075770676,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.12,
+      "modelo": 0.27350427350427353,
+      "tratar_todos": 0.2715617715617716,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.13,
+      "modelo": 0.2625994694960212,
+      "tratar_todos": 0.2631889183613322,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.14,
+      "modelo": 0.2605843768634466,
+      "tratar_todos": 0.2546213476446035,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.15,
+      "modelo": 0.2574157868275515,
+      "tratar_todos": 0.24585218702865763,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.16,
+      "modelo": 0.2608872608872609,
+      "tratar_todos": 0.23687423687423687,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.17,
+      "modelo": 0.2584697765420657,
+      "tratar_todos": 0.22767995057151683,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.18,
+      "modelo": 0.2562017927871586,
+      "tratar_todos": 0.21826141338336463,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.19,
+      "modelo": 0.25208399282473354,
+      "tratar_todos": 0.20861031972143085,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.2,
+      "modelo": 0.23931623931623933,
+      "tratar_todos": 0.19871794871794873,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.21,
+      "modelo": 0.2349886400519312,
+      "tratar_todos": 0.18857513794222658,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.22,
+      "modelo": 0.23055007670392286,
+      "tratar_todos": 0.17817225509533205,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.23,
+      "modelo": 0.22854922854922857,
+      "tratar_todos": 0.16749916749916752,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.24,
+      "modelo": 0.22672064777327938,
+      "tratar_todos": 0.15654520917678816,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.25,
+      "modelo": 0.21652421652421652,
+      "tratar_todos": 0.14529914529914534,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.26,
+      "modelo": 0.21506121506121506,
+      "tratar_todos": 0.13374913374913375,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.27,
+      "modelo": 0.20840650977637282,
+      "tratar_todos": 0.12188268352651915,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.28,
+      "modelo": 0.1956315289648623,
+      "tratar_todos": 0.10968660968660968,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.29,
+      "modelo": 0.1912844588900927,
+      "tratar_todos": 0.09714698447092818,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.3,
+      "modelo": 0.18681318681318682,
+      "tratar_todos": 0.08424908424908423,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.31,
+      "modelo": 0.18221231264709525,
+      "tratar_todos": 0.07097733184689708,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.32,
+      "modelo": 0.18149824032176973,
+      "tratar_todos": 0.05731523378582204,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.33,
+      "modelo": 0.18943742824339838,
+      "tratar_todos": 0.043245311902028294,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.34,
+      "modelo": 0.18958818958818957,
+      "tratar_todos": 0.028749028749028738,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.35,
+      "modelo": 0.19000657462195925,
+      "tratar_todos": 0.013806706114398493,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.36,
+      "modelo": 0.1858974358974359,
+      "tratar_todos": -0.0016025641025640414,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.37,
+      "modelo": 0.17813051146384482,
+      "tratar_todos": -0.017501017501017457,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.38,
+      "modelo": 0.1792114695340502,
+      "tratar_todos": -0.03391232423490487,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.39,
+      "modelo": 0.18607257951520248,
+      "tratar_todos": -0.05086170659941153,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.4,
+      "modelo": 0.18803418803418806,
+      "tratar_todos": -0.06837606837606841,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.41,
+      "modelo": 0.1758655656960742,
+      "tratar_todos": -0.08648413733159482,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.42,
+      "modelo": 0.17211906867079285,
+      "tratar_todos": -0.10521662245800167,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.43,
+      "modelo": 0.18113660218923378,
+      "tratar_todos": -0.1246063877642824,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.44,
+      "modelo": 0.18437118437118438,
+      "tratar_todos": -0.14468864468864467,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.45,
+      "modelo": 0.18104118104118105,
+      "tratar_todos": -0.1655011655011654,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.46,
+      "modelo": 0.17632162076606517,
+      "tratar_todos": -0.18708452041785367,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.47,
+      "modelo": 0.17110143525237864,
+      "tratar_todos": -0.20948234155781315,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.48,
+      "modelo": 0.15976331360946747,
+      "tratar_todos": -0.23274161735700188,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.49,
+      "modelo": 0.14831573655103064,
+      "tratar_todos": -0.2569130216189039,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.5,
+      "modelo": 0.1282051282051282,
+      "tratar_todos": -0.282051282051282,
+      "ninguno": 0.0
+     }
+    ],
+    "equidad": {
+     "sexo": {
+      "filas": [
+       {
+        "grupo": "Femenino",
+        "n": 117,
+        "eventos": 42,
+        "roc_auc": 0.821,
+        "sensibilidad": 0.7619,
+        "especificidad": 0.7467,
+        "ic95": {
+         "roc_auc": [
+          0.7381,
+          0.8924
+         ],
+         "sensibilidad": [
+          0.619,
+          0.881
+         ],
+         "especificidad": [
+          0.64,
+          0.84
+         ]
+        },
+        "prob_media": 0.3196,
+        "prevalencia_obs": 0.359
+       }
+      ],
+      "brecha_sensibilidad": 0.0,
+      "alerta": false
+     },
+     "edad": {
+      "filas": [
+       {
+        "grupo": "18-39",
+        "n": 88,
+        "eventos": 25,
+        "roc_auc": 0.8197,
+        "sensibilidad": 0.72,
+        "especificidad": 0.7778,
+        "ic95": {
+         "roc_auc": [
+          0.7019,
+          0.9146
+         ],
+         "sensibilidad": [
+          0.52,
+          0.88
+         ],
+         "especificidad": [
+          0.6742,
+          0.8813
+         ]
+        },
+        "prob_media": 0.2843,
+        "prevalencia_obs": 0.2841
+       },
+       {
+        "grupo": "40-59",
+        "n": 25,
+        "eventos": 16,
+        "roc_auc": 0.6875,
+        "sensibilidad": 0.875,
+        "especificidad": 0.4444,
+        "ic95": {
+         "roc_auc": [
+          0.4372,
+          0.9167
+         ],
+         "sensibilidad": [
+          0.6875,
+          1.0
+         ],
+         "especificidad": [
+          0.1111,
+          0.7778
+         ]
+        },
+        "prob_media": 0.4633,
+        "prevalencia_obs": 0.64
+       }
+      ],
+      "brecha_sensibilidad": 0.155,
+      "alerta": true
+     }
+    }
+   },
+   "stack": {
+    "metricas": {
+     "roc_auc": 0.873,
+     "pr_auc": 0.8263,
+     "exactitud": 0.8034,
+     "exactitud_balanceada": 0.81,
+     "sensibilidad": 0.8333,
+     "especificidad": 0.7867,
+     "vpp": 0.6863,
+     "vpn": 0.8939,
+     "f1": 0.7527,
+     "mcc": 0.5998,
+     "log_loss": 0.4316,
+     "brier": 0.138,
+     "ece": 0.0854,
+     "pendiente": 1.0664,
+     "intercepto": 0.1339,
+     "matriz_confusion": {
+      "tp": 35,
+      "tn": 59,
+      "fp": 16,
+      "fn": 7
+     }
+    },
+    "ic95": {
+     "roc_auc": [
+      0.8,
+      0.9308
+     ],
+     "pr_auc": [
+      0.7384,
+      0.9032
+     ],
+     "sensibilidad": [
+      0.7143,
+      0.9286
+     ],
+     "especificidad": [
+      0.6933,
+      0.88
+     ],
+     "f1": [
+      0.6665,
+      0.8352
+     ],
+     "brier": [
+      0.1043,
+      0.1758
+     ]
+    },
+    "umbral": 0.2827338487853308,
+    "curvas": {
+     "roc": {
+      "fpr": [
+       0.0,
+       0.0,
+       0.0,
+       0.0133,
+       0.0133,
+       0.0267,
+       0.0267,
+       0.04,
+       0.04,
+       0.12,
+       0.12,
+       0.1467,
+       0.1467,
+       0.1733,
+       0.1733,
+       0.2,
+       0.2,
+       0.2933,
+       0.2933,
+       0.4267,
+       0.4267,
+       0.4667,
+       0.4667,
+       0.4933,
+       0.4933,
+       0.5467,
+       0.5467,
+       0.5733,
+       0.5733,
+       1.0
+      ],
+      "tpr": [
+       0.0,
+       0.0238,
+       0.3095,
+       0.3095,
+       0.4048,
+       0.4048,
+       0.4762,
+       0.4762,
+       0.5952,
+       0.5952,
+       0.6429,
+       0.6429,
+       0.7143,
+       0.7143,
+       0.7381,
+       0.7381,
+       0.8333,
+       0.8333,
+       0.8571,
+       0.8571,
+       0.881,
+       0.881,
+       0.9048,
+       0.9048,
+       0.9286,
+       0.9286,
+       0.9762,
+       0.9762,
+       1.0,
+       1.0
+      ]
+     },
+     "pr": {
+      "recall": [
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       0.9762,
+       0.9762,
+       0.9762,
+       0.9524,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9286,
+       0.9048,
+       0.9048,
+       0.9048,
+       0.881,
+       0.881,
+       0.881,
+       0.881,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8571,
+       0.8333,
+       0.8333,
+       0.8333,
+       0.8333,
+       0.8333,
+       0.8333,
+       0.8333,
+       0.8333,
+       0.8095,
+       0.7857,
+       0.7619,
+       0.7381,
+       0.7381,
+       0.7381,
+       0.7143,
+       0.7143,
+       0.7143,
+       0.6905,
+       0.6667,
+       0.6429,
+       0.6429,
+       0.6429,
+       0.619,
+       0.5952,
+       0.5952,
+       0.5952,
+       0.5952,
+       0.5952,
+       0.5952,
+       0.5952,
+       0.5714,
+       0.5476,
+       0.5238,
+       0.5,
+       0.4762,
+       0.4762,
+       0.4524,
+       0.4286,
+       0.4048,
+       0.4048,
+       0.381,
+       0.3571,
+       0.3333,
+       0.3095,
+       0.3095,
+       0.2857,
+       0.2619,
+       0.2381,
+       0.2143,
+       0.1905,
+       0.1667,
+       0.1429,
+       0.119,
+       0.0952,
+       0.0714,
+       0.0476,
+       0.0238,
+       0.0
+      ],
+      "precision": [
+       0.359,
+       0.3621,
+       0.3652,
+       0.3684,
+       0.3717,
+       0.375,
+       0.3784,
+       0.3818,
+       0.3853,
+       0.3889,
+       0.3925,
+       0.3962,
+       0.4,
+       0.4038,
+       0.4078,
+       0.4118,
+       0.4158,
+       0.42,
+       0.4242,
+       0.4286,
+       0.433,
+       0.4375,
+       0.4421,
+       0.4468,
+       0.4516,
+       0.4565,
+       0.4615,
+       0.4667,
+       0.4719,
+       0.4773,
+       0.4828,
+       0.4884,
+       0.4941,
+       0.4881,
+       0.494,
+       0.5,
+       0.4938,
+       0.4875,
+       0.4937,
+       0.5,
+       0.5065,
+       0.5132,
+       0.5067,
+       0.5135,
+       0.5205,
+       0.5139,
+       0.5211,
+       0.5286,
+       0.5362,
+       0.5294,
+       0.5373,
+       0.5455,
+       0.5538,
+       0.5625,
+       0.5714,
+       0.5806,
+       0.5902,
+       0.6,
+       0.6102,
+       0.6207,
+       0.614,
+       0.625,
+       0.6364,
+       0.6481,
+       0.6604,
+       0.6731,
+       0.6863,
+       0.7,
+       0.6939,
+       0.6875,
+       0.6809,
+       0.6739,
+       0.6889,
+       0.7045,
+       0.6977,
+       0.7143,
+       0.7317,
+       0.725,
+       0.7179,
+       0.7105,
+       0.7297,
+       0.75,
+       0.7429,
+       0.7353,
+       0.7576,
+       0.7812,
+       0.8065,
+       0.8333,
+       0.8621,
+       0.8929,
+       0.8889,
+       0.8846,
+       0.88,
+       0.875,
+       0.8696,
+       0.9091,
+       0.9048,
+       0.9,
+       0.8947,
+       0.9444,
+       0.9412,
+       0.9375,
+       0.9333,
+       0.9286,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0
+      ],
+      "prevalencia": 0.358974358974359
+     },
+     "calibracion": [
+      {
+       "pred": 0.03621434462518448,
+       "obs": 0.0,
+       "n": 12
+      },
+      {
+       "pred": 0.051434629572747394,
+       "obs": 0.0,
+       "n": 12
+      },
+      {
+       "pred": 0.07486184432586977,
+       "obs": 0.09090909090909091,
+       "n": 11
+      },
+      {
+       "pred": 0.1053178109947726,
+       "obs": 0.3333333333333333,
+       "n": 12
+      },
+      {
+       "pred": 0.1879925559444142,
+       "obs": 0.09090909090909091,
+       "n": 11
+      },
+      {
+       "pred": 0.2827037960201441,
+       "obs": 0.3333333333333333,
+       "n": 12
+      },
+      {
+       "pred": 0.4688817100106894,
+       "obs": 0.5,
+       "n": 12
+      },
+      {
+       "pred": 0.6146807820346193,
+       "obs": 0.45454545454545453,
+       "n": 11
+      },
+      {
+       "pred": 0.7384384913199239,
+       "obs": 0.75,
+       "n": 12
+      },
+      {
+       "pred": 0.8265630926439455,
+       "obs": 1.0,
+       "n": 12
+      }
+     ],
+     "histograma_prob": [
+      18,
+      20,
+      10,
+      6,
+      8,
+      4,
+      2,
+      1,
+      5,
+      6,
+      3,
+      4,
+      4,
+      3,
+      7,
+      6,
+      8,
+      2,
+      0,
+      0
+     ]
+    },
+    "curva_decision": [
+     {
+      "umbral": 0.05,
+      "modelo": 0.3333333333333333,
+      "tratar_todos": 0.3252361673414305,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.06,
+      "modelo": 0.33060556464811786,
+      "tratar_todos": 0.3180578286961266,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.07,
+      "modelo": 0.32809484422387647,
+      "tratar_todos": 0.31072511717673007,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.08,
+      "modelo": 0.31846897064288365,
+      "tratar_todos": 0.3032329988851728,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.09,
+      "modelo": 0.31492439184746873,
+      "tratar_todos": 0.29557621865314176,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.1,
+      "modelo": 0.295346628679962,
+      "tratar_todos": 0.28774928774928776,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.11,
+      "modelo": 0.2867569384423317,
+      "tratar_todos": 0.27974647075770676,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.12,
+      "modelo": 0.2766122766122766,
+      "tratar_todos": 0.2715617715617716,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.13,
+      "modelo": 0.2740937223695844,
+      "tratar_todos": 0.2631889183613322,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.14,
+      "modelo": 0.2717153647386205,
+      "tratar_todos": 0.2546213476446035,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.15,
+      "modelo": 0.2679738562091503,
+      "tratar_todos": 0.24585218702865763,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.16,
+      "modelo": 0.2641432641432641,
+      "tratar_todos": 0.23687423687423687,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.17,
+      "modelo": 0.25167336010709507,
+      "tratar_todos": 0.22767995057151683,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.18,
+      "modelo": 0.24953095684803003,
+      "tratar_todos": 0.21826141338336463,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.19,
+      "modelo": 0.24754669199113646,
+      "tratar_todos": 0.20861031972143085,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.2,
+      "modelo": 0.25,
+      "tratar_todos": 0.19871794871794873,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.21,
+      "modelo": 0.25316455696202533,
+      "tratar_todos": 0.18857513794222658,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.22,
+      "modelo": 0.25465702388779315,
+      "tratar_todos": 0.17817225509533205,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.23,
+      "modelo": 0.24297924297924298,
+      "tratar_todos": 0.16749916749916752,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.24,
+      "modelo": 0.24246513720197932,
+      "tratar_todos": 0.15654520917678816,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.25,
+      "modelo": 0.24216524216524216,
+      "tratar_todos": 0.14529914529914534,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.26,
+      "modelo": 0.2420882420882421,
+      "tratar_todos": 0.13374913374913375,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.27,
+      "modelo": 0.24224329703781758,
+      "tratar_todos": 0.12188268352651915,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.28,
+      "modelo": 0.24596391263057926,
+      "tratar_todos": 0.10968660968660968,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.29,
+      "modelo": 0.2432887925845672,
+      "tratar_todos": 0.09714698447092818,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.3,
+      "modelo": 0.24053724053724052,
+      "tratar_todos": 0.08424908424908423,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.31,
+      "modelo": 0.24154589371980675,
+      "tratar_todos": 0.07097733184689708,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.32,
+      "modelo": 0.23026646556058322,
+      "tratar_todos": 0.05731523378582204,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.33,
+      "modelo": 0.2274524811838245,
+      "tratar_todos": 0.043245311902028294,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.34,
+      "modelo": 0.22455322455322457,
+      "tratar_todos": 0.028749028749028738,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.35,
+      "modelo": 0.22156476002629852,
+      "tratar_todos": 0.013806706114398493,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.36,
+      "modelo": 0.218482905982906,
+      "tratar_todos": -0.0016025641025640414,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.37,
+      "modelo": 0.21530321530321533,
+      "tratar_todos": -0.017501017501017457,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.38,
+      "modelo": 0.21202095395643786,
+      "tratar_todos": -0.03391232423490487,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.39,
+      "modelo": 0.20008406893652797,
+      "tratar_todos": -0.05086170659941153,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.4,
+      "modelo": 0.19658119658119658,
+      "tratar_todos": -0.06837606837606841,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.41,
+      "modelo": 0.18441257424308277,
+      "tratar_todos": -0.08648413733159482,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.42,
+      "modelo": 0.18066607721780142,
+      "tratar_todos": -0.10521662245800167,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.43,
+      "modelo": 0.17468885889938524,
+      "tratar_todos": -0.1246063877642824,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.44,
+      "modelo": 0.17094017094017094,
+      "tratar_todos": -0.14468864468864467,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.45,
+      "modelo": 0.1655011655011655,
+      "tratar_todos": -0.1655011655011654,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.46,
+      "modelo": 0.1617600506489395,
+      "tratar_todos": -0.18708452041785367,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.47,
+      "modelo": 0.17303660699887113,
+      "tratar_todos": -0.20948234155781315,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.48,
+      "modelo": 0.16107823800131493,
+      "tratar_todos": -0.23274161735700188,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.49,
+      "modelo": 0.14043908161555224,
+      "tratar_todos": -0.2569130216189039,
+      "ninguno": 0.0
+     },
+     {
+      "umbral": 0.5,
+      "modelo": 0.1452991452991453,
+      "tratar_todos": -0.282051282051282,
+      "ninguno": 0.0
+     }
+    ],
+    "equidad": {
+     "sexo": {
+      "filas": [
+       {
+        "grupo": "Femenino",
+        "n": 117,
+        "eventos": 42,
+        "roc_auc": 0.873,
+        "sensibilidad": 0.8333,
+        "especificidad": 0.7867,
+        "ic95": {
+         "roc_auc": [
+          0.8049,
+          0.9267
+         ],
+         "sensibilidad": [
+          0.7143,
+          0.9286
+         ],
+         "especificidad": [
+          0.6933,
+          0.88
+         ]
+        },
+        "prob_media": 0.3399,
+        "prevalencia_obs": 0.359
+       }
+      ],
+      "brecha_sensibilidad": 0.0,
+      "alerta": false
+     },
+     "edad": {
+      "filas": [
+       {
+        "grupo": "18-39",
+        "n": 88,
+        "eventos": 25,
+        "roc_auc": 0.8819,
+        "sensibilidad": 0.84,
+        "especificidad": 0.8413,
+        "ic95": {
+         "roc_auc": [
+          0.7958,
+          0.9511
+         ],
+         "sensibilidad": [
+          0.68,
+          0.96
+         ],
+         "especificidad": [
+          0.746,
+          0.9206
+         ]
+        },
+        "prob_media": 0.2854,
+        "prevalencia_obs": 0.2841
+       },
+       {
+        "grupo": "40-59",
+        "n": 25,
+        "eventos": 16,
+        "roc_auc": 0.8333,
+        "sensibilidad": 0.875,
+        "especificidad": 0.4444,
+        "ic95": {
+         "roc_auc": [
+          0.6458,
+          0.9653
+         ],
+         "sensibilidad": [
+          0.6875,
+          1.0
+         ],
+         "especificidad": [
+          0.1111,
+          0.7778
+         ]
+        },
+        "prob_media": 0.5533,
+        "prevalencia_obs": 0.64
+       }
+      ],
+      "brecha_sensibilidad": 0.035,
+      "alerta": false
+     }
+    }
+   }
+  },
+  "pruebas": {
+   "pares": [
+    {
+     "modelo_a": "lr",
+     "modelo_b": "rf",
+     "delong_z": 0.963,
+     "delong_p": 0.3354063511302242,
+     "mcnemar_p": 0.5810546875,
+     "mcnemar_metodo": "exacto binomial",
+     "dif_auc": 0.0194,
+     "dif_auc_ic95": [
+      -0.0222,
+      0.059
+     ],
+     "delong_p_holm": 1.0,
+     "mcnemar_p_holm": 1.0
+    },
+    {
+     "modelo_a": "lr",
+     "modelo_b": "xgb",
+     "delong_z": 1.671,
+     "delong_p": 0.09475365958974545,
+     "mcnemar_p": 0.11846923828124999,
+     "mcnemar_metodo": "exacto binomial",
+     "dif_auc": 0.0311,
+     "dif_auc_ic95": [
+      -0.0083,
+      0.0695
+     ],
+     "delong_p_holm": 0.6632756171282181,
+     "mcnemar_p_holm": 1.0
+    },
+    {
+     "modelo_a": "lr",
+     "modelo_b": "tabnet",
+     "delong_z": 2.35,
+     "delong_p": 0.0187594685272537,
+     "mcnemar_p": 0.480682373046875,
+     "mcnemar_metodo": "exacto binomial",
+     "dif_auc": 0.0616,
+     "dif_auc_ic95": [
+      0.0133,
+      0.1153
+     ],
+     "delong_p_holm": 0.1688352167452833,
+     "mcnemar_p_holm": 1.0
+    },
+    {
+     "modelo_a": "lr",
+     "modelo_b": "stack",
+     "delong_z": 0.752,
+     "delong_p": 0.4521440803922476,
+     "mcnemar_p": 0.6875,
+     "mcnemar_metodo": "exacto binomial",
+     "dif_auc": 0.0095,
+     "dif_auc_ic95": [
+      -0.0172,
+      0.0346
+     ],
+     "delong_p_holm": 1.0,
+     "mcnemar_p_holm": 1.0
+    },
+    {
+     "modelo_a": "rf",
+     "modelo_b": "xgb",
+     "delong_z": 0.963,
+     "delong_p": 0.3357004059903126,
+     "mcnemar_p": 0.2890625,
+     "mcnemar_metodo": "exacto binomial",
+     "dif_auc": 0.0117,
+     "dif_auc_ic95": [
+      -0.0117,
+      0.0368
+     ],
+     "delong_p_holm": 1.0,
+     "mcnemar_p_holm": 1.0
+    },
+    {
+     "modelo_a": "rf",
+     "modelo_b": "tabnet",
+     "delong_z": 1.537,
+     "delong_p": 0.12419638245809594,
+     "mcnemar_p": 1.0,
+     "mcnemar_metodo": "exacto binomial",
+     "dif_auc": 0.0422,
+     "dif_auc_ic95": [
+      -0.0092,
+      0.0978
+     ],
+     "delong_p_holm": 0.7451782947485757,
+     "mcnemar_p_holm": 1.0
+    },
+    {
+     "modelo_a": "rf",
+     "modelo_b": "stack",
+     "delong_z": -0.989,
+     "delong_p": 0.3227750442125298,
+     "mcnemar_p": 0.125,
+     "mcnemar_metodo": "exacto binomial",
+     "dif_auc": -0.0098,
+     "dif_auc_ic95": [
+      -0.0308,
+      0.0114
+     ],
+     "delong_p_holm": 1.0,
+     "mcnemar_p_holm": 1.0
+    },
+    {
+     "modelo_a": "xgb",
+     "modelo_b": "tabnet",
+     "delong_z": 1.097,
+     "delong_p": 0.27244542765031265,
+     "mcnemar_p": 0.629058837890625,
+     "mcnemar_metodo": "exacto binomial",
+     "dif_auc": 0.0305,
+     "dif_auc_ic95": [
+      -0.0232,
+      0.0867
+     ],
+     "delong_p_holm": 1.0,
+     "mcnemar_p_holm": 1.0
+    },
+    {
+     "modelo_a": "xgb",
+     "modelo_b": "stack",
+     "delong_z": -2.543,
+     "delong_p": 0.01097778330966215,
+     "mcnemar_p": 0.01171875,
+     "mcnemar_metodo": "exacto binomial",
+     "dif_auc": -0.0216,
+     "dif_auc_ic95": [
+      -0.0394,
+      -0.0054
+     ],
+     "delong_p_holm": 0.1097778330966215,
+     "mcnemar_p_holm": 0.1171875
+    },
+    {
+     "modelo_a": "tabnet",
+     "modelo_b": "stack",
+     "delong_z": -2.155,
+     "delong_p": 0.031124952286850992,
+     "mcnemar_p": 0.14599609375,
+     "mcnemar_metodo": "exacto binomial",
+     "dif_auc": -0.0521,
+     "dif_auc_ic95": [
+      -0.1013,
+      -0.0044
+     ],
+     "delong_p_holm": 0.24899961829480793,
+     "mcnemar_p_holm": 1.0
+    }
+   ],
+   "interpretabilidad": {
+    "que_muestra": "Comparaciones pareadas en la prueba aislada.",
+    "como_leerla": "DeLong compara AUC sobre los mismos pacientes; McNemar compara aciertos al umbral fijado en Validación; p ajustados por Holm.",
+    "interpretacion": "No se demostraron diferencias de AUC tras Holm; no se afirma un «mejor modelo».",
+    "limitaciones": "Una sola partición de prueba; la significancia depende de su tamaño."
+   }
+  },
+  "interpretabilidad": {
+   "que_muestra": "Métricas en la prueba aislada (15 %), leída una sola vez.",
+   "como_leerla": "IC 95 % por bootstrap estratificado (B = 2000); el umbral proviene de Validación.",
+   "interpretacion": "El AUC más alto es de lr (0.8825); ver la tabla de pruebas antes de declarar superioridad.",
+   "limitaciones": "Prevalencia de la muestra NHANES no ponderada; no extrapolar VPP/VPN a otras poblaciones."
+  }
+ },
+ "modelo_recomendado": "stack",
+ "supervivencia": {
+  "habilitado": false,
+  "motivo": "Requiere datos longitudinales con tiempo hasta evento (T) y censura (delta); ninguna cohorte los tiene."
+ },
+ "semilla": 42,
+ "segundos": 684.5,
+ "aviso": "Prototipo académico de investigación (no es un dispositivo médico). Las salidas son riesgos estimados y requieren confirmación clínica.",
+ "mlflow_run": "no registrado: The filesystem tracking backend (e.g., './mlruns') is in maintenance mode and will not receive further updates. Please migrate to a database backend (e.g., 'sqlite:///mlflow.db') to access the latest MLflow features. The `mlflow migrate-filestore` tool migrates your existing data losslessly. See https://mlflow.org/docs/latest/self-hosting/migrate-from-file-store for migration guidance. If the filesystem backend is required for your workflow, set `MLFLOW_ALLOW_FILE_STORE=true` to opt out of this exception."
+}
