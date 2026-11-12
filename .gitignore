@@ -44,3 +44,6 @@ data/reports/*.xlsx
 logs/
 mlruns/
 frontend/dist/
+
+# Archivos temporales de Office
+~$*
