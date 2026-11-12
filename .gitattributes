@@ -1,0 +1,9 @@
+* text=auto
+*.pdf binary
+*.png binary
+*.tiff binary
+*.joblib binary
+*.db binary
+*.docx binary
+*.xlsx binary
+*.xpt binary
