@@ -34,6 +34,82 @@ ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 MODELS_DIR = Path(os.getenv("MODEL_ARTIFACTS_DIR", str(ROOT_DIR / "models")))
 
 
+def _enable_cross_platform_xgboost_unpickle() -> None:
+    """Permite cargar modelos XGBoost serializados en otro sistema operativo.
+
+    El pickle de XGBoost guarda `rng_state` (estado del generador std::mt19937) en el
+    formato de texto de la biblioteca estándar de C++ del sistema donde se entrenó:
+    libstdc++ (Linux) lo escribe en decimal y MSVC (Windows) en hexadecimal, por lo que
+    un modelo entrenado en Linux falla en Windows con "input stream corrupted".
+    El estado del RNG solo afecta a un entrenamiento posterior, no a la inferencia,
+    así que se sustituye por el estado nativo de esta plataforma únicamente cuando
+    falla la deserialización original. Árboles e hiperparámetros quedan intactos.
+    """
+    import struct
+
+    import xgboost as xgb
+    from xgboost.core import Booster, XGBoostError
+
+    if getattr(Booster.__setstate__, "_sp03_cross_platform", False):
+        return
+
+    key = b"L" + (9).to_bytes(8, "big") + b"rng_state"
+    len_formats = {"i": ">b", "U": ">B", "I": ">h", "l": ">i", "L": ">q"}
+
+    def _rng_value_span(buf: bytes) -> Tuple[int, int, int] | None:
+        """Devuelve (inicio_marcador_S, inicio_valor, fin_valor) del string UBJSON rng_state."""
+        k = buf.find(key)
+        if k < 0:
+            return None
+        p = k + len(key)
+        if buf[p : p + 1] != b"S" or chr(buf[p + 1]) not in len_formats:
+            return None
+        fmt = len_formats[chr(buf[p + 1])]
+        n = struct.calcsize(fmt)
+        length = struct.unpack(fmt, buf[p + 2 : p + 2 + n])[0]
+        return p, p + 2 + n, p + 2 + n + length
+
+    native_rng: Dict[str, bytes] = {}
+
+    def _native_rng_state() -> bytes:
+        if "v" not in native_rng:
+            tiny = xgb.train(
+                {"nthread": 1},
+                xgb.DMatrix(np.array([[0.0], [1.0]]), label=[0, 1]),
+                num_boost_round=1,
+            )
+            buf = bytes(tiny.__getstate__()["handle"])
+            span = _rng_value_span(buf)
+            if span is None:
+                raise RuntimeError("No se pudo obtener rng_state nativo de XGBoost")
+            native_rng["v"] = buf[span[1] : span[2]]
+        return native_rng["v"]
+
+    original_setstate = Booster.__setstate__
+
+    def _setstate(self: Booster, state: Dict[str, Any]) -> None:
+        try:
+            original_setstate(self, state)
+            return
+        except XGBoostError as exc:
+            handle = state.get("handle")
+            if handle is None or "input stream corrupted" not in str(exc):
+                raise
+            buf = bytes(handle)
+            span = _rng_value_span(buf)
+            if span is None:
+                raise
+            new_val = _native_rng_state()
+            fixed = buf[: span[0]] + b"SL" + struct.pack(">q", len(new_val)) + new_val + buf[span[2] :]
+            original_setstate(self, {**state, "handle": bytearray(fixed)})
+
+    _setstate._sp03_cross_platform = True  # type: ignore[attr-defined]
+    Booster.__setstate__ = _setstate  # type: ignore[method-assign]
+
+
+_enable_cross_platform_xgboost_unpickle()
+
+
 def classify_risk_stratum(prob: float) -> Tuple[str, str]:
     if prob < 0.25:
         return (
