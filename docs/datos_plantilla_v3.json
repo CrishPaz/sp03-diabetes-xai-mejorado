@@ -1,0 +1,1196 @@
+{
+ "exclusiones": {
+  "inicial": 9254,
+  "edad_menor_20": 3685,
+  "DIQ010_invalido": 4,
+  "sin_hba1c_glucosa_imc": 736,
+  "total_excluidos": 4425,
+  "final": 4829
+ },
+ "particiones": {
+  "nhanes": {
+   "desarrollo": {
+    "n": 3377,
+    "eventos": 538
+   },
+   "validacion": {
+    "n": 726,
+    "eventos": 117
+   },
+   "prueba": {
+    "n": 726,
+    "eventos": 117
+   }
+  },
+  "pima": {
+   "prueba": {
+    "n": 117,
+    "eventos": 42
+   },
+   "validacion": {
+    "n": 114,
+    "eventos": 39
+   },
+   "desarrollo": {
+    "n": 537,
+    "eventos": 187
+   }
+  }
+ },
+ "eventos_por_parametro_B": 53.8,
+ "tabla1": [
+  {
+   "variable": "edad",
+   "con_dm2": "64.0 [55.0-73.0]",
+   "sin_dm2": "49.0 [34.0-63.0]",
+   "faltantes_pct": 0.0,
+   "p_descriptivo": 9.49e-96,
+   "smd": 0.945
+  },
+  {
+   "variable": "imc",
+   "con_dm2": "31.1 [26.8-36.2]",
+   "sin_dm2": "28.3 [24.5-33.1]",
+   "faltantes_pct": 0.0,
+   "p_descriptivo": 7.26e-26,
+   "smd": 0.396
+  },
+  {
+   "variable": "glucosa",
+   "con_dm2": "125.0 [103.0-168.0]",
+   "sin_dm2": "92.0 [86.0-99.0]",
+   "faltantes_pct": 0.0,
+   "p_descriptivo": 6.29e-189,
+   "smd": 1.033
+  },
+  {
+   "variable": "hba1c",
+   "con_dm2": "7.0 [6.3-8.1]",
+   "sin_dm2": "5.5 [5.2-5.8]",
+   "faltantes_pct": 0.0,
+   "p_descriptivo": 1.11e-301,
+   "smd": 1.478
+  },
+  {
+   "variable": "presion_sistolica",
+   "con_dm2": "130.0 [120.0-144.0]",
+   "sin_dm2": "122.0 [112.0-136.0]",
+   "faltantes_pct": 10.8,
+   "p_descriptivo": 7.14e-24,
+   "smd": 0.391
+  },
+  {
+   "variable": "presion_diastolica",
+   "con_dm2": "72.0 [64.0-78.0]",
+   "sin_dm2": "72.0 [66.0-80.0]",
+   "faltantes_pct": 11.6,
+   "p_descriptivo": 0.000646,
+   "smd": -0.162
+  },
+  {
+   "variable": "colesterol_total",
+   "con_dm2": "169.0 [144.0-198.5]",
+   "sin_dm2": "187.0 [163.0-215.0]",
+   "faltantes_pct": 0.1,
+   "p_descriptivo": 3.22e-26,
+   "smd": -0.373
+  },
+  {
+   "variable": "colesterol_hdl",
+   "con_dm2": "46.0 [39.0-54.0]",
+   "sin_dm2": "52.0 [43.0-63.0]",
+   "faltantes_pct": 0.1,
+   "p_descriptivo": 8.36e-29,
+   "smd": -0.419
+  },
+  {
+   "variable": "trigliceridos",
+   "con_dm2": "146.0 [108.0-205.2]",
+   "sin_dm2": "113.0 [80.0-165.0]",
+   "faltantes_pct": 0.0,
+   "p_descriptivo": 4.15e-32,
+   "smd": 0.306
+  },
+  {
+   "variable": "antecedente_familiar_diabetes",
+   "con_dm2": "559 (72.4 %)",
+   "sin_dm2": "1761 (43.4 %)",
+   "faltantes_pct": 0.0,
+   "p_descriptivo": 3.34e-49,
+   "smd": 0.614
+  },
+  {
+   "variable": "antecedente_hipertension",
+   "con_dm2": "532 (68.9 %)",
+   "sin_dm2": "1306 (32.2 %)",
+   "faltantes_pct": 0.0,
+   "p_descriptivo": 2.51e-82,
+   "smd": 0.789
+  },
+  {
+   "variable": "tratamiento_antihipertensivo",
+   "con_dm2": "517 (67.0 %)",
+   "sin_dm2": "1158 (28.5 %)",
+   "faltantes_pct": 0.0,
+   "p_descriptivo": 1.46e-93,
+   "smd": 0.833
+  }
+ ],
+ "tabla_s0": [
+  [
+   "edad",
+   "DEMO_J",
+   "RIDAGEYR",
+   "años",
+   "20–80",
+   "0.0 %",
+   "sí"
+  ],
+  [
+   "imc",
+   "BMX_J",
+   "BMXBMI",
+   "kg/m²",
+   "14.2–86.2",
+   "0.0 %",
+   "sí"
+  ],
+  [
+   "glucosa",
+   "BIOPRO_J",
+   "LBXSGL",
+   "mg/dL",
+   "47–626",
+   "0.0 %",
+   "solo A"
+  ],
+  [
+   "hba1c",
+   "GHB_J",
+   "LBXGH",
+   "%",
+   "4.1–16.2",
+   "0.0 %",
+   "solo A"
+  ],
+  [
+   "presion_sistolica",
+   "BPX_J",
+   "BPXSY1",
+   "mmHg",
+   "78–224",
+   "10.8 %",
+   "sí"
+  ],
+  [
+   "presion_diastolica",
+   "BPX_J",
+   "BPXDI1",
+   "mmHg",
+   "30–124",
+   "11.6 %",
+   "sí"
+  ],
+  [
+   "colesterol_total",
+   "TCHOL_J",
+   "LBXTC",
+   "mg/dL",
+   "76–446",
+   "0.1 %",
+   "sí"
+  ],
+  [
+   "colesterol_hdl",
+   "HDL_J",
+   "LBDHDD",
+   "mg/dL",
+   "10–189",
+   "0.1 %",
+   "sí"
+  ],
+  [
+   "trigliceridos",
+   "BIOPRO_J",
+   "LBXSTR",
+   "mg/dL",
+   "25–2923",
+   "0.0 %",
+   "sí"
+  ],
+  [
+   "antecedente_familiar_diabetes",
+   "MCQ_J",
+   "MCQ300C = 1",
+   "0/1",
+   "0–1",
+   "0.0 %",
+   "sí"
+  ],
+  [
+   "antecedente_hipertension",
+   "BPQ_J",
+   "BPQ020 = 1",
+   "0/1",
+   "0–1",
+   "0.0 %",
+   "sí"
+  ],
+  [
+   "tratamiento_antihipertensivo",
+   "BPQ_J",
+   "BPQ020 = 1 y BPQ040A = 1",
+   "0/1",
+   "0–1",
+   "0.0 %",
+   "sí"
+  ]
+ ],
+ "delta_auc": {
+  "lr": {
+   "delta": -0.089,
+   "ic95": [
+    -0.12,
+    -0.061
+   ],
+   "p_delong": 1.5915390012783778e-08
+  },
+  "rf": {
+   "delta": -0.1,
+   "ic95": [
+    -0.139,
+    -0.065
+   ],
+   "p_delong": 1.5019721181877143e-07
+  },
+  "xgb": {
+   "delta": -0.091,
+   "ic95": [
+    -0.127,
+    -0.056
+   ],
+   "p_delong": 6.437534894797394e-07
+  },
+  "tabnet": {
+   "delta": -0.128,
+   "ic95": [
+    -0.171,
+    -0.087
+   ],
+   "p_delong": 1.7329416821219913e-09
+  },
+  "stack": {
+   "delta": -0.097,
+   "ic95": [
+    -0.132,
+    -0.063
+   ],
+   "p_delong": 8.209288707139678e-08
+  }
+ },
+ "pruebas": {
+  "nhanes_2017_2018__A": {
+   "nadeau_bengio_holm_sig": [
+    "lr vs stack"
+   ],
+   "nemenyi_sig": [
+    "xgb vs tabnet",
+    "tabnet vs stack"
+   ],
+   "mcnemar_holm_sig": [],
+   "rangos": {
+    "lr": 4.2,
+    "rf": 2.4,
+    "xgb": 1.8,
+    "tabnet": 4.8,
+    "stack": 1.8
+   },
+   "cd": 2.728
+  },
+  "nhanes_2017_2018__B": {
+   "nadeau_bengio_holm_sig": [],
+   "nemenyi_sig": [
+    "xgb vs tabnet",
+    "tabnet vs stack"
+   ],
+   "mcnemar_holm_sig": [
+    "lr vs rf",
+    "lr vs xgb",
+    "lr vs stack",
+    "rf vs tabnet",
+    "xgb vs tabnet",
+    "tabnet vs stack"
+   ],
+   "rangos": {
+    "lr": 3.8,
+    "rf": 3.2,
+    "xgb": 1.8,
+    "tabnet": 5.0,
+    "stack": 1.2
+   },
+   "cd": 2.728
+  },
+  "pima_indians__A": {
+   "nadeau_bengio_holm_sig": [],
+   "nemenyi_sig": [
+    "tabnet vs stack"
+   ],
+   "mcnemar_holm_sig": [],
+   "rangos": {
+    "lr": 3.3,
+    "rf": 2.2,
+    "xgb": 3.2,
+    "tabnet": 4.8,
+    "stack": 1.5
+   },
+   "cd": 2.728
+  },
+  "pima_indians__B": {
+   "nadeau_bengio_holm_sig": [],
+   "nemenyi_sig": [],
+   "mcnemar_holm_sig": [],
+   "rangos": {
+    "lr": 2.8,
+    "rf": 2.2,
+    "xgb": 2.6,
+    "tabnet": 4.8,
+    "stack": 2.6
+   },
+   "cd": 2.728
+  }
+ },
+ "conformal": {
+  "nhanes_2017_2018__B__lr": {
+   "ambiguo": 0.135,
+   "vacio": 0.0,
+   "decil_superior": 0.626
+  },
+  "nhanes_2017_2018__B__rf": {
+   "ambiguo": 0.08,
+   "vacio": 0.0,
+   "decil_superior": 0.615
+  },
+  "nhanes_2017_2018__B__xgb": {
+   "ambiguo": 0.107,
+   "vacio": 0.0,
+   "decil_superior": 0.611
+  },
+  "nhanes_2017_2018__B__tabnet": {
+   "ambiguo": 0.107,
+   "vacio": 0.0,
+   "decil_superior": 0.554
+  },
+  "nhanes_2017_2018__B__stack": {
+   "ambiguo": 0.091,
+   "vacio": 0.0,
+   "decil_superior": 0.622
+  },
+  "nhanes_2017_2018__A__lr": {
+   "ambiguo": 0.0,
+   "vacio": 0.043,
+   "decil_superior": 0.884
+  },
+  "nhanes_2017_2018__A__rf": {
+   "ambiguo": 0.0,
+   "vacio": 0.025,
+   "decil_superior": 0.824
+  },
+  "nhanes_2017_2018__A__xgb": {
+   "ambiguo": 0.0,
+   "vacio": 0.022,
+   "decil_superior": 0.835
+  },
+  "nhanes_2017_2018__A__tabnet": {
+   "ambiguo": 0.0,
+   "vacio": 0.044,
+   "decil_superior": 0.799
+  },
+  "nhanes_2017_2018__A__stack": {
+   "ambiguo": 0.0,
+   "vacio": 0.05,
+   "decil_superior": 0.833
+  }
+ },
+ "tabla5": [
+  [
+   "edad",
+   1,
+   1,
+   4,
+   "↑ riesgo",
+   "+",
+   "sí"
+  ],
+  [
+   "antecedente_familiar_diabetes",
+   2,
+   2,
+   1,
+   "↑ riesgo",
+   "+",
+   "sí"
+  ],
+  [
+   "colesterol_total",
+   3,
+   3,
+   3,
+   "↓ riesgo",
+   "+",
+   "revisar"
+  ],
+  [
+   "trigliceridos",
+   4,
+   4,
+   5,
+   "↑ riesgo",
+   "+",
+   "sí"
+  ],
+  [
+   "tratamiento_antihipertensivo",
+   5,
+   6,
+   2,
+   "↑ riesgo",
+   "+",
+   "sí"
+  ],
+  [
+   "imc",
+   6,
+   7,
+   6,
+   "↑ riesgo",
+   "+",
+   "sí"
+  ],
+  [
+   "colesterol_hdl",
+   7,
+   5,
+   7,
+   "↓ riesgo",
+   "-",
+   "sí"
+  ],
+  [
+   "antecedente_hipertension",
+   8,
+   10,
+   9,
+   "↑ riesgo",
+   "+",
+   "sí"
+  ],
+  [
+   "presion_diastolica",
+   9,
+   8,
+   8,
+   "↓ riesgo",
+   "+",
+   "revisar"
+  ],
+  [
+   "presion_sistolica",
+   10,
+   9,
+   10,
+   "↑ riesgo",
+   "+",
+   "sí"
+  ]
+ ],
+ "concordancia": {
+  "nhanes_2017_2018__A": {
+   "rho_mediano": 0.79,
+   "jaccard_mediano": 0.67
+  },
+  "nhanes_2017_2018__B": {
+   "rho_mediano": 0.85,
+   "jaccard_mediano": 0.67
+  },
+  "pima_indians__A": {
+   "rho_mediano": 0.62,
+   "jaccard_mediano": 0.67
+  },
+  "pima_indians__B": {
+   "rho_mediano": 0.71,
+   "jaccard_mediano": 0.67
+  }
+ },
+ "equidad": {
+  "nhanes_2017_2018__A": {
+   "modelo": "xgb",
+   "sexo": {
+    "filas": [
+     {
+      "grupo": "Femenino",
+      "n": 368,
+      "eventos": 50,
+      "roc_auc": 0.935,
+      "sensibilidad": 0.78,
+      "especificidad": 0.9182,
+      "ic95": {
+       "roc_auc": [
+        0.8967,
+        0.9653
+       ],
+       "sensibilidad": [
+        0.6695,
+        0.9
+       ],
+       "especificidad": [
+        0.8883,
+        0.9465
+       ]
+      },
+      "prob_media": 0.1352,
+      "prevalencia_obs": 0.1359
+     },
+     {
+      "grupo": "Masculino",
+      "n": 358,
+      "eventos": 67,
+      "roc_auc": 0.9564,
+      "sensibilidad": 0.8806,
+      "especificidad": 0.8797,
+      "ic95": {
+       "roc_auc": [
+        0.935,
+        0.9763
+       ],
+       "sensibilidad": [
+        0.806,
+        0.9552
+       ],
+       "especificidad": [
+        0.8419,
+        0.9141
+       ]
+      },
+      "prob_media": 0.1931,
+      "prevalencia_obs": 0.1872
+     }
+    ],
+    "brecha_sensibilidad": 0.1006,
+    "alerta": true
+   },
+   "edad": {
+    "filas": [
+     {
+      "grupo": "18-39",
+      "n": 199,
+      "eventos": 6,
+      "roc_auc": 0.9421,
+      "sensibilidad": 0.5,
+      "especificidad": 1.0,
+      "ic95": {
+       "roc_auc": [
+        0.838,
+        1.0
+       ],
+       "sensibilidad": [
+        0.1667,
+        0.8333
+       ],
+       "especificidad": [
+        1.0,
+        1.0
+       ]
+      },
+      "prob_media": 0.0196,
+      "prevalencia_obs": 0.0302
+     },
+     {
+      "grupo": "40-59",
+      "n": 215,
+      "eventos": 24,
+      "roc_auc": 0.9387,
+      "sensibilidad": 0.8333,
+      "especificidad": 0.8953,
+      "ic95": {
+       "roc_auc": [
+        0.8853,
+        0.9743
+       ],
+       "sensibilidad": [
+        0.6667,
+        0.9583
+       ],
+       "especificidad": [
+        0.8482,
+        0.9372
+       ]
+      },
+      "prob_media": 0.1431,
+      "prevalencia_obs": 0.1116
+     },
+     {
+      "grupo": ">=60",
+      "n": 312,
+      "eventos": 87,
+      "roc_auc": 0.9297,
+      "sensibilidad": 0.8621,
+      "especificidad": 0.8178,
+      "ic95": {
+       "roc_auc": [
+        0.8992,
+        0.9545
+       ],
+       "sensibilidad": [
+        0.7931,
+        0.9256
+       ],
+       "especificidad": [
+        0.7644,
+        0.8667
+       ]
+      },
+      "prob_media": 0.2699,
+      "prevalencia_obs": 0.2788
+     }
+    ],
+    "brecha_sensibilidad": 0.3621,
+    "alerta": true
+   }
+  },
+  "nhanes_2017_2018__B": {
+   "modelo": "stack",
+   "sexo": {
+    "filas": [
+     {
+      "grupo": "Femenino",
+      "n": 368,
+      "eventos": 50,
+      "roc_auc": 0.8347,
+      "sensibilidad": 0.84,
+      "especificidad": 0.6698,
+      "ic95": {
+       "roc_auc": [
+        0.7617,
+        0.8969
+       ],
+       "sensibilidad": [
+        0.74,
+        0.94
+       ],
+       "especificidad": [
+        0.6226,
+        0.7201
+       ]
+      },
+      "prob_media": 0.1568,
+      "prevalencia_obs": 0.1359
+     },
+     {
+      "grupo": "Masculino",
+      "n": 358,
+      "eventos": 67,
+      "roc_auc": 0.8654,
+      "sensibilidad": 0.9104,
+      "especificidad": 0.6254,
+      "ic95": {
+       "roc_auc": [
+        0.8173,
+        0.9071
+       ],
+       "sensibilidad": [
+        0.8358,
+        0.9701
+       ],
+       "especificidad": [
+        0.5739,
+        0.6735
+       ]
+      },
+      "prob_media": 0.1925,
+      "prevalencia_obs": 0.1872
+     }
+    ],
+    "brecha_sensibilidad": 0.0704,
+    "alerta": false
+   },
+   "edad": {
+    "filas": [
+     {
+      "grupo": "18-39",
+      "n": 199,
+      "eventos": 6,
+      "roc_auc": 0.4983,
+      "sensibilidad": 0.0,
+      "especificidad": 0.9793,
+      "ic95": {
+       "roc_auc": [
+        0.3152,
+        0.6978
+       ],
+       "sensibilidad": [
+        0.0,
+        0.0
+       ],
+       "especificidad": [
+        0.961,
+        0.9948
+       ]
+      },
+      "prob_media": 0.024,
+      "prevalencia_obs": 0.0302
+     },
+     {
+      "grupo": "40-59",
+      "n": 215,
+      "eventos": 24,
+      "roc_auc": 0.8785,
+      "sensibilidad": 0.8333,
+      "especificidad": 0.6702,
+      "ic95": {
+       "roc_auc": [
+        0.8059,
+        0.9382
+       ],
+       "sensibilidad": [
+        0.7083,
+        0.9583
+       ],
+       "especificidad": [
+        0.6073,
+        0.7357
+       ]
+      },
+      "prob_media": 0.1297,
+      "prevalencia_obs": 0.1116
+     },
+     {
+      "grupo": ">=60",
+      "n": 312,
+      "eventos": 87,
+      "roc_auc": 0.7974,
+      "sensibilidad": 0.954,
+      "especificidad": 0.3467,
+      "ic95": {
+       "roc_auc": [
+        0.7392,
+        0.8463
+       ],
+       "sensibilidad": [
+        0.908,
+        0.9885
+       ],
+       "especificidad": [
+        0.2889,
+        0.4044
+       ]
+      },
+      "prob_media": 0.3012,
+      "prevalencia_obs": 0.2788
+     }
+    ],
+    "brecha_sensibilidad": 0.954,
+    "alerta": true
+   }
+  },
+  "pima_indians__A": {
+   "modelo": "stack",
+   "sexo": {
+    "filas": [
+     {
+      "grupo": "Femenino",
+      "n": 117,
+      "eventos": 42,
+      "roc_auc": 0.873,
+      "sensibilidad": 0.8333,
+      "especificidad": 0.7867,
+      "ic95": {
+       "roc_auc": [
+        0.8049,
+        0.9267
+       ],
+       "sensibilidad": [
+        0.7143,
+        0.9286
+       ],
+       "especificidad": [
+        0.6933,
+        0.88
+       ]
+      },
+      "prob_media": 0.3399,
+      "prevalencia_obs": 0.359
+     }
+    ],
+    "brecha_sensibilidad": 0.0,
+    "alerta": false
+   },
+   "edad": {
+    "filas": [
+     {
+      "grupo": "18-39",
+      "n": 88,
+      "eventos": 25,
+      "roc_auc": 0.8819,
+      "sensibilidad": 0.84,
+      "especificidad": 0.8413,
+      "ic95": {
+       "roc_auc": [
+        0.7958,
+        0.9511
+       ],
+       "sensibilidad": [
+        0.68,
+        0.96
+       ],
+       "especificidad": [
+        0.746,
+        0.9206
+       ]
+      },
+      "prob_media": 0.2854,
+      "prevalencia_obs": 0.2841
+     },
+     {
+      "grupo": "40-59",
+      "n": 25,
+      "eventos": 16,
+      "roc_auc": 0.8333,
+      "sensibilidad": 0.875,
+      "especificidad": 0.4444,
+      "ic95": {
+       "roc_auc": [
+        0.6458,
+        0.9653
+       ],
+       "sensibilidad": [
+        0.6875,
+        1.0
+       ],
+       "especificidad": [
+        0.1111,
+        0.7778
+       ]
+      },
+      "prob_media": 0.5533,
+      "prevalencia_obs": 0.64
+     }
+    ],
+    "brecha_sensibilidad": 0.035,
+    "alerta": false
+   }
+  },
+  "pima_indians__B": {
+   "modelo": "rf",
+   "sexo": {
+    "filas": [
+     {
+      "grupo": "Femenino",
+      "n": 117,
+      "eventos": 42,
+      "roc_auc": 0.7673,
+      "sensibilidad": 0.6667,
+      "especificidad": 0.6533,
+      "ic95": {
+       "roc_auc": [
+        0.6775,
+        0.8511
+       ],
+       "sensibilidad": [
+        0.5238,
+        0.8095
+       ],
+       "especificidad": [
+        0.5467,
+        0.7467
+       ]
+      },
+      "prob_media": 0.3536,
+      "prevalencia_obs": 0.359
+     }
+    ],
+    "brecha_sensibilidad": 0.0,
+    "alerta": false
+   },
+   "edad": {
+    "filas": [
+     {
+      "grupo": "18-39",
+      "n": 88,
+      "eventos": 25,
+      "roc_auc": 0.7613,
+      "sensibilidad": 0.48,
+      "especificidad": 0.7302,
+      "ic95": {
+       "roc_auc": [
+        0.6666,
+        0.8578
+       ],
+       "sensibilidad": [
+        0.32,
+        0.68
+       ],
+       "especificidad": [
+        0.619,
+        0.8254
+       ]
+      },
+      "prob_media": 0.3048,
+      "prevalencia_obs": 0.2841
+     },
+     {
+      "grupo": "40-59",
+      "n": 25,
+      "eventos": 16,
+      "roc_auc": 0.7222,
+      "sensibilidad": 1.0,
+      "especificidad": 0.1111,
+      "ic95": {
+       "roc_auc": [
+        0.5102,
+        0.8958
+       ],
+       "sensibilidad": [
+        1.0,
+        1.0
+       ],
+       "especificidad": [
+        0.0,
+        0.3333
+       ]
+      },
+      "prob_media": 0.5432,
+      "prevalencia_obs": 0.64
+     }
+    ],
+    "brecha_sensibilidad": 0.52,
+    "alerta": true
+   }
+  }
+ },
+ "verificacion": {
+  "lr_mejor_nb_umbrales": [
+   0.07,
+   0.08,
+   0.09,
+   0.1,
+   0.11,
+   0.12,
+   0.13,
+   0.14,
+   0.15,
+   0.16,
+   0.17,
+   0.18,
+   0.19,
+   0.2,
+   0.21,
+   0.22,
+   0.23,
+   0.24
+  ],
+  "nb_positivo_todos": false,
+  "supera_tratar_todos": true,
+  "brecha_B": [
+   -0.001,
+   -0.0014,
+   -0.0031
+  ]
+ },
+ "hardware": {
+  "cpu": "11th Gen Intel Core i7-1165G7 @ 2.80 GHz (4 núcleos, 8 hilos)",
+  "ram_gb": 19.8,
+  "gpu": "Ninguna usada (Intel Iris Xe integrada; PyTorch CPU, CUDA no disponible)",
+  "so": "Windows-11-10.0.26300-SP0",
+  "python": "3.12.15"
+ },
+ "sens_b": {
+  "nhanes_2017_2018__B__lr": {
+   "auc_ponderado": 0.879,
+   "auc_sin_ponderar": 0.856,
+   "brier_ponderado": 0.08
+  },
+  "nhanes_2017_2018__B__rf": {
+   "auc_ponderado": 0.878,
+   "auc_sin_ponderar": 0.852,
+   "brier_ponderado": 0.075
+  },
+  "nhanes_2017_2018__B__xgb": {
+   "auc_ponderado": 0.872,
+   "auc_sin_ponderar": 0.856,
+   "brier_ponderado": 0.078
+  },
+  "nhanes_2017_2018__B__tabnet": {
+   "auc_ponderado": 0.837,
+   "auc_sin_ponderar": 0.807,
+   "brier_ponderado": 0.088
+  },
+  "nhanes_2017_2018__B__stack": {
+   "auc_ponderado": 0.874,
+   "auc_sin_ponderar": 0.855,
+   "brier_ponderado": 0.078
+  },
+  "nhanes_2017_2018__A__lr": {
+   "auc_ponderado": 0.955,
+   "auc_sin_ponderar": 0.945,
+   "brier_ponderado": 0.051
+  },
+  "nhanes_2017_2018__A__rf": {
+   "auc_ponderado": 0.959,
+   "auc_sin_ponderar": 0.952,
+   "brier_ponderado": 0.048
+  },
+  "nhanes_2017_2018__A__xgb": {
+   "auc_ponderado": 0.953,
+   "auc_sin_ponderar": 0.947,
+   "brier_ponderado": 0.051
+  },
+  "nhanes_2017_2018__A__tabnet": {
+   "auc_ponderado": 0.948,
+   "auc_sin_ponderar": 0.935,
+   "brier_ponderado": 0.054
+  },
+  "nhanes_2017_2018__A__stack": {
+   "auc_ponderado": 0.959,
+   "auc_sin_ponderar": 0.952,
+   "brier_ponderado": 0.049
+  }
+ },
+ "sensibilidad": {
+  "referencia_B": {
+   "lr": {
+    "auc": 0.8556,
+    "ic95": [
+     0.8176,
+     0.8894
+    ],
+    "sens": 0.8718,
+    "espec": 0.7586,
+    "brier": 0.101,
+    "pendiente": 1.0181,
+    "n_test": 726,
+    "eventos_test": 117,
+    "eventos_total": 772
+   },
+   "xgb": {
+    "auc": 0.8561,
+    "ic95": [
+     0.8153,
+     0.8921
+    ],
+    "sens": 0.8803,
+    "espec": 0.6585,
+    "brier": 0.0972,
+    "pendiente": 1.024,
+    "n_test": 726,
+    "eventos_test": 117,
+    "eventos_total": 772
+   }
+  },
+  "a1_hba1c": {
+   "lr": {
+    "auc": 0.8372,
+    "ic95": [
+     0.8039,
+     0.8688
+    ],
+    "sens": 0.8264,
+    "espec": 0.7062,
+    "brier": 0.121,
+    "pendiente": 1.0837,
+    "n_test": 726,
+    "eventos_test": 144,
+    "eventos_total": 948
+   },
+   "xgb": {
+    "auc": 0.8503,
+    "ic95": [
+     0.8183,
+     0.8809
+    ],
+    "sens": 0.75,
+    "espec": 0.7955,
+    "brier": 0.1166,
+    "pendiente": 1.1227,
+    "n_test": 726,
+    "eventos_test": 144,
+    "eventos_total": 948
+   }
+  },
+  "a2_hba1c_o_glucosa": {
+   "lr": {
+    "auc": 0.844,
+    "ic95": [
+     0.8073,
+     0.8761
+    ],
+    "sens": 0.8212,
+    "espec": 0.7357,
+    "brier": 0.1181,
+    "pendiente": 1.235,
+    "n_test": 726,
+    "eventos_test": 151,
+    "eventos_total": 1004
+   },
+   "xgb": {
+    "auc": 0.8607,
+    "ic95": [
+     0.826,
+     0.8914
+    ],
+    "sens": 0.8874,
+    "espec": 0.6678,
+    "brier": 0.1142,
+    "pendiente": 1.3344,
+    "n_test": 726,
+    "eventos_test": 151,
+    "eventos_total": 1004
+   }
+  },
+  "d_sin_col_trat": {
+   "lr": {
+    "auc": 0.8453,
+    "ic95": [
+     0.8061,
+     0.8804
+    ],
+    "sens": 0.812,
+    "espec": 0.775,
+    "brier": 0.104,
+    "pendiente": 1.0147,
+    "n_test": 726,
+    "eventos_test": 117,
+    "eventos_total": 772
+   },
+   "xgb": {
+    "auc": 0.8377,
+    "ic95": [
+     0.7956,
+     0.8759
+    ],
+    "sens": 0.8889,
+    "espec": 0.6749,
+    "brier": 0.1027,
+    "pendiente": 1.032,
+    "n_test": 726,
+    "eventos_test": 117,
+    "eventos_total": 772
+   }
+  },
+  "c_tabnet_optuna": {
+   "tabnet": {
+    "auc": 0.8194,
+    "ic95": [
+     0.7778,
+     0.8568
+    ],
+    "sens": 0.8205,
+    "espec": 0.642,
+    "brier": 0.1078,
+    "pendiente": 0.9391,
+    "n_test": 726,
+    "eventos_test": 117,
+    "eventos_total": 772
+   }
+  }
+ }
+}
